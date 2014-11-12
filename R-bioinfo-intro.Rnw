@@ -633,6 +633,18 @@ rm(z2)
 
 
 
+example
+
+example(persp)
+
+demo(persp)
+
+demo(graphics)
+
+
+
+
+
 
 \section{Error messages}
 The best way to learn to use \R\  is to use it. As explained before,
@@ -977,8 +989,9 @@ had not written \code{scatterplot}.
 
 
 
-\subsection{How I read and save the data?}\label{readanage}
-This is all I did
+\subsection{How I read and saved the data?}\label{readanage}
+This is all I did (the \code{save} thing will become clearer below
+---section \ref{saveRData}):
 <<eval=FALSE>>=
 anage <-  read.table("AnAge_birds_reptiles.txt", 
                      header=TRUE, sep="", na.strings="NA", dec=".", 
@@ -1040,7 +1053,7 @@ rotation, etc, etc.
 
 
 
-
+do example(qplot)
 
 
 \section{Entering data into \R\ and saving data from \R}\label{readingr}
@@ -1119,7 +1132,7 @@ you can use commands such as \code{sink}.
 
 
 
-\subsection{Saving an \R session: .RData}
+\subsection{Saving an \R session: .RData}\label{saveRData}
 And how can you save all you have been doing? The simplest way is to use
 \code{save.image}. Please, look at the help for that command. We will use
 a simple example:
@@ -1150,7 +1163,7 @@ is nothing in there, since we just started. Now, do:
 load("this.RData")
 ls()
 v1
-v2
+v11
 summary(another.data.set)
 @ 
 
@@ -1212,7 +1225,7 @@ that I have, sometime in the past, issued a \code{setwd} command.)
 
 
 
-
+\section{Basic R data structures}
 
 
 
