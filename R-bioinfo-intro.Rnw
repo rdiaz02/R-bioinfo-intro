@@ -1,18 +1,25 @@
 %% ;;; -*- mode: Rnw; -*-
 
-% \VignetteIndexEntry{OncoSimulR Overview}
-% \VignetteDepends{OncoSimulR}
-% \VignetteKeywords{OncoSimulR simulation cancer oncogenetic trees}
-% \VignettePackage{OncoSimulR}
-% \VignetteEngine{knitr::knitr}
 \documentclass[a4paper,12pt]{article}
+
+%% \usepackage{listings}
+%% \lstset{language=R}
+
 <<echo=FALSE,results='hide',error=FALSE>>=
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
 opts_chunk$set(size= "small", error=FALSE)
 opts_knit$set(stop_on_error = 2L)
 ## mytry <- function(x) try(x) ## eliminate?
+## listings for HMTL export
+## opts_chunk$set(fig.path = 'figure/listings-')
+## options(formatR.arrow = TRUE)
+## render_listings()
 @ 
+
+
+
+
 
 \usepackage{graphics}
 %\usepackage[dvips]{graphicx}
@@ -27,9 +34,6 @@ opts_knit$set(stop_on_error = 2L)
 \usepackage[latin1]{inputenc}
 \usepackage{times}
 \usepackage[T1]{fontenc}
-% Or whatever. Note that the encoding and the font should match. If T1
-% does not look nice, try deleting the line with the fontenc.
-%%\usepackage{fancybox}
 
 \usepackage[small]{caption}
 \usepackage{hyperref}
@@ -42,7 +46,6 @@ opts_knit$set(stop_on_error = 2L)
 \newcommand{\green}[1]{{\textcolor {green} {#1}}}
 \newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
 \newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
-%\newcommand{\code}[1]{\texttt{\slshape\footnotesize #1}}
 \newcommand{\code}[1]{\texttt{#1}} %From B. Bolker
 \newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
 \newcommand{\Rnl}{\ +\qquad\ }
@@ -59,14 +62,6 @@ opts_knit$set(stop_on_error = 2L)
 \usepackage[authoryear, round, sort]{natbib}
 \bibliographystyle{chicago}
 
-%% Nicer syntax coloring?
-%% See http://stackoverflow.com/questions/4808052/sweave-syntax-highlighting-in-output
-%% Beware: it makes texing the file take a looooooot longer
-%% and I see no significant improvements in look. So commented out now.
-%% \usepackage{minted}
-%% \renewenvironment{Sinput}{\minted[frame=single]{r}}{\endminted}
-%% \DefineVerbatimEnvironment{Soutput}{Verbatim}{frame=leftline}
-%% \DefineVerbatimEnvironment{Scode}{Verbatim}{}
 
 %% decreasing margins after knitr output
 \setlength{\topsep}{0pt}
@@ -74,6 +69,9 @@ opts_knit$set(stop_on_error = 2L)
 %% \setlength{\partopsep}{1pt}
 
 \usepackage{gitinfo}
+
+
+ 
 
 \title{A quick and crash introduction to R with a bioinformatics bent}
 
@@ -85,10 +83,6 @@ opts_knit$set(stop_on_error = 2L)
 
 
 \begin{document}
-%% \SweaveOpts{concordance=TRUE}  %% remember I am caching now, using
-%%                                %% concordance for synctex, etc. So I
-%%                                %% sweave with file as shown at end (in runSweave.sh)
-%% \setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
 
 
 \maketitle
@@ -602,7 +596,7 @@ v2, plus several functions that start with ``v'').
 
 
 \subsection{Naming variables}
-We created \code{v1} and \code{v2} above. Names of variables in \R\ must
+We created \code{v1} and \code{v2} above. Names of variables in \R\ must 
 begin with a letter (also a period, though this will make them
 hidden). Then you can mix letters, numbers, \code{.} and
 \code{\_}. Variable names are case sensitive, so \code{v1} and \code{V1}
