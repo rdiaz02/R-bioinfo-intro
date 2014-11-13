@@ -75,7 +75,7 @@ opts_knit$set(stop_on_error = 2L)
 
 \usepackage{gitinfo}
 
-\title{A quick introduction to R with a bioinformatics bent}
+\title{A quick and crash introduction to R with a bioinformatics bent}
 
 \date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
 
@@ -209,49 +209,7 @@ document. What about \code{R-bio-intro.R}? That is all the \R\ code
 used in this document.
 
 
-
-
-
-\section{This will not be mysterious at the end of the course}
-
-(This is an example we go over in section \ref{example-multtest}, p.\ 
-\pageref{example-multtest}, with a different number of genes).
-
-We might have heard about the multiple testing problem with microarrays:
-if we look at the p-values from a large number of tests, we can be mislead
-into thinking there is something happening (i.e., there are differentially
-expressed genes) when, in fact, there is absolutely no signal in the
-data. Now, you are convinced by this. But you have a stubborn colleague
-who isn't. You have decided to use a simple numerical example to show her
-the problem.
-
-
-This is the fictitious scenario: 50 subjects, and of those 30 have cancer
-and 20 don't. You measure 1000 genes, but none of the genes have any real
-difference between the two groups; for simplicity, all genes have the same
-distribution. You will do a t-test per gene, show a histogram of the
-p-values, and report the number of ``significant'' genes (genes with p <
-0.05).
-
-
-This is the R code:
-
-<<eval=TRUE,tidy=FALSE>>=
-randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
-clase <- factor(c(rep("sano", 20), rep("enfermo", 30)))
-pvalues <- apply(randomdata, 1, 
-                 function(x) t.test(x ~ clase)$p.value)
-hist(pvalues)
-sum(pvalues < 0.05)
-@ 
-
-The example could be made faster, you could write a function, prepare
-nicer plots, etc, but the key is that in six lines of code you have
-settled the discussion. 
-
-
-
-\section{\R and Bioinformatics}
+\subsection{\R and Bioinformatics}
 
 If you are reading this document, it is probably because you already have
 some idea of what \R is. So no long details here. A summary is ``R is a
@@ -300,6 +258,53 @@ standing on the shoulders of millions of lines of free software.
 \subsection{Some references}
 
 blablaba
+
+An introduction to R
+Paradis
+
+
+
+
+\section{This will not be mysterious at the end of the course}
+
+(This is an example we go over in section \ref{example-multtest}, p.\ 
+\pageref{example-multtest}, with a different number of genes).
+
+We might have heard about the multiple testing problem with microarrays:
+if we look at the p-values from a large number of tests, we can be mislead
+into thinking there is something happening (i.e., there are differentially
+expressed genes) when, in fact, there is absolutely no signal in the
+data. Now, you are convinced by this. But you have a stubborn colleague
+who isn't. You have decided to use a simple numerical example to show her
+the problem.
+
+
+This is the fictitious scenario: 50 subjects, and of those 30 have cancer
+and 20 don't. You measure 1000 genes, but none of the genes have any real
+difference between the two groups; for simplicity, all genes have the same
+distribution. You will do a t-test per gene, show a histogram of the
+p-values, and report the number of ``significant'' genes (genes with p <
+0.05).
+
+
+This is the R code:
+
+<<eval=TRUE,tidy=FALSE>>=
+randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
+clase <- factor(c(rep("sano", 20), rep("enfermo", 30)))
+pvalues <- apply(randomdata, 1, 
+                 function(x) t.test(x ~ clase)$p.value)
+hist(pvalues)
+sum(pvalues < 0.05)
+@ 
+
+The example could be made faster, you could write a function, prepare
+nicer plots, etc, but the key is that in six lines of code you have
+settled the discussion. 
+
+Let's try to understand what we did. But first, we need to install \R, and
+maybe some additional packages.
+
 
 \section{Our first few minutes with \R}
 
@@ -589,7 +594,7 @@ v11 <- 3 * ( 5 + sqrt(13) - 3^(1/(4 + 1)))
 
 
 By the way, if you want to modify partially what you typed, you can repeat
-the previous commands with the up-arrow (\thinspace $\uparrow$ \thinspace)
+the previous commands with the up-arrow ($\uparrow$)
 in RStudio (or Alt-p in ESS); and then move around also using $\uparrow$ ,
 etc. You also have tab completion: if you get at the prompt, type \code{v}
 and press tab you should be given a bunch of options (that include v1 and
@@ -629,15 +634,12 @@ rm(z2)
 @ 
 
 
-\section{Getting help}\label{help}
+\subsection{Getting help}\label{help}
 
 
 
 example
 
-example(persp)
-
-demo(persp)
 
 demo(graphics)
 
@@ -646,7 +648,7 @@ demo(graphics)
 
 
 
-\section{Error messages}
+\subsection{Error messages}
 The best way to learn to use \R\  is to use it. As explained before,
 mistakes are harmless, so you should play and experiment. However, there
 are two key attitudes that will make your learning a lot faster: first,
@@ -679,7 +681,8 @@ t.test(x ~ z)
 
 
 \clearpage
-\section{Plotting the results from BLAST}\label{blast}
+\section{Three practical, crash examples}
+\subsection{Plotting the results from BLAST}\label{blast}
 
 
 This is a quick example of something that is not really just a mere toy
@@ -751,7 +754,7 @@ what is going on\footnote{Not that this would be, in this case, all that
 \ldots. Which brings us to the next section.
 
 \clearpage
-\section{A simple hypothesis test: the \textit{t-}test}
+\subsection{A simple hypothesis test: the \textit{t-}test}
 
 Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
 have lung cancer. And we have expression data for one gen (say GenA). We
@@ -763,7 +766,7 @@ Simulated data? Generating simulated data is extremely useful for testing
 many procedures, emulating specific processes, etc. 
 
 
-\subsection{Generating random numbers}
+\subsubsection{Generating random numbers}
 
 
 \R\  offers
@@ -819,7 +822,7 @@ obtain 50 independent random samples from a normal distribution and create
 a vector for the identifiers (the ``labels'') of the subjects. 
 
 
-\subsection{The t-tests and some plots}
+\subsubsection{The t-tests and some plots}
 <<>>=
 GeneA <- rnorm(50)
 round(GeneA, 3)
@@ -857,7 +860,8 @@ stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
 
 \clearpage
 
-\section{Metabolic rate and body mass: a regression example}
+\subsection{Metabolic rate and body mass: more plots and a regression
+  example}
 
 You are interested in the relationship between metabolic rate and body
 mass in birds.  We will use a subset of data from the AnAge data set
@@ -892,12 +896,14 @@ You should be able to tell what is going on with the data. And notice
 those many ``NA''.
 
 
-\subsection{A plot with changed scale}
+\subsubsection{A plot with changed scale}
 I want to plot metabolic rate vs.\ body mass. But I know (from theory and
 previous experience) that I probably want to use the log. And I want to
 get a quick idea of the spread of the points, etc. So I will use a
 function from the package \code{car} (for this to work, thus, you need to
 install that package).
+
+
 
 <<>>=
 library(car) ## make the car package available; this is NOT installing it. 
@@ -914,7 +920,29 @@ would not add the extra lines, boxplots, etc.
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
 @ 
 
-\subsection{Transforming variables}
+Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
+us use different plotting colors for each, and let us add a legend. Notice
+how the different colors by Class is done in the call to plot:
+<<fig.width=4,fig.height=4>>=
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+     col = c("salmon", "darkgreen")[Class], data = anage)
+legend(5, 5, legend = c("Aves", "Reptiles"), col = c("salmon", "darkgreen"),
+       pch = 1)
+@ 
+
+Would the above work with scatterplot? Nope. You need to use a slightly
+different argument for the call, and you get automatic legend, etc:
+
+<<fig.width=4,fig.height=4>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", data = anage)
+@ 
+
+And how did I know? Hummm \ldots: I tried, failed, and then looked at the
+help for \code{scatterplot}.
+
+
+
+\subsubsection{Transforming variables}
 
 It is actually simpler, for the regression later, to log-transform the
 variables and add them to the data set:
@@ -927,9 +955,10 @@ anage$logBodyMass <- log(anage$Body.mass..g.)
 We just created two variables, and added them to \code{anage}.
 
 
-\subsection{Only the birds!}
+\subsubsection{Only the birds! Selecting specific cases}
 
-Eh, but I want only the birds. Let's select only the birds using function \code{subset}
+Eh, but I want only the birds. Let's select only the birds using function
+\code{subset}
 
 <<>>=
 birds <- subset(anage, Class == "Aves")
@@ -943,7 +972,7 @@ birds <- anage[anage$Class == "Aves", ]
 
 We can look at the 
 
-\subsection{The regression only for the birds}
+\subsubsection{The regression only for the birds}
 \label{sec:regression}
 
 <<>>=
@@ -989,7 +1018,7 @@ had not written \code{scatterplot}.
 
 
 
-\subsection{How I read and saved the data?}\label{readanage}
+\subsubsection{How I read and saved the data?}\label{readanage}
 This is all I did (the \code{save} thing will become clearer below
 ---section \ref{saveRData}):
 <<eval=FALSE>>=
@@ -1001,7 +1030,9 @@ save(file = "anage.RData", anage)
 The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downloaded.
 
 
-\section{Plots}
+
+
+\section{Plots: miscell}
 \subsection{Plots: Can we change colors, line types, point types, etc?}
 
 Of course. Look at \code{?par} and then look for \code{pch}, \code{cex},
@@ -1029,14 +1060,23 @@ for(i in 1:6) {
 
 @ 
 
+\subsection{Saving plots}
+Can you save the plots as PDF, png, \ldots? Definitely. From RStudio you
+have a menu entry in the plot window. For non-interactive work (as when
+using scripts, section \ref{scripts}), or to make sure you have fixed
+things such as size, it is better to directly use functions such as
+\code{?png}, \code{?pdf}, etc. Look at the help of those functions. The
+second approach (explicitly calling, say, \code{pdf} from my scripts) is
+what I use.
 
 
 
 \subsection{Plots, plots, plots. Many types of plots}
 
-Plotting is a big thing in \R. We have used a few, but there are many
-more. In fact, there are several approaches or systems for plots in \R. We
-will use here the basic one (the one in base \R), but notice that
+We have used a variety of plots. But this is only scratching the
+surface. Plotting is a big thing in \R. We have used a few, but there are
+many more. In fact, there are several approaches or systems for plots in
+\R. We will use here the basic one (the one in base \R), but notice that
 \textbf{ggplot2} is a very popular one, that produces plots many people
 find nicer. If you are interested, google for ``ggplot2''. There are two
 books about it (``ggplot2: elegant graphics for data analysis'', by
@@ -1051,9 +1091,23 @@ ways to identify points, to use 3D plots, to have dynamic plots that allow
 rotation, etc, etc.
 
 
+The following could give you an idea of some of the options:
+
+<<eval=FALSE>>=
+demo(graphics)
+example(graphics)
+example(persp)
+demo(persp)
+@ 
 
 
-do example(qplot)
+And, if you have installed package ``ggplot2'' you can also do
+<<eval=FALSE>>=
+example(qplot)
+@ 
+\noindent (though the above gives just a very, very limited view of the
+range of options with ggplot2).
+
 
 
 \section{Entering data into \R\ and saving data from \R}\label{readingr}
@@ -1084,6 +1138,71 @@ summary(another.data.set)
 Notice that we used the variable names (and took those names from the
 header), and the object is not a matrix, but a data frame (we will see
 this later).
+
+
+\subsection{But where are those files?}\label{wherefiles}
+Of course, for \R\ to read those files, you need to tell \R\
+\textbf{exactly} where those files are located. This is always the source
+of a lot of grief, but is really simple. These are some cases and ways
+of dealing with them:
+
+\begin{enumerate}
+\item The file you are trying to read lives exactly in the same working
+  directory where \R\ is running. OK, easy: just read as in the examples above.
+  \begin{itemize}
+  \item How do you know what is the working directory where \R\ is
+    running? Type \code{getwd()}.
+  \item How do you know where the file you want to read is? Eh, this is up
+    to you! You should know that (or ask your operating system or search
+    facilities for it).
+  \end{itemize}
+\item The file you are trying to read \textbf{DOES NOT} live exactly in the same working
+  directory where \R\ is running. You can either:
+  \begin{enumerate}
+  \item Tell \R\ where the file is: specify the full path. Suppose your
+    file, ``f1.txt'', is in ``C:/tmp''. Then, say \code{X <-
+      read.table(``C:/tmp/f1.txt'')}. 
+    \item Move \R's working directory to the place where your files
+      live. Two ways:
+      \begin{enumerate}
+      \item Use \code{setwd(``someplace'')}, where ``someplace'' is the
+        place where your files live.
+      \item Under RStudio, go to ``Session'', ``Set working directory''
+        (which, in fact, is just a call to \code{setwd})
+      \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+This is all there is to it. And if you make a mistake, \R\ will let you
+know. 
+
+
+Now, under Windows the true names of directories can be a mysterious thing
+(specially if you have things displayed in a language that is not English,
+and even more if you use directory names with spaces, accents, or other
+characters ---e.g, Cyrillic). So \textbf{avoid} directories with spaces,
+accents, and other non-ASCII characters, and try to keep them under 8
+characters (though that might not be a strong limitation nowadays). And
+try to place things in directories that Windows is unlikely to rename
+(e.g., \verb@C:\Files-p1@ is better than 
+\verb@C:\Archivos de Programa\Manolo Perez\Mis documentos@). 
+
+Avoiding spaces, accents and other non-ASCII characters is also a good
+idea under Unix/Linux (though here there is no problem with file and
+directory names that are very long).
+
+
+
+
+Now, for the rest of the course, I will assume that you know where your
+data files are, the scripts are, etc. Where you place them depends on what
+you want (and the permissions you have in the computer you are using).
+You will be using either of the approaches explained in
+\ref{wherefiles}. It is up to you. In this class, I will often be running
+\R\ in the very same directory where the data files and scripts are
+located. (You can assume that I have, sometime in the past, issued a
+\code{setwd} command.) This is just convenient.
+
 
 \subsection{Missing values}
 And what happens with missing values? Try running the examples above after
@@ -1127,8 +1246,14 @@ write.table(another.data.set,
 Open that file in an editor of your choice.
 
 
-You can also save part or all the output from a session. You can copy and paste, or
-you can use commands such as \code{sink}.
+You can also save part or all the output from a session. You can copy and
+paste, or you can use commands such as \code{sink}.
+
+
+Of course, similar considerations apply here as in section
+\ref{wherefiles}: think where you want to save things.
+
+
 
 
 
@@ -1199,51 +1324,133 @@ and \code{save}.
 
 
 
-\section{Scripts and non-interactive runs}
+\section{Scripts and non-interactive runs}\label{scripts}
 
-\subsection{Why scripts}
+\subsection{Why use scripts}
+Keeping all of your code in one or more script(s) and evaluating the code
+from the script (instead of directly on the \R\ console) has a couple of benefits:
+\begin{itemize}
+\item It is a complete record of all you did. And you can keep it nicely
+  organized, with comments, etc.
+\item It allows you to carry out non-interactive calculations. For
+  example, running a very long analysis, or re-running completely all the
+  analysis and plots if you made a mistake, or new data are added, etc.
+\end{itemize}
 
-\subsection{Paths: where are scripts and data sets located}
+Thus, keeping all of your analysis in scripts is a fundamental step in
+\textbf{reproducible research}.
+
+
+
+For this section, create a very simple script typing this in a
+file and saving it as ``script1.R'':
+\begin{verbatim}
+x <- 1:100
+print(mean(x))
+plot(x)
+\end{verbatim}
+
+\subsection{Paths: where are scripts located}
 Before you can tell \R\  to use your script or read some data, you need to
-tell \R\  where, exactly, to find the scripts/data.  Here are a couple of
-ways to do it:
-
-
+tell \R\  where, exactly, to find the scripts/data.  Re-read again what
+was explained in section \ref{wherefiles}.
 
 
 Now, for the rest of the course, I will assume that you know where your
 data files are, the scripts are, etc. Where you place them depends on what
 you want (and the permissions you have in the computer you are using).
-You will be using either one of the two approaches above. It is up to
-you. I will be using the second: I will be running \R\  in the very same
-directory where the data files and scripts are located. (You can assume
-that I have, sometime in the past, issued a \code{setwd} command.)
+You will be using either of the approaches explained in
+\ref{wherefiles}. It is up to you. In this class, I will often be running
+\R\ in the very same directory where the data files and scripts are
+located. (You can assume that I have, sometime in the past, issued a
+\code{setwd} command.) This is just convenient. (Yes, this is the same
+paragraph as above. I am repeating it on purpose.)
 
 
 \subsection{Using a script}
 
+There are two basic ways of using a script:
+\begin{description}
+\item[Interactively] What we have been doing so far. RStudio, Emacs,
+  whatever, has a window (buffer, in Emacs parlance) with the code, and
+  you select pieces of it and submit them to the \R\ interpreter, running
+  in the \R\ console.
+\item[Non-interactively] Two ways again:
+  \begin{description}
+  \item[Using source from a running R] You have \R\ running and do:
+    \code{source(``script1.R'')}. I often add a couple of options:
+<<fig.width=3, fig.height=3>>=
+source("script1.R", echo = TRUE, max.deparse.length = 999999)
+@     
+   Now, did you notice that we got the mean printed and the figure produced?
 
+\item[Calling R from the shell] Open a shell, a command window, or however
+  that is called in your operating system, and run \R\ telling it to use a
+  given script file as input. This has the big advantage that you do not
+  need to keep a window with \R\ open until the job finishes. This is
+  great for long running jobs (say, a set of analyses that takes two
+  weeks). 
+  
+  There are several ways of doing it, one of which uses an invocation like
+  \verb@ R CMD BATCH script1.R @.
+  
+  There is a second set of ways, like 
+  \verb@ R --vanilla < script1.R > scrip1.Rout @. 
+  I tend to use the second one, and then add things like
+  ``nohup'' before invoking \R, move it to the background, and also
+  redirect standard error to the same file used for standard output (i.e.,
+  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}).
+  
+  Beware, the above are examples of two simple invocations. There are many
+  other options.
+  \end{description}
+
+\end{description}
 
 
 \section{Basic R data structures}
+\subsection{Vectors} 
+
+Vectors are one of the simplest data structures in \R. They store a set of
+objects (all of the same kind), one after the other, in a single
+dimension. We've seen many:
+
+<<>>=
+v1 <- c(1, 2, 3)
+v2 <- c("a", "b", "cucu")
+v3 <- c(1.9, 2.5, 0.6)
+@ 
+
+That, by the way, shows the simplest way of creating a vector in \R: use
+\code{c} to concatenate a bunch of things.
+
+
+Many functions (see \code{?Arithmetic}, \code{?log}, \code{?exp},
+\code{?Trig}) operate directly on whole vectors:
+
+<<>>=
+log(v1)
+exp(v3)
+2 * v1
+v3/0.7
+@ 
+
+And what functions are there for things like addition, multiplication,
+exponentiation, division, remainder, etc? As we said, see
+\code{?Arithmetic}, \code{?log}, \code{?exp}, \code{?Trig}.
 
 
 
-\section{Vectors} 
+\subsubsection{Functions for creating vectors}
 
-What they are
+We can create vectors by concatenating elements. We just saw that. But
+there are two very handy functions for creating vectors that have some
+structure: \code{seq} (from ``sequence'') and \code{rep} (from
+repeat). Examine these examples carefully:
 
-And what are the Arithmetic functions? Type \code{?Arithmetic},
-\code{?log}, \code{?exp}, \code{?Trig}
 
-
-
-\subsection{Functions for creating vectors}
-
-One by one, by hadn
-
-rep
-
+First \code{seq}, in four different invocations (yes, \code{:} counts as
+an invocation of \code{seq}):
 <<>>=
 seq(from = 1, to = 10)
 seq(from = 1, to = 10, by = 2)
@@ -1252,7 +1459,7 @@ seq(from = 1, to = 10, length.out = 3)
 @ 
 
 
-
+Now \code{rep} in a few common invocations. 
 <<>>=
 rep(2, 5)
 rep(1:3, 2)
@@ -1263,27 +1470,80 @@ rep(1:3, 2:4)
 \subsection{Creating vectors from other vectors}
 \label{sec:creat-vect-from}
 
-c
-Arithmetic, etc
+
+You can concatenate two vectors:
+<<>>=
+v1 <- 1:4
+v2 <- 7:12
+(v3 <- c(v1, v2))
+@ 
 
 
-show recycling rule
 
+If you use an arithmetic operation on a vector, you get another vector. E.g,
+<<>>=
+v1 <- 2:8
+(v2 <- 3 + v1)
+@ 
+
+And what about this?
+<<>>=
+v1 <- 1:5
+v2 <- 11:15
+(v3 <- v1 + v2)
+@ 
+
+But what if the two vectors are not the same length? The \textbf{recycling
+rule} applies:
+<<>>=
+v1 <- 1:3
+v2 <- 11:12
+v1 + v2
+@ 
+
+But beware! Look at this
+<<>>=
+v1 <- 1:3
+v2 <- 11:16
+v1 + v2
+@ 
+\noindent no warnings whatsoever. Which might, or might not, be what you
+would have expected.
+
+
+The recycling rule applies also with matrices, etc.
 
 \subsection{Creating vector from other vectors: logical operations}
 \label{sec:creating-vector-from}
 
+We can compare the elements of a vector with something, so as to obtain a
+vector of \code{TRUE, FALSE} elements. And we can combine vectors with
+value of \code{TRUE, FALSE} using the usual logical operations. Please,
+look at the help for \code{Comparison} and \code{Logic}.  These are common
+in many programming languages (but beware of differences between \code{||}
+and \code{|} and, likewise, \code{\&\&} and \code{\&}).
+
+<<eval=FALSE>>=
 ?Comparison
+?Logic
+@ 
+
+A few examples:
+<<>>=
+v1 <- 1:5
+v1 < 3
+(v2 <- (v1 < 3))
+v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
+v2 & v3
+v2 | v3
+@ 
 
 
 \subsubsection{Logical values as 0, 1\label{log01}}
 In \R\ (as in many other languages) we can use logical values as if they
-were numeric: we can treat \code{TRUE} as 1 and
-\code{FALSE} as 0. (Note that we can also treat anything larger than 0 as TRUE).
-
-
-This can be very handy to find out how many elements
-fulfill a condition.
+were numeric: we can treat \code{TRUE} as 1 and \code{FALSE} as 0. (Note
+that we can also treat anything larger than 0 as TRUE). This can be very
+handy to find out how many elements fulfill a condition.
 
 <<>>=
 vv <- c(1, 3, 10, 2, 9, 5, 4, 6:8)
@@ -1334,7 +1594,7 @@ sum(vv < 5)
 
 Why did that work? What is \code{vv < 5} returning?
 
-\subsection{Names of elements}
+\subsubsection{Names of elements}
 \label{names-elements}
 
 The elements of a vector can have names (you should make them
@@ -1349,10 +1609,10 @@ ages
 @
 
 
-\subsection{Accessing (and modifying) vector elements: indexing and subsetting}\label{vindex}
+\subsubsection{Accessing (and modifying) vector elements: indexing and subsetting}\label{vindex}
 
 
-\subsection{Vector indexing}
+\subsubsection{Vector indexing}
 
 There are several ways of getting access to specific elements of a vector:
 
@@ -1441,7 +1701,7 @@ w
 
 
 
-\section{Interlude: comparing floats}
+\subsection{Interlude: comparing floats}
 
 Comparing very similar numeric values can be tricky: rounding can happen,
 and some numbers cannot be represented exactly in binary (computer)
@@ -1491,7 +1751,7 @@ what you want.
 
 
 
-\section{Factors}
+\subsection{Factors}
 Factors are a special type of vectors. We need them to differentiate
 between a vector of characters and a vector that represents categorical
 variables. The vector \code{char.vec <- c(``abc'', ``de'', ``fghi'')} contains
@@ -1560,18 +1820,117 @@ as.character(y)
 
 
 
-\section{Matrices}
-\subsection{Creating matrices from a vector}
+\subsection{Matrices}
+Vectors where one-dimensional. Matrices are two-dimensional, and arrays
+have arbitrary dimensions. We will stick here to matrices. But you have
+arrays at your disposal, of course. As with vectors, all the elements of a
+matrix or of an array are of the same type.
 
-\subsection{Combining vector to create a matrix: \code{cbind, rbind}}
+\subsubsection{Creating matrices from a vector}
+
+(The vector, below, is that vector that we create on the fly with \code{1:10})
+<<>>=
+matrix(1:10, ncol = 2)
+matrix(1:10, nrow = 5)
+matrix(1:10, ncol = 2, byrow = TRUE)
+@ 
+
+
+\subsubsection{Combining vector to create a matrix: \code{cbind, rbind}}
 \label{sec:comb-vect-create}
+You can glue vectors horizontally or vertically to create a matrix. 
 
-\subsection{Matrix indexing and subsetting}
+<<>>=
+v1 <- 1:5
+v2 <- 11:15
+rbind(v1, v2)
+cbind(v1, v2)
+@ 
+
+And you can do the same with matrices (if they are of the appropriate
+dimensions, of course)
+<<>>=
+A <- matrix(1:10, nrow = 5)
+B <- matrix(11:20, nrow = 5)
+cbind(A, B)
+rbind(A, B)
+@ 
+
+
+
+\subsubsection{Matrix indexing and subsetting}
 \label{sec:matr-index-subs}
 
+A matrix has two dimensions, but otherwise things are very similar to what
+happened with vectors. The first dimension are rows, the second are
+columns. If you specify nothing for that dimension, it is returned completely.
+
+<<>>=
+A <- matrix(1:15, nrow = 5)
+A[1, ] ## first row
+A[, 2] ## second column
+A[4, 2] ## fourth row, second column
+A[3, 2] <- 999
+A[1, ] <- c(90, 91, 92)
+A < 4
+@ 
+
+Note that \code{which}, by default, might not do what you expect:
+<<>>=
+which(A == 999)
+@ 
+
+If you want the indices, ask for them
+<<>>=
+which(A == 999, arr.ind = TRUE)
+@ 
 
 
-\section{Lists}
+Names work too:
+<<>>=
+B <- A
+colnames(B) <- c("A", "E", "I")
+rownames(B) <- letters[1:nrow(B)]
+B[, "E"]
+B["c", ]
+@ 
+
+
+
+Beware: you can use a matrix to index another matrix. This is slightly
+more advanced, but extremely handy:
+
+<<>>=
+(m1 <- cbind(c(1, 3), c(2, 1)))
+A[m1]
+## compare with
+A[c(1, 3), c(2, 1)]
+@ 
+
+
+\subsubsection{Operations with matrices}
+\label{sec:oper-with-matr}
+
+There are many matrix operations available from \R\ (open your matrix
+algebra book, and try to find them, if you want). And many functions
+operate directly, by default, on the whole matrix, or on rows/columns of
+the matrix:
+
+<<>>=
+sum(B)
+mean(B)
+colSums(B)
+rowMeans(B)
+@ 
+
+And, of course, we can subset/select rows and columns using those:
+<<>>=
+B[rowMeans(B) > 9, ]
+@ 
+
+
+\subsection{Lists}
+
 
 A more complex list, that includes another list inside:
 
@@ -1588,7 +1947,7 @@ Note that many functions in \R\  return lists.
 
 
 
-\section{Data frames}
+\subsection{Data frames}
 
 
 Above, we ended up with a data frame when we read some data. Do you
@@ -1895,15 +2254,7 @@ approaches/syntax. Here is a blog with some examples and links:
 \Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}.
 
 
-\section{Tables}
-\label{sec:tables}
-
-
-
-
-\section{Matrices (II)}
-
-\subsection{Dropping dimensions}
+\subsection{Matrices: Dropping dimensions}
 
 Look at the different outputs of the selection operation:
 
@@ -1996,6 +2347,13 @@ The situation above can be even more confusing with some matrix operations.
 
 To summarize: when you select only a single column or a single row of an
 array, think about whether the output should be a vector or a matrix
+
+
+
+\section{Tables}
+\label{sec:tables}
+
+
 
 
 \section{Revisiting an example that brings a few things
