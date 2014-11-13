@@ -2,20 +2,25 @@
 
 \documentclass[a4paper,12pt]{article}
 
-%% \usepackage{listings}
-%% \lstset{language=R}
 
-<<echo=FALSE,results='hide',error=FALSE>>=
+<<error=FALSE, include=FALSE, cache=FALSE>>=
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
 opts_chunk$set(size= "small", error=FALSE)
 opts_knit$set(stop_on_error = 2L)
 ## mytry <- function(x) try(x) ## eliminate?
-## listings for HMTL export
-## opts_chunk$set(fig.path = 'figure/listings-')
-## options(formatR.arrow = TRUE)
-## render_listings()
 @ 
+
+%% For using listings, so as to later produce HTML
+%% uncommented by the make-knitr-hmtl.sh script
+%%listings-knitr-html%%\usepackage{listings}
+%%listings-knitr-html%%\lstset{language=R}
+%%listings-knitr-html%%<<error=FALSE, include=FALSE, cache=FALSE>>=
+%%listings-knitr-html%%opts_chunk$set(fig.path = 'figure/listings-')
+%%listings-knitr-html%%options(formatR.arrow = TRUE)
+%%listings-knitr-html%%options(replace.assign = TRUE)
+%%listings-knitr-html%%render_listings()
+%%listings-knitr-html%%@ 
 
 
 
@@ -91,15 +96,17 @@ opts_knit$set(stop_on_error = 2L)
 
 %% To make sure things withing page margins
 %% Locale is to prevent werid chars in significant codes in regression
-<<echo=FALSE,eval=TRUE,results='hide'>>=
+<<include=FALSE>>=
 rm(list = ls())
-## Sys.setlocale("LC_ALL", "C")
 options(width = 60)
 @ 
 % \addtocounter{section}{-1}
 
 
-\section{License and copyright: \ccbysa}
+\section{License and copyright}
+
+\centerline \ccbysa
+
 This work is Copyright, \copyright, 2014, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
@@ -179,6 +186,11 @@ Then, go over details in remaining sections.
 
 
 spiral, repeat, frustrate, find on your own.
+
+
+
+Experimental HTML. Code in red, output in blue. Links might not all work.
+
 
 \subsection{How to use this document}
 
@@ -704,21 +716,21 @@ plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
 
 But that can be easily improved
 
-\setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
-\begin{figure}[h!]
-\begin{center}
-<<fig.height=4,fig.width=6>>=
+% \setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
+%\begin{figure}[h!]
+%\begin{center}
+<<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
 par(mfrow = c(1, 2)) ## two figures side by side
 hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
 plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity", 
      ylab = "Bit score")
 @ 
-\end{center}
-\label{fig-blast}
-\caption{A quick look at the alignment results}
-\end{figure}
+%\end{center}
+%\label{fig-blast}
+%\caption{A quick look at the alignment results}
+%\end{figure}
 
-\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
+%\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
 
 These are five lines of code. We will now deal with a few things in a
 little more detail.
@@ -920,7 +932,7 @@ how the different colors by Class is done in the call to plot:
 <<fig.width=4,fig.height=4>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
      col = c("salmon", "darkgreen")[Class], data = anage)
-legend(5, 5, legend = c("Aves", "Reptiles"), col = c("salmon", "darkgreen"),
+legend(5, 5, legend = levels(anage$Class), col = c("salmon", "darkgreen"),
        pch = 1)
 @ 
 
@@ -1178,8 +1190,8 @@ characters ---e.g, Cyrillic). So \textbf{avoid} directories with spaces,
 accents, and other non-ASCII characters, and try to keep them under 8
 characters (though that might not be a strong limitation nowadays). And
 try to place things in directories that Windows is unlikely to rename
-(e.g., \verb@C:\Files-p1@ is better than 
-\verb@C:\Archivos de Programa\Manolo Perez\Mis documentos@). 
+(e.g., \verb@ C:\Files-p1 @ is better than 
+\verb@ C:\Archivos de Programa\Manolo Perez\Mis documentos @). 
 
 Avoiding spaces, accents and other non-ASCII characters is also a good
 idea under Unix/Linux (though here there is no problem with file and
@@ -2433,6 +2445,11 @@ pretend you have been given some data.
 \section*{Document history}
 
 
+\section*{Session info}
+<<>>=
+sessionInfo()
+@ 
+
 \section{Test}
 
 %% <<>>=
@@ -2460,38 +2477,6 @@ pretend you have been given some data.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%% File runSweave.sh
-
-%% #!/bin/bash
-
-%% ## allows synctex to work with Sweave. Takes you back and forth
-%% ## the Rnw
-
-%% ## Simplest thing, based on the vignette for patchDVI
-%% ## I add the cacheSweave
-%% ## Rscript -e 'library(cacheSweave); patchDVI::SweavePDF("'$1'", driver=cacheSweaveDriver)'
-%% ## if run from shell, with compile 
-%% ## (add-hook 'shell-mode-hook 'compilation-shell-minor-mode)
-%% ## takes you to the error (in the tex, not Rnw)
-
-%% ## Othewrise do
-
-%% ## from http://cameron.bracken.bz/synctex-with-sweavepgfsweave-in-texshoptexworks
-%% ## But the R CMD Sweave call modified to the Rscript one
-%% ## from the vignette for patchDVI
-
-%% ## R CMD Sweave "$1"  ## did not work
-
-%% FILE=$1
-%% BASENAME=$(basename $FILE .Rnw)
-
-
-%% ## Rscript -e 'patchDVI::SweaveAll("'$1'")'
-%% Rscript -e 'library(cacheSweave); patchDVI::SweavePDF("'$1'", driver=cacheSweaveDriver)'
-%% pdflatex --file-line-error --shell-escape "${1%.*}"
-%% Rscript -e "library(patchDVI);patchSynctex('${1%.*}.synctex.gz')"
-%% ln -s $BASENAME.synctex.gz $BASENAME.Rnw.synctex.gz
-%% ln -s $BASENAME.pdf $BASENAME.Rnw.pdf
 
 
 
@@ -2517,3 +2502,71 @@ pretend you have been given some data.
   - At about end of current document: go back and think how you would do
     the exercises at the beginning of document
   - A little about lexical scope?
+
+  
+  
+  
+%%%%%%%%%%%%%% For pdf, I use runKnitr.sh which has
+
+%% #!/bin/bash
+
+%% ## https://github.com/jan-glx/patchKnitrSynctex
+
+%% FILE=$1
+%% BASENAME=$(basename $FILE .Rnw)
+
+%% RSCRIPT="/usr/bin/Rscript"
+
+%% $RSCRIPT -e 'library(knitr); opts_knit$set("concordance" = TRUE); knit("'$1'")'
+%% ## pdflatex should have -synctex=1, which my alias already does
+%% pdflatex --file-line-error --shell-escape "${1%.*}"
+%% ## get bib to work
+%% texi2pdf $BASENAME.tex 
+%% $RSCRIPT -e "source('~/bin/patchKnitrSynctex-RDU.R'); patchKnitrSynctex('${1%.*}.tex')"
+%% rm $BASENAME.Rnw.synctex.gz
+%% rm $BASENAME.Rnw.pdf
+%% ln -s $BASENAME.synctex.gz $BASENAME.Rnw.synctex.gz
+%% ln -s $BASENAME.pdf $BASENAME.Rnw.pdf
+
+%% ## Without the links, you can go from the PDF to
+%% ## Emacs, but not the other way around because emacs complaints that it
+%% ## cannot find a *.Rnw.pdf. And not, I cannot get past that.
+%% ## If you create that, via symlink, then when you
+%% ## try to go from Emacs to the PDF, it opens a new viewer. And from that
+%% ## one you cannot move back to Emacs.
+%% ## I just need to link $.synctex.gz to $.Rnw.synctex.gz
+%% ## and .pdf to Rnw.pdf and C-c C-v from emacs. That's it.
+%% ## From PDF to emacs by shift-left click (always as "browse tool" with mouse)
+%% ## Of course, needs emacs to have the server started
+
+%% ## if run from shell, can jump to error, but goes to .tex, not .Rnw
+
+%% ## It would be great to have this work from Emacs with C-c C-c
+%% ## maybe with start-process or similar.
+  
+
+  
+  
+%%% For HTML, I use make-knitr-hmtl.sh which is
+  
+%% #!/bin/bash
+%% FILE=$1
+%% BASENAME=$(basename $FILE .Rnw)
+%% RSCRIPT="/usr/bin/Rscript"
+%% BASENAME2=$BASENAME-knitr-html
+%% FILE2=$BASENAME2.Rnw
+
+%% cp $FILE $FILE2
+%% sed -i 's/^%%listings-knitr-html%%//' $FILE2
+%% $RSCRIPT -e 'library(knitr); knit("'$FILE2'")'
+
+%% sweave2html $BASENAME2
+%% mv $BASENAME2.html $BASENAME.html
+
+%% mkdir $BASENAME-html-dir
+%% cp $BASENAME.html ./$BASENAME-html-dir/.
+%% cp -a figure ./$BASENAME-html-dir/.
+%% zip -r $BASENAME-html-dir.zip $BASENAME-html-dir
+  
+  
+%% And uses sweave2html from http://biostat.mc.vanderbilt.edu/wiki/Main/SweaveConvert#Converting_from_LaTeX_to_html  
