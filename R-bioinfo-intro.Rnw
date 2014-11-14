@@ -103,7 +103,7 @@ options(width = 60)
 % \addtocounter{section}{-1}
 
 
-\section{License and copyright}
+\section{License and copyright}\label{license}
 
 \centerline \ccbysa
 
@@ -173,26 +173,68 @@ computing and graphics'' that will allow you to carry out each of the above.
 
 
 
-\section{This document}
+\section{This document and how to use it}
 
-- six-line example
-- three examples
+This document is to be used a crash and relatively quick introduction to
+R, with a clear Bioinformatics bias\footnote{OK, there is an example with
+birds, reptiles, metabolic rates, body size, etc, that is not really
+bioinformatics but \ldots it is a neat data set and matches with some of
+my early scientific loves}.
 
-if you understand all that is done up to that point, you should have a
+The structure and logic is as follows:
+
+\begin{itemize}
+\item First, with the scenarios above, we try to motivate you.
+\item I then show a six-line real example of a common problem in
+  Bioinformatics (multiple testing). You will not understand much of what
+  is done, but I will explain it in class (this is not a textbook, but a
+  document for a class).
+\item We then go over a few practical things we need to get out of the way
+  (sections \ref{basics} and \ref{console}).
+\item We then jump into \R\ with three longer examples (section
+  \ref{crash}). Again, on first reading you will not understand much of
+  what is done, but we will go over it in class.
+\item Then, up to section \ref{back-scenarios}, we go over many details in
+  a more systematic, but more boring, way. 
+\item If you understand all that is done up to that point, you should have a
 decent working understanding of how to use R, and can move on your own.
 
-
-Then, go over details in remaining sections.
-
-
-spiral, repeat, frustrate, find on your own.
+\item The rest are more advanced or specific features and also include
+  some more examples.
+\end{itemize}
 
 
 
-Experimental HTML. Code in red, output in blue. Links might not all work.
+The material has been ordered that way on purpose. Yes, expect some
+frustration when working through sections \ref{mistery} and \ref{crash},
+but definitely look at them before class and try to understand what is
+going on. After section \ref{crash} things should be smoother (but more
+boring). And here, definitely, you \textbf{must} type things on your own
+and understand the output. I have tried to use a kind of spiraling lay
+out, working over several things repeatedly, and repeating and going
+deeper on some key ideas. Hopefully, this will allow you to understand the
+material better, connect it with other pieces, and retain it for longer.
 
 
-\subsection{How to use this document}
+
+
+\subsection{The PDF and the HTML and the code, etc}
+
+The primary output of this document is a PDF. I also provide (and will
+use) and HTML file; this is kind of experimental (a few things might not
+be typeset correctly, or some links not work fully, etc). The HTML offers
+the advantage that we can accommodate, on the same screen, a running
+session with \R\, and have the web browser size adjusted to our liking (so
+less fiddling around that using a PDF). In the HTML, the code is in red
+and the output in blue. 
+
+
+All the original files for the document are available (again, under a
+Creative Commons license ---see section \ref{license}) from
+\Burl{https://github.com/rdiaz02/R-bioinfo-intro}. (Note that in the
+github repo you will not see the PDF, HTML, or R-bioinfo-intro.R files,
+since those are derived from the Rnw file).
+
 
 \subsection{Other files you need in addition to this one}
 You should have (or should get) the following files:
@@ -201,17 +243,15 @@ You should have (or should get) the following files:
 \item \code{AnotherDataSet.txt}
 \item \code{anage.RData}
 \item \code{lastExample.R}
-\item \code{R-bio-intro.R}
   %  blast output
 % genes for cell lines
+\item \code{R-bioinfo-intro.R}
 
 \end{itemize}
 
-You can download those files from the web page of the course. Make sure
-that they are downloaded properly as text.
 
 All of the files above (except the last) are mentioned or used in this
-document. What about \code{R-bio-intro.R}? That is all the \R\ code
+document. What about \code{R-bioinfo-intro.R}? That is all the \R\ code
 used in this document.
 
 
@@ -246,32 +286,80 @@ in \R\ out-of-the-box (see BioConductor and CRAN).
 [A proselitizing note] \R\ is free software, meaning ``free'' as in free
 speech (not free as in free beer; in Spanish, free as in "libre", not free
 as in "gratis"). The definition of free software is explained, for
-instance, in \Burl{http://www.gnu.org/philosophy/free-sw.html}. Why does it
-matter that \R\ is free software? For one thing, it makes your access to
-it simple and easy. As well, you can play with the system and look at the
-inside (you can look at the original code) and do with that code a variety
-of things, including modifying it, learning from it, etc. In addition,
-that \R\ is free software is, arguably, one of the reasons of its
-incredible success (and, for instance, one explanation for why there are
-over 5000 contributed, and free software, packages). Moreover,
-Bioinformatics, as we know it, would not exist without free software
-\citep{dudoit.oss.2003}. Newton, and others before him, used the
-expression ``standing on the shoulders of giants'' when explaining how the
-development of science and other intellectual pursuits builds upon past
-accomplishments; in Bioinformatics (and many other fields), we are also
-standing on the shoulders of millions of lines of free software.
+instance, in \Burl{http://www.gnu.org/philosophy/free-sw.html}. Why does
+it matter that \R\ is free software? For one thing, it makes your access
+to it simple and easy. As well, you can play with the system and look at
+the inside (you can look at the original code) and do with that code a
+variety of things, including modifying it, learning from it, etc. In
+addition, that \R\ is free software is, arguably, one of the reasons of
+its incredible success (and, for instance, one explanation for why there
+are over 6000 contributed, and free software, packages). Moreover,
+Bioinformatics, as we know it, would not exist without free
+software. Newton, and others before him, used the expression ``standing on
+the shoulders of giants'' when explaining how the development of science
+and other intellectual pursuits builds upon past accomplishments; in
+Bioinformatics (and many other fields), we are also standing on the
+shoulders of millions of lines of free software.
 
 \subsection{Some references}
+When you download \R\ you also download ``An introduction to R'', which is
+an excellent intro. There are many freely available documents (of variable
+quality, of course) here:
+\Burl{http://cran.r-project.org/other-docs.html}. Many books are listed
+(and some briefly commented) here: \Burl{http://www.r-project.org/doc/bib/R-books.html}.
 
-blablaba
+This is a partial list a books I like and use when preparing classes:
 
-An introduction to R
-Paradis
+\begin{description}
+\item[Programming] As it says, just focus on programming R:
+  \begin{itemize}
+  \item \textit{The art of R programming}. Matloff.
+  \item \textit{Advanced R}. Wickham. (If you go to the web page for the
+    book, in github, you can download the complete sources and build your
+    own pdf).
+  \end{itemize}
+\item[Some programming, some stats] Some introductory statistics, some
+  programming, both more or less interleaved.
+  \begin{itemize}
+  \item \textit{Introductory statistics with R, 2nd ed}. Dalgaard.
+  \item \textit{R in Action}. Kabacoff. (A second ed.\ should soon be available)
+  \end{itemize}
+\item[Linear models et al.] Linear models are fundamental in
+  statistics. And fascinating.
+  \begin{itemize}
+  \item \textit{An R companion to applied regression}. Cox and
+    Weisberg. John Fox is also the author of an excellent textbook (now in
+    its second edition) about linear models. This companion is absolutely
+    fantastic (and can be used even if you don't have the other
+    textbook). You probably want this book.
+  \item \textit{Regression modeling strategies}. Harell. (But I've heard
+    for sometime that eventually a 2nd ed.\ will be available). Among its
+    many virtues, this book contains 
+  \item Faraway has two books on linear models with \R, both published by
+    CRC. Wood is the author of a great book on Generalized Additive Models
+    (also CRC). Etc, etc.
+  \end{itemize}
+\item[Machine learning] Machine learning, classification, etc. And many of
+  the examples are bioinformatics-inspired.
+  \begin{itemize}
+  \item \textit{Applied predictive modeling}. Kuhn and Johnson.
+  \item \textit{An introduction to statistical learning}. James, Witten,
+    Hastie, Tibshirani. The PDF of the book is available for download from
+    their web page.
+  \end{itemize}
+  
+\end{description}
+
+There are of course many others (including classics such as the two by
+Venables and Ripley, or Chamber's \textit{Software for data analysis},
+many specific to some fields, several devoted to graphics, etc, etc).
+There is also a (short) list of books I think are not worth it; ask me
+about them in class.
 
 
 
 
-\section{This will not be mysterious at the end of the course}
+\section{This will not be mysterious at the end of the course}\label{mistery}
 
 (This is an example we go over in section \ref{example-multtest}, p.\ 
 \pageref{example-multtest}, with a different number of genes).
@@ -312,7 +400,7 @@ Let's try to understand what we did. But first, we need to install \R, and
 maybe some additional packages.
 
 
-\section{Our first few minutes with \R}
+\section{Very basics of using \R}\label{basics}
 
 \subsection{Installing \R}
   
@@ -363,14 +451,26 @@ we will use RStudio. We want to use the "Dektop", that you can download from her
 
 \subsubsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
 
-In this course, we will, by default, be using RStudio. I will, however,
-often use Emacs + ESS (\Burl{ess.r-project.org/}). For those used to
-Eclipse, there is a plug-in designed to work with R: StatET
+Ah, this is a nice topic for a long, passionate, conversation. In this
+course, we will, by default, be using RStudio. I will, however, often use
+Emacs + ESS (\Burl{ess.r-project.org/}). For those used to Eclipse, there
+is a plug-in designed to work with R: StatET
 (\Burl{http://www.walware.de/goto/statet}). Another popular interface is
 JGR (\Burl{http://www.rforge.net/JGR/}). RKward
 (\Burl{http://rkward.sourceforge.net/wiki/Main_Page}) is also popular in
-some places. But there are many other options (an outdated list is
-available from \Burl{http://www.sciviews.org/\_rgui/}).
+some places (this was originally Linux-only, but not anymore). Some Mac
+users are very happy just the default, plain, interface provided by R
+under Mac OS X. And some Windows users like Tinn-R
+(\Burl{http://nbcgib.uesc.br/lec/software/editores/tinn-r/en}); I used to
+use Tinn-R in R courses I taught 8 to 10 years ago, but I think it has
+lost ground to RStudio, and it is only Windows. If you love vim, there is
+Vim-R-plugin (\Burl{http://www.vim.org/scripts/script.php?script_id=2628};
+\Burl{http://manuals.bioinformatics.ucr.edu/home/programming-in-r/vim-r}). And
+then, there are many other options (an outdated list is available from
+\Burl{http://www.sciviews.org/\_rgui/}, and some other entries around in
+internet land are
+\Burl{http://www.theusrus.de/blog/r-guis-which-one-fits-you/} and
+\Burl{http://stats.stackexchange.com/questions/5292/good-gui-for-r-suitable-for-a-beginner-wanting-to-learn-programming-in-r}).
 
 If you plan to spend a fair amount of time doing Bioinformatics, then
 you'll spend a fair amount of time programming, probably using a variety
@@ -379,24 +479,29 @@ programmer-friendly editor that ``understands'' all of the languages you
 use is thus worth it. Choosing an editor is a highly personal issue. Emacs
 is an editor and then a lot of other things (that is what I use, for
 programming, editing text, email, etc); if you use Emacs then Emacs + ESS
-is the perfect combination for you. Those who come from the Java world
-might be familiar with Eclipse (and, thus, you'll want to give StatET a
-try). Kate is another great editor that understands many editors and it
-easy to submit code to an R process running in the terminal, but it lacks
-some nice features that RStudio and Emacs+ESS have. Some people (myself)
-like to use a single editor for most/all editing tasks. Some other people
-jump around (they use RStudio for R, Eclipse for Java, and maybe Kate for
-Python). You get to choose.
+is the perfect combination for you. For vim users, there is the
+vim-R-plugin. Those who come from the Java world might be familiar with
+Eclipse (and, thus, you'll want to give StatET a try). Kate is another
+great editor that understands many editors and it easy to submit code to
+an R process running in the terminal, but it lacks some nice features that
+RStudio and Emacs+ESS have (but RKward might then be a nice option). Some
+people (myself) like to use a single editor for most/all editing
+tasks. Some other people jump around (they use RStudio for R, Eclipse for
+Java, and maybe Kate for Python). You get to choose.
 
+
+Note, though, that one thing is syntax highlighting (and syntax
+highlighting for R is available for many, many editors) and another is the
+ability to interact with an R session, provide shortcuts for displaying
+help, offering object browsers, etc. Of course, you are the one who must
+weight the choices.
 
 
 The summary (highly biased?): I definitely prefer Emacs (+ ESS), but in
 this course I will not attempt to teach you Emacs + ESS. So if you do not
-know Emacs, then try RStudio. If you like Eclipse, then use Eclipse with
-StatEt. If you like Kate, use Kate. If you want something else, use it. In
-this class we will use RStudio (though I might occasionally/often open
-Emacs).
-
+know Emacs, then try RStudio, which is what we will ``officially''
+use. However, if you like Eclipse, then use Eclipse with StatEt. If you
+like Kate, use Kate, etc, but I might not be able to help you.
 
 
 Note that all of the above have a different purpose from R Commander
@@ -421,12 +526,13 @@ CRAN and BioConductor.
 If a package is available from CRAN you can do
 
 <<eval=FALSE>>=
-install.packages("RJaCGH")
-@
-(for example --- this installs the \code{RJaCGH} package).
+install.packages("car")
+@ 
+(for example --- this installs the \code{car} package and its
+dependencies).
 
-If you want to install more than one package you can do
-
+If you want to install more than one package you can do (don't execute the
+code below as we will not use those packages)
 <<eval=FALSE>>=
 install.packages(c("RJaCGH", "PHYLOGR"))
 @ 
@@ -441,8 +547,8 @@ you to install suites of BioC packages (see
 and see how instructions are clearly given there.
 
 
-Note that sometimes packages depend on other packages. If this is the
-case, by default, the above mechanisms will also install dependencies.
+As we said above, sometimes packages depend on other packages. If this is
+the case, by default, the above mechanisms will also install dependencies.
 
 
 With some GUIs (under some of the operating systems) you can also install
@@ -458,12 +564,19 @@ etc); you will often find instructions there.
 
 
 
-Now, go and install package ``car'', which we will use below:
+Now, make sure you install package ``car'', which we will use below:
 
 <<eval=FALSE>>=
 install.packages("car")
 @ 
 (or do it from the menu of RStudio).
+
+
+
+How do you find a package? Looking at a list of 6000 things in CRAN and
+another thousand in BioC is not a good idea. In addition to google et al.,
+there are task views in CRAN: \Burl{http://cran.r-project.org/web/views/},
+and there is a not too dissimilar thing in BioC.
 
 
 \subsection{Starting \R}
@@ -482,7 +595,7 @@ know what to do).
 
 \subsection{Stopping \R}
 
-You can always just kill RStudio. But that is not nice. In all systems
+You can always just kill RStudio; but that is not nice. In all systems
 typing \code{q()} at the command prompt should stop R/RStudio.
 
 <<eval=FALSE>>=
@@ -501,7 +614,7 @@ What if things hang? Try \code{Control-C} and/or
 
 
 
-\section{The R console for interactive calculations}
+\section{The R console for interactive calculations}\label{console}
 In what follows, I will assume that you are either running \R\ from
 RStudio, or that you know your way around and are using some other means
 (e.g., directly from the \R\ icon in Windows, or from Emacs + ESS in any
@@ -642,15 +755,69 @@ rm(z2)
 
 \subsection{Getting help}\label{help}
 
+Look at one help page:
+<<eval=FALSE>>=
+help(mean)
+@ 
+
+Now, shorter:
+<<eval=FALSE>>=
+?mean
+@ 
 
 
-example
+Now let's use the help to learn about the help system (and yes, read or
+take a quick look at it):
+<<eval=FALSE>>=
+?help
+?apropos
+@ 
+
+Now, try
+<<eval=FALSE>>=
+?normal
+?rnorm
+apropos("normal")
+apropos("norm")
+help.search("normal")
+@ 
+
+Many functions include executable code (examples)
+<<eval=FALSE>>=
+example(rnorm)
+example(graphics)
+example(lm)
+@ 
+\noindent and note how you get to see the code that produced the figures.
+example.
 
 
+Some functions include demos
+<<eval=FALSE>>=
 demo(graphics)
+@ 
+\noindent again, note how you get to see the code that produced the
+figures.  example.
+
+But there are many other ways of searching for help about how to do
+something with \R. Of course, you can google around, use stackoverflow,
+etc. There are mailing lists for \R\, and for specific interest groups in \R.
 
 
+There is a package, ``sos''
+(\Burl{http://cran.r-project.org/web/packages/sos/index.html}), that can
+help you search functions, etc, in packages that you do not have
+installed, ranks search results, etc. It is well documented (see
+\Burl{http://cran.r-project.org/web/packages/sos/vignettes/sos.pdf}). The
+only problem I see is that only some of the BioConductor packages are
+among those searched.
 
+Patrick Burns has a interesting blog entry about R navigation tools:
+\Burl{http://www.burns-stat.com/r-navigation-tools/}.
+
+
+Oh, by the way, RStudio includes an integrated help browser. Use it if you
+use RStudio.
 
 
 
@@ -687,7 +854,7 @@ t.test(x ~ z)
 
 
 \clearpage
-\section{Three practical, crash examples}
+\section{Three practical, crash examples}\label{crashex}
 \subsection{Plotting the results from BLAST}\label{blast}
 
 
@@ -2427,7 +2594,7 @@ to explicitly print results. Or you can use \code{source("lastExample.R",
 Please, understand what is happening. 
 
 
-\section{Go back to the scenarios}
+\section{Go back to the scenarios}\label{back-scenarios}
 You should now be able to go back to section \ref{scenarios} and solve all
 of them. If they ask you for data, you should know how to simulate data to
 pretend you have been given some data.
