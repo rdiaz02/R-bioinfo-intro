@@ -22,10 +22,6 @@ opts_knit$set(stop_on_error = 2L)
 %%listings-knitr-html%%render_listings()
 %%listings-knitr-html%%@ 
 
-
-
-
-
 \usepackage{graphics}
 %\usepackage[dvips]{graphicx}
 \usepackage{amssymb,amsfonts,amsmath,amsbsy}
@@ -55,7 +51,10 @@ opts_knit$set(stop_on_error = 2L)
 \newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
 \newcommand{\Rnl}{\ +\qquad\ }
 \newcommand{\Emph}[1]{\emph{\mg{#1}}}
-\newcommand{\R}{{\sf R}}
+% \newcommand{\R}{{something or other R}} but this gets to be a mess. And
+% ugly. 
+\newcommand{\R}{R}
+
 \newcommand{\flspecific}[1]{{\textit{#1}}}
 
 \newcounter{exercise}
@@ -766,13 +765,13 @@ Now, shorter:
 @ 
 
 
-Now let's use the help to learn about the help system (and yes, read or
+Now let's use the help to l ,earn about the help system (and yes, read or
 take a quick look at it):
 <<eval=FALSE>>=
 ?help
 ?apropos
-@ 
-
+@
+ 
 Now, try
 <<eval=FALSE>>=
 ?normal
@@ -780,8 +779,8 @@ Now, try
 apropos("normal")
 apropos("norm")
 help.search("normal")
-@ 
-
+@
+ 
 Many functions include executable code (examples)
 <<eval=FALSE>>=
 example(rnorm)
@@ -791,7 +790,7 @@ example(lm)
 \noindent and note how you get to see the code that produced the figures.
 example.
 
-
+ 
 Some functions include demos
 <<eval=FALSE>>=
 demo(graphics)
@@ -924,7 +923,7 @@ the relationship between Score and the other variables to formally explore
 what is going on\footnote{Not that this would be, in this case, all that
   needed: from what we know about BLAST we can tell a lot about the
   expected relationship between Score and the other variables}. Or
-\ldots. Which brings us to the next section.
+\ldots. 
 
 \clearpage
 \subsection{A simple hypothesis test: the \textit{t-}test}
@@ -1107,7 +1106,8 @@ Would the above work with scatterplot? Nope. You need to use a slightly
 different argument for the call, and you get automatic legend, etc:
 
 <<fig.width=4,fig.height=4>>=
-scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", data = anage)
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", 
+            data = anage)
 @ 
 
 And how did I know? Hummm \ldots: I tried, failed, and then looked at the
@@ -2261,7 +2261,8 @@ y$d <- y$a + 1
 ## table of b, c, d, counts are the a
 ## (this is like example above with Freq on the left)
 xtabs(a ~ ., data = y)
-## table of c, d; counts are the a and the b (instead of just "a" or Freq)
+## table of c, d; counts are the a and the b 
+## (instead of just "a" or Freq)
 ## "columns are intrepreted as the levels of a variable"
 xtabs(cbind(a, b) ~ ., data = y)
 ## the usual table of all
@@ -2308,7 +2309,8 @@ A few examples follow. Make sure you understand them.
 \code{for} iterates over sets. They need not be numbers:
 
 <<>>=
-names.of.friends <- c("Ana", "Rebeca", "Marta", "Quique", "Virgilio")
+names.of.friends <- c("Ana", "Rebeca", "Marta", 
+                      "Quique", "Virgilio")
 for(friend in names.of.friends) {
   cat("\n I should call", friend, "\n")
 }
@@ -2545,7 +2547,8 @@ However, \code{aggregate} often returns things in a more convenient form:
                               "female", "male", "male"))))
 
 aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
-## make the aggregating variable explicit, and give it another name
+## make the aggregating variable explicit, 
+## and give it another name
 aggregate(one.dataframe$age, 
           list(Sexo = one.dataframe$sex), mean)
 
@@ -2751,22 +2754,311 @@ pretend you have been given some data.
 
 \section{Two additional exercises}
 
+\clearpage
 \subsection{Some Venn diagrams of genes}
+Someone has examined what genes are over-expressed in three different
+conditions (three different drugs). They are called ``Condition\_A.txt'',
+``Condition\_B.txt'', ``Condition\_C.txt''. You want to understand which
+are over-expressed under more than one drug. You might want to know which
+are overexpressed in three conditions, or which are overexpressed in
+exactly these two conditions, etc. Or find out how many are overexpressed
+under two of the drugs but not the third. Etc.
+
+We will walk over a case here, thinking about making the solution as
+general as possible (e.g., with other file names, and with different
+number of drugs), in case we face the same problem in the future.
+
+
+First, read the data. They are just three vectors:
+
+<<>>=
+A <- scan("Condition_A.txt", what = "")
+B <- scan("Condition_B.txt", what = "")
+C <- scan("Condition_C.txt", what = "")
+@ 
+
+Which are overexpressed in both A and B? And in A, B, C?
+<<>>=
+sort(intersect(A, B))
+sort(intersect(A, intersect(B, C)))
+@ 
+But that is ugly because, what if we had 15 treatments? Or different
+names? Let's assume only ``Condition\_'' is fixed. And this thing of calling
+\code{intersect} many times \ldots ugly too. And it is hard to see how
+many are common to A and B, and A and C, etc easily. So we would like a
+matrix that has, as columns, the conditions, and as rows the gene
+names. In each entry, a TRUE means overexpressed, and a FALSE not-overexpressed.
+
+
+Let's try something else, and try to be a little bit more general.
+
+
+First, try to make reading the genes a simple thing. Place all of them in
+a list, with as many elements as conditions.
+<<>>=
+####   Read all lists of genes that start with "Condition" 
+####    and store   as a list
+gf <- dir(pattern = "^Condition_")
+ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
+@ 
+
+
+But ``Condition\_'' is repeated as a prefix. And txt as postfix.  Get rid
+of them in the names of the list:
+
+<<>>=
+names(ovxpGenes) <- 
+    sapply(names(ovxpGenes), 
+           function(x) strsplit(strsplit(x, 
+                                         "Condition_")[[1]][2], 
+                                "\\.txt")[[1]][1])
+
+@ 
+The above can also be done as:
+<<eval=FALSE>>=
+## First line is to get the ovxpGenes names
+ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
+
+names(ovxpGenes) <- sapply(strsplit(names(ovxpGenes), 
+                                    "Condition_"), 
+                           function(x) 
+                               strsplit(x[[2]], "\\.txt")[[1]][1])
+@ 
+
+Now, prepare an object that is very easy to use for any further analysis:
+matrix that has, as columns, the conditions, and as rows the gene
+names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
+
+There are several ways of doing this. This is the simplest I came up with.
+
+
+<<>>=
+## This is the union of all gene names and contains a single entry of each
+## name. We do not use "union" but "unique", which is simpler to use here.
+all.the.genes <- sort(unique(unlist(ovxpGenes)))
+@ 
+
+
+Which of those genes are in the first condition?  Or which, among
+all.the.genes, are overexpressed in condition A? This works
+<<>>=
+head(match(ovxpGenes[[1]], all.the.genes))
+@ 
+\noindent (I used \code{head} to show only the first part of the output).
+
+
+Can we do that for all the lines, without having to explicitly do that for
+every single cell line? This kind of works \ldots but the output is not in
+an easily usable form: \code{sapply} cannot simplify as the return objects are of
+different length.
+<<>>=
+str(sapply(ovxpGenes, function(z) {match(z, all.the.genes)}))
+@ 
+\noindent(I used \code{str} to show only the first part of the output).
+
+We want to return a TRUE where the gene is overexpressed and a FALSE if
+not. If we\footnote{I find it better to be as explicit as possible. An
+  alternative would be to return a 1 of type integer, using ``1L'', and a
+  0 of type integer (0L).}. In
+other words, we want a vector for each experiment with the positions
+filled up. Lets do that directly as the return of a function:
+
+<<>>=
+f1 <- function(x, all.the.genes) {
+    ## Note: this could be done in fewer lines, or even
+    ## by an anonymous function used in sapply
+    vv <- rep(FALSE, length(all.the.genes))
+    pos.match <- match(x, all.the.genes)
+    vv[pos.match] <- TRUE
+    return(vv)
+}
+@ 
+
+See if it works
+<<>>=
+head(f1(ovxpGenes[[1]], all.the.genes))
+## and on the third?
+head(f1(ovxpGenes[[3]], all.the.genes))
+@ 
+
+We are almost done:
+
+<<>>=
+overexpressed <- sapply(ovxpGenes, 
+                        function(x) f1(x, all.the.genes))
+rownames(overexpressed) <- all.the.genes
+@ 
+
+That works. However, I think there is merit in following Hadley Wickham's
+advice of avoiding \code{sapply} inside functions (see section 9.4 of his
+``Advanced R''), and in a second we will be putting some of the above
+inside functions. So let's be more strict:
+
+<<>>=
+overexpressed <- vapply(ovxpGenes, function(x) f1(x, all.the.genes), 
+                        logical(length(all.the.genes)))
+rownames(overexpressed) <- all.the.genes
+@ 
+
+
+Now, a few checks:
+<<>>=
+## note the following two match
+colSums(overexpressed)
+lapply(ovxpGenes, length)
+# But if automatic, better to use stopifnot
+stopifnot(colSums(overexpressed) == 
+              unlist(lapply(ovxpGenes, length)))
+
+## And check names of genes
+h <- rownames(overexpressed)[which(overexpressed[, "A"] == 1)]
+stopifnot(identical(h, sort(ovxpGenes[["A"]])))
+@ 
+
+
+Now, a plot after all this work (you will need to install ``limma'' ---go
+to section \ref{packages})
+<<>>=
+library(limma)
+vennDiagram(overexpressed)
+@ 
+
+And it is now also trivial to find out which are overexpressed in
+arbitrary conditions. For instance (the number is the row number),
+overexpressed in both A and B:
+<<>>=
+which(overexpressed[, "A"] & overexpressed[, "B"])
+@ 
+
+And which are induced in all?
+<<>>=
+which(rowSums(overexpressed) == 3)
+## or safer?
+which(rowSums(overexpressed) > 2.99)
+@ 
+
+And how many are overexpressed in 3, in 2, and in 1?
+<<>>=
+table(rowSums(overexpressed))
+@ 
+
+Etc, etc.
+
+
+By the way, once we have the list of genes, finding the intersection of
+all is simple (this might be considered more advanced, but is great
+because this will work with lists of arbitrary number of components):
+<<>>=
+sort(Reduce(intersect, ovxpGenes))
+@ 
+
+
+
+\subsubsection{A few functions to do the job automatically}
+Drawing the Venn diagram and the last operations of tables and finding
+out which are overexpressed is the fun thing. But we had to do some work
+that, if we are going to repeat, we might want to automate. Let's do that:
+Notice that all we need to do is just generalize slightly over what we
+did. That is all.
+
+Note, however, that inside the new functions I will often shorten the
+names of variables or at least make them slightly different from
+above. Why? Because inside the function I can afford to shorten it, and it
+leads to cleaner code, and because I avoid accidentally using objects
+previously created (this could happen because of R's scoping rules).
+
+
+
+First, the reading data part. We will assume that we will always find all
+files with the gene identity in a directory, and that all files will have
+a common prefix and end in a common postfix. We will use default values, though.
+
+<<>>=
+readListGenes <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    ## read a bunch of files, named "prefixSOMETHING.postfix",
+    ## and place the gene names inside in a list
+    gg <- dir(pattern = paste0("^", prefix))
+    ovG <-  sapply(gg, function(x) scan(x, what = ""))
+    matchpost <- paste0("\\.", postfix)
+    names(ovG) <- 
+    sapply(names(ovG), 
+           function(x) strsplit(strsplit(x, 
+                                         prefix)[[1]][2], 
+                                matchpost)[[1]][1])
+    return(ovG)
+}
+@ 
+
+Now, place everything in a matrix. First, give \code{f1} a better name
+(and you could even define \code{trueIfMatch} inside \code{geneListToMatrix}):
+
+<<>>=
+trueIfMatch <- function(x, allgenes) {
+    ## Note: this could be done in fewer lines, or even
+    ## by an anonymous function used in sapply
+    vv <- rep(FALSE, length(allgenes))
+    pos.match <- match(x, allgenes)
+    vv[pos.match] <- TRUE
+    return(vv)  
+}
+geneListToMatrix <- function(lgenes) {
+    ## For you: add a meaningful comment here!
+    allgenes <- sort(unique(unlist(lgenes)))
+    ox <- vapply(lgenes, 
+                 function(x) trueIfMatch(x, allgenes), 
+                 logical(length(allgenes)))
+    rownames(ox) <- allgenes  
+    return(ox)
+}
+@ 
+
+
+Now, create a function that will do everything:
+<<>>=
+geneFiles2Mat <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    l1 <- readListGenes(prefix = prefix, postfix = postfix)
+    return(geneListToMatrix(l1))
+}
+@ 
+
+And now just call it:
+
+<<>>=
+ovxABC <- geneFiles2Mat()
+@ 
+
+
+Wait: two final checks:
+<<>>=
+## stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
+##                     sort(Reduce(intersect, readListGenes()))
+##                     ))
+
+stopifnot(identical(ovxABC, overexpressed))
+@ 
+
+
 \subsection{Selection bias in classification}
 
 % \bibliography{R-quick-intro}
 
 
-\section*{Document history}
+\section{Document history}
+\begin{description}
+\item[1.0] November 2014.
+  \begin{itemize}
+  \item First version
+  \end{itemize}
+\end{description}
 
-
-\section*{Session info}
+\section{Session info}
 <<>>=
 sessionInfo()
 @ 
 
-\section{Test}
-
+%% \section{Test}
 %% <<>>=
 %% mytry(log("a"))
 %% @ 
@@ -2803,8 +3095,6 @@ sessionInfo()
 
 
 * To do 
-  - History of changes to document
-  - Add intersect-example
   - Debugging
   - Notes about selection bias example
   - A little about lexical scope?
