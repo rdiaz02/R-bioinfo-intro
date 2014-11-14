@@ -2221,8 +2221,9 @@ Now, look at this:
 
 
 
-Can we tabulate AB2 completely? 
-<<>>=
+Can we tabulate AB2 completely? (I am not showing the output, but please
+do it) 
+<<results='hide'>>=
 table(AB)
 @ 
 \noindent here it does not make much sense, since some variables seem to
@@ -2326,7 +2327,7 @@ for(friend in names.of.friends) {
 but they can be numbers:
 
 <<>>=
-plot(c(0, 10), c(0, 10), xlab ="", ylab ="")
+plot(c(0, 10), c(0, 10), xlab ="", ylab ="", type = "n")
 for(i in 1:10) 
   abline(h = i, lty = i, lwd = 2)
 
@@ -2752,7 +2753,7 @@ pretend you have been given some data.
 
 
 
-\section{Two additional exercises}
+\section{Additional programming practice}
 
 \clearpage
 \subsection{Some Venn diagrams of genes}
@@ -3040,6 +3041,8 @@ stopifnot(identical(ovxABC, overexpressed))
 @ 
 
 
+\subsection{Permutation test}
+
 \subsection{Selection bias in classification}
 
 % \bibliography{R-quick-intro}
@@ -3097,6 +3100,7 @@ sessionInfo()
 * To do 
   - Debugging
   - Notes about selection bias example
+  - Permutation test with R
   - A little about lexical scope?
 
   

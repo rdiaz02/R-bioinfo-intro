@@ -9,6 +9,10 @@ cp $FILE $FILE2
 sed -i 's/^%%listings-knitr-html%%//' $FILE2
 $RSCRIPT -e 'library(knitr); knit("'$FILE2'")'
 
+# do not use left overs
+rm $BASENAME2.aux
+# make sure we have a proper aux, etc
+# texi2pdf $BASENAME2.tex
 sweave2html $BASENAME2
 mv $BASENAME2.html $BASENAME.html
 
