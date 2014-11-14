@@ -2103,12 +2103,31 @@ B[rowMeans(B) > 9, ]
 
 
 \subsection{Lists}
+A list is a more general container, where we can mix pieces of different
+types. In fact, there need not be any rectangular like structure:
+
+<<>>=
+listA <- list(a = 1:5, b = letters[1:3])
+listA[[1]]
+listA[["a"]]
+listA$a
+@ 
+\noindent so those are three basic ways of getting access to list
+components. And of course
+<<>>=
+listA[[1]][2]
+@ 
+
+And compare with this
+<<>>=
+listA[1]
+@ 
 
 
 A more complex list, that includes another list inside:
 
 <<tidy=FALSE>>=
-(listA <- list(one.vector = 1:10,  hello = "Hola", 
+(listB <- list(one.vector = 1:10,  hello = "Hola", 
                one.matrix = matrix(rnorm(20), ncol = 5),
                another.list = 
                list(a = 5, 
@@ -2124,20 +2143,139 @@ Note that many functions in \R\  return lists.
 
 
 Above, we ended up with a data frame when we read some data. Do you
-remember where? How did the object look?
+remember where? How did the object look? A data frame is, really, a list
+of vectors; all these vectors are of the same length, but different
+vectors can contain objects of different types.  So we have a rectangular
+structure, where different columns can have objects of different types
 
 
 <<>>=
-(another.data.set <- read.table("AnotherDataSet.txt", 
-                                header = TRUE))
-data.matrix(another.data.set)
-as.matrix(another.data.set)
+(AB <- read.table("AnotherDataSet.txt", 
+                  header = TRUE))
+@ 
 
+Data frames are extremely handy for data analysis, and you will see them
+used extensively there.
+
+
+We can access elements of data frames as if they were matrices and as
+if they were lists (where the list elements are the columns):
+
+<<>>=
+AB[2, 3]
+AB[1, ]
+AB["2", ] ## using the rownames
+AB[, "Age"]
+AB$Age
+AB[["Age"]]
+AB[3, 4] <- 97
+@ 
+
+We can go from data frames from matrices, in two different ways (each of
+which does, therefore, a different thing):
+<<>>=
+data.matrix(AB)
+as.matrix(AB)
 @ 
 
 Many matrix operations, in particular \code{rbind} and \code{cbind} will
-also work with data frames (though care is needed with \code{cbind} when
-there are factors).
+also work with data frames.%%  (though care is needed with \code{rbind} when
+%% there are factors)
+
+
+<<>>=
+AB2 <- rbind(AB, AB)
+@ 
+\noindent (yes, the above is somewhat silly, but you get the point).
+
+Of course, creating a data frame is easy:
+<<>>=
+(AC <- data.frame(ID = "a9", Age = 14, Sex = "M", Y = 17))
+rbind(AB, AC)
+@ 
+
+Data frames make it particularly easy to add new variables:
+
+<<>>=
+AB2$status <- rep(c("Z", "V"), 5)
+@ 
+
+
+
+\section{Tables}\label{tables}
+
+Tabulating data is a very common operation. Let's use again the data frame
+we played with above:
+
+<<>>=
+table(AB2$Sex)
+with(AB2, table(Sex, status))
+xtabs( ~ Sex + status, data = AB2)
+@ 
+
+Now, look at this:
+<<>>=
+(freqs <- as.data.frame(xtabs( ~ Sex + status, data = AB2)))
+@ 
+\noindent Did you see how easy it was?
+
+
+
+Can we tabulate AB2 completely? 
+<<>>=
+table(AB)
+@ 
+\noindent here it does not make much sense, since some variables seem to
+be continuous. But lets create another data set:
+<<>>=
+AC <- AB2[, c("Sex", "status")]
+table(AC)
+@ 
+So if all you have are categorical variables, the above works. And all
+this applies to more than two variables, of course.
+
+<<>>=
+x <-  data.frame(a = c(1,2,2,1,2,2,1),
+                 b = c(1,2,2,1,1,2,1),
+                 c = c(1,1,2,1,2,2,1))
+
+## tabulate: so create a data frame with a "Freq" column
+dfx <- as.data.frame(table(x))
+
+## Recover the table
+xtabs(Freq ~ a + b + c, data = dfx)
+## of course, this is the same
+xtabs(~ a + b + c, data = x)
+@ 
+
+
+\subsection{Tables, II}
+Tabulating data is a very common operation. The following are slightly
+more advanced exercises. Run them, and see if you understand them, but
+skip this is if you do not care for now.
+
+<<>>=
+y <- x
+y$d <- y$a + 1
+
+## table of b, c, d, counts are the a
+## (this is like example above with Freq on the left)
+xtabs(a ~ ., data = y)
+## table of c, d; counts are the a and the b (instead of just "a" or Freq)
+## "columns are intrepreted as the levels of a variable"
+xtabs(cbind(a, b) ~ ., data = y)
+## the usual table of all
+xtabs(~ c + d + a + b, data = y)
+## maybe easier to see?
+ftable(y)
+
+## One more twist: 
+## "columns are intrepreted as the levels of a variable"
+y$e <- y$a + y$c + 9 
+xtabs(cbind(a, b, e) ~ ., data = y)
+@ 
+
+
 
 
 \section{\R\  programming}
@@ -2145,16 +2283,16 @@ there are factors).
 \R\  is a programming language. Comprehensive coverage is given in the books
 by Chambers ``Software for Data Analysis: Programming with R'', %% Gentleman
 %% ``R Programming for Bioinformatics'', 
-Matloff's ``The art of R programming'', and Venables and Ripley ``S
-Programming'' (see details in
-\Burl{http://www.r-project.org/doc/bib/R-books.html}). Chapters 9 and 10 of
-``An Introduction to R''
+Matloff's ``The art of R programming'', Wickham's ``Advanced R'', and
+Venables and Ripley ``S Programming'' (see details in
+\Burl{http://www.r-project.org/doc/bib/R-books.html}). Chapters 9 and 10
+of ``An Introduction to R''
 (\Burl{http://cran.r-project.org/doc/manuals/R-intro.html}) provide a fast
 but thorough introduction of the main concepts of programming in \R.
 
 It is important to emphasize that the ease of combining programming with
 ``canned'' statistical procedures gives \R\  a definite advantage over other
-languages in Bioinformatics (and explains it fast adoption).
+languages in Bioinformatics (and explains its fast adoption).
 
 
 
@@ -2271,8 +2409,9 @@ the.name.of.my.function <- function(arg1, arg2, arg3, ...) {
 In the above, you substitute ``the.name.of.my.function'' by, well, the
 name of your function, and ``arg1, arg2, arg3'', by the arguments of the
 function. Then, you write the \R\  code in the place where it says ``\#what
-my function does''. (By the way, \verb=#= is the sign that delimits the
-beginning of a comment). The \ldots refer to other arguments passed on to
+my function does''. %% (By the way, \verb=#= is the sign that delimits the
+%% beginning of a comment). 
+The \ldots refer to other arguments passed on to
 functions called inside the main function (we won't get into this).
 
 
@@ -2356,7 +2495,7 @@ And, as we will see below, many functions are often ``defined on the fly''.
 
 
 
-\section{The ``apply'' family}
+\section{The ``apply'' family, ``aggregate'', etc}
 One of the great strengths of \R\  is operating over whole vectors, arrays,
 lists, etc. Some available functions are: \code{apply, lapply, sapply,
   tapply, mapply}.  Please look at the help for these functions. Here we
@@ -2406,8 +2545,13 @@ However, \code{aggregate} often returns things in a more convenient form:
                               "female", "male", "male"))))
 
 aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
-## or
-aggregate(one.dataframe$age, one.dataframe[2], mean)
+## make the aggregating variable explicit, and give it another name
+aggregate(one.dataframe$age, 
+          list(Sexo = one.dataframe$sex), mean)
+
+## or use the name of the column/variable
+aggregate(one.dataframe$age, 
+          one.dataframe[2], mean)
 @ 
 
 The function \code{by} is related to \code{aggregate} and \code{tapply},
@@ -2425,6 +2569,9 @@ accomplishing them with the basic functions of R, as well as several
 additional packages that provide for different (easier? faster?)
 approaches/syntax. Here is a blog with some examples and links:
 \Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}.
+For instance, the \code{doBy} package is really nice.
+
+
 
 
 \subsection{Matrices: Dropping dimensions}
@@ -2523,14 +2670,8 @@ array, think about whether the output should be a vector or a matrix
 
 
 
-\section{Tables}
-\label{sec:tables}
-
-
-
-
 \section{Revisiting an example that brings a few things
-  together\label{example-multtest}}
+  together}\label{example-multtest}
 
 This should not be mysterious now (you might want to look at the help for
 \code{hist} and \code{order}). We want to reproduce a fairly common
@@ -2601,10 +2742,17 @@ pretend you have been given some data.
 
 
 
+\section{Programming: debugging}
+
+
+\section{Programming: lexical scope}
 
 
 
-\section{Additional exercises}
+\section{Two additional exercises}
+
+\subsection{Some Venn diagrams of genes}
+\subsection{Selection bias in classification}
 
 % \bibliography{R-quick-intro}
 
@@ -2655,19 +2803,10 @@ sessionInfo()
 
 
 * To do 
-  - References
-    - Wickham
-    - R in Action
-    - Machine Learning
-    - plots, ggplot2, lattice
   - History of changes to document
-  - sos
   - Add intersect-example
   - Debugging
   - Notes about selection bias example
-  - xtabs and table
-  - At about end of current document: go back and think how you would do
-    the exercises at the beginning of document
   - A little about lexical scope?
 
   
