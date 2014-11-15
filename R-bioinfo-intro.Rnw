@@ -2547,7 +2547,95 @@ And, as we will see below, many functions are often ``defined on the fly''.
 
 
 
-\subsection{Scoping}
+\subsection{Scoping, frames, environments, etc}\label{scoping}
+This is more advanced material. Read through it, and go deeper if you
+want. This is kind of jumping around on purpose; do this when you are awake.
+
+Suppose this:
+<<eval=FALSE>>=
+f1 <- function(x) {
+    x + z
+}
+@ 
+
+What will be the value of ``z'' used by f1? Play with it. Try to get that
+to work.
+
+
+Or what will happen here?
+
+<<eval=FALSE>>=
+v <- 1000
+f3 <- function(x, y) {
+    v <- 3 * x
+    f2 <- function(u) {
+        u + v
+    }
+    f2(y)
+}
+f3(2, 9)
+@ 
+\noindent (In R it is perfectly OK to define a function inside another
+function. In fact, it can make some code much easier to understand.)
+
+The above questions are, basically, about ``where is the value of free
+variables found''. R uses lexical (or static) scoping. It can be extremely
+handy and fun, but it can lead to surprises. Good explanations here:
+\Burl{http://adv-r.had.co.nz/Functions.html#lexical-scoping} and
+\Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
+
+
+
+In fact in the examples above there are several issues we might want to
+think about and a few terms we would need to define. There are the issues
+of using global variables in ``f1'' (which is often regarded as poor
+style) and there are issues of lexical scoping in what f2 and f3 are doing
+(and I would regard f2 as a perfectly OK function, given how f3 is, even
+if there is a free variable in f2). And all these relate, and need to
+be answered, in the context of these concepts/terms (I take here the
+definitions from the extremely clear PDF by John Fox, linked above):
+
+\begin{description}
+\item[binding] In \code{y <- 9} y is bound to the value 9.
+\item[free variable] ``z'' is a free variable in function f1, above. It is
+  not bound to anything (at least in that frame).
+\item[frame] A set of bindings (y to 9, maybe x to 77, etc).
+\item[environment] A sequence of frames. When f2 goes looking for the
+  value of ``v'' it will do so looking through a sequence of frames. R
+  will search through a sequence of frames, so understanding how that
+  sequence is ordered is crucial to understanding the above examples.
+\end{description}
+
+
+And this would bring us to consider, too, why things such as this work
+at all in the way we expect:
+
+<<>>=
+c <- 95
+c(5, 6)
+print(c)
+c + 8
+@ 
+
+Which, of course, is asking questions about where (and how) R searches for
+things (even if we never write code such as that in f3, f2, or f1). Read,
+for instance, chapter 8 of ``Advanced R'', available for example here
+\Burl{http://adv-r.had.co.nz/Environments.html}. But maybe before that do
+this
+
+<<eval=FALSE>>=
+search()
+@ 
+and try to figure out what is happening.
+
+
+This is used, implicitly of explicitly, in a lot of code. We cannot pursue
+it here any further (though we might talk about it in class). But now,
+before we leave, we will remove ``c'':
+<<>>=
+rm(c)
+@ 
+Oh, do you know what ``c'' we just removed?
 
 
 
