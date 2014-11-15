@@ -7,6 +7,8 @@ FILE2=$BASENAME2.Rnw
 
 cp $FILE $FILE2
 sed -i 's/^%%listings-knitr-html%%//' $FILE2
+# but nameref does not work either
+sed -i 's/\\nameref{/\\ref{/' $FILE2
 $RSCRIPT -e 'library(knitr); knit("'$FILE2'")'
 
 # do not use left overs

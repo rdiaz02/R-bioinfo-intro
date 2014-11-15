@@ -30,7 +30,7 @@ opts_chunk$set(size= "small", error=FALSE)
 \usepackage{setspace}
 \singlespacing
 \usepackage{url}
-
+\usepackage{nameref}
 \usepackage[english]{babel}
 \usepackage[latin1]{inputenc}
 \usepackage{times}
@@ -80,7 +80,7 @@ opts_chunk$set(size= "small", error=FALSE)
 \date{\gitAuthorDate\ {\footnotesize (Release\gitRels: Rev: \gitAbbrevHash)}}
 
 \author{Ramon Diaz-Uriarte\thanks{Dept.\ of Biochemistry, Universidad
-    Autónoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
+    Aut\'onoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
     \texttt{rdiaz02@gmail.com}}}
 
 
@@ -99,13 +99,12 @@ options(width = 60)
 
 
 \section{License and copyright}\label{license}
-
-\centerline \ccbysa
-
 This work is Copyright, \copyright, 2014, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+
+\centerline \ccbysa
 
 \section{Scenarios}\label{scenarios}
 \begin{itemize}
@@ -171,28 +170,28 @@ This document is to be used a crash and relatively quick introduction to
 R, with a clear Bioinformatics bias\footnote{OK, there is an example with
 birds, reptiles, metabolic rates, body size, etc, that is not really
 bioinformatics but \ldots it is a neat data set and matches with some of
-my early scientific loves}.
+my early scientific loves.}.
 
 The structure and logic is as follows:
 
 \begin{itemize}
 \item First, with the scenarios above, we try to motivate you.
-\item I then show a six-line real example of a common problem in
-  Bioinformatics (multiple testing). You will not understand much of what
+\item I then (section \ref{mistery}) show a six-line real example of a common problem in
+  Bioinformatics (multiple testing). You might not understand much of what
   is done, but I will explain it in class (this is not a textbook, but a
   document for a class).
-\item We then go over a few practical things we need to get out of the way
+\item We next go over a few practical things we need to get out of the way
   (sections \ref{basics} and \ref{console}).
-\item We then jump into \R\ with three longer examples (section
-  \ref{crashex}). Again, on first reading you will not understand much of
-  what is done, but we will go over it in class.
+\item After that, we jump into \R\ with three longer examples (section
+  \ref{crashex}). Again, on first reading you might not understand
+  much of what is done, but we will go over it in class.
 \item Then, up to section \ref{back-scenarios}, we go over many details in
   a more systematic, but more boring, way. 
 \item If you understand all that is done up to that point, you should have a
 decent working understanding of how to use R, and can move on your own.
-\item But you do not want to skip section \ref{debug}. This section covers
-  debugging and being able to debug quickly and painlessly is essential
-  for using R effectively (and enjoy it).
+\item But you do not want to skip section \ref{debug}: this section covers
+  debugging. Being able to debug quickly and painlessly is essential
+  for using R effectively (and enjoying it even while debugging).
 \item Finally, in section \ref{more-ex} I include several longer commented
   examples. These should bring together many of the features we have
   mentioned, but also introduce new functions, and will give you practice
@@ -205,11 +204,12 @@ The material has been ordered that way on purpose. Yes, expect some
 frustration when working through sections \ref{mistery} and \ref{crashex},
 but definitely look at them before class and try to understand what is
 going on. After section \ref{crashex} things should be smoother (but more
-boring). And here, definitely, you \textbf{must} type things on your own
-and understand the output. I have tried to use a kind of spiraling lay
-out, working over several things repeatedly, and repeating and going
-deeper on some key ideas. Hopefully, this will allow you to understand the
-material better, connect it with other pieces, and retain it for longer.
+boring, until we get to section \ref{more-ex}). And here, definitely, you
+\textbf{must} type things on your own and understand the output. I have
+tried to use a kind of spiraling lay out, working over several things
+repeatedly, and repeating and going deeper on some key ideas. Hopefully,
+this will allow you to understand the material better, connect it with
+other pieces, and retain it for longer.
 
 
 
@@ -234,7 +234,7 @@ since those are derived from the Rnw file).
 
 Note that for many commands I do not show the output (e.g., because it
 would just provide boring and space-filling output). However, make sure
-you type and understand it. You can copy of past, of course, but I
+you type and understand it. You can copy and paste, of course, but I
 strongly suggest you type the code and change it, modify it, etc.
 
 
@@ -249,7 +249,8 @@ You should have (or should get) the following files:
 \item \code{Condition\_A.txt}, \code{Condition\_B.txt}, \code{Condition\_C.txt}
 \item \code{R-bioinfo-intro-html-dir.zip}: a zip file that, when
   uncompressed, while give you a directory that contains the HTML version
-  of this PDF and a directory for the figures (used in the HTML).
+  of this PDF and a directory for the figures (used in the HTML). You can
+  open the HTML with any browser.
 \item \code{R-bioinfo-intro.R}
 
 \end{itemize}
@@ -260,10 +261,10 @@ document. What about \code{R-bioinfo-intro.R}? That is all the \R\ code
 used in this document.
 
 
-\subsection{\R and Bioinformatics}
+\subsection{R and Bioinformatics}
 
 If you are reading this document, it is probably because you already have
-some idea of what \R is. So no long details here. A summary is ``R is a
+some idea of what \R\ is. So no long details here. A summary is ``R is a
 free software environment for statistical computing and graphics.''
 (\Burl{http://www.r-project.org/}) and ``R is 'GNU S', a freely available
 language and environment for statistical computing and graphics which
@@ -323,11 +324,12 @@ This is a partial list a books I like and use when preparing classes:
     book, in github, you can download the complete sources and build your
     own pdf).
   \end{itemize}
-\item[Some programming, some stats] Some introductory statistics, some
-  programming, both more or less interleaved.
+\item[Stats and some programming] Introductory statistics with some
+  programming interleaved.
   \begin{itemize}
   \item \textit{Introductory statistics with R, 2nd ed}. Dalgaard.
-  \item \textit{R in Action}. Kabacoff. (A second ed.\ should soon be available)
+  \item \textit{R in Action}. Kabacoff. (A second ed.\ should soon be
+    available).
   \end{itemize}
 \item[Linear models et al.] Linear models are fundamental in
   statistics. And fascinating.
@@ -339,7 +341,8 @@ This is a partial list a books I like and use when preparing classes:
     textbook). You probably want this book.
   \item \textit{Regression modeling strategies}. Harell. (But I've heard
     for sometime that eventually a 2nd ed.\ will be available). Among its
-    many virtues, this book contains 
+    many virtues, this book contains excellent discussions of the
+    problems of variable selection.
   \item Faraway has two books on linear models with \R, both published by
     CRC. Wood is the author of a great book on Generalized Additive Models
     (also CRC). Etc, etc.
@@ -363,7 +366,7 @@ about them in class.
 
 
 
-
+\clearpage
 \section{This will not be mysterious at the end of the course}\label{mistery}
 
 (This is an example we go over in section \ref{example-multtest}, p.\ 
@@ -388,7 +391,7 @@ p-values, and report the number of ``significant'' genes (genes with p <
 
 This is the R code:
 
-<<eval=TRUE,tidy=FALSE>>=
+<<eval=TRUE,tidy=FALSE, fig.height=5>>=
 randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
 class <- factor(c(rep("NC", 20), rep("cancer", 30)))
 pvalues <- apply(randomdata, 1, 
@@ -446,15 +449,15 @@ a binary for your operating system (\Burl{http://cran.r-project.org/bin/}).
   
 \subsection{Installing RStudio}\label{rstudio}
   
-There are a variety of ways of interacting and using R (see also section
-\ref{guis}). For ease, and because it is a really nice piece of software,
-we will use RStudio. We want to use the "Dektop", that you can download from here:
+There are a variety of ways of interacting and using R. For ease, and
+because it is a really nice piece of software, we will use RStudio. We
+want to use the "Dektop", that you can download from here:
 \Burl{http://www.rstudio.com/products/rstudio/download/}.
 
 
 
 
-\subsubsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
+\subsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
 
 Ah, this is a nice topic for a long, passionate, conversation. In this
 course, we will, by default, be using RStudio. I will, however, often use
@@ -539,7 +542,7 @@ dependencies).
 If you want to install more than one package you can do (don't execute the
 code below as we will not use those packages)
 <<eval=FALSE>>=
-install.packages(c("RJaCGH", "PHYLOGR"))
+install.packages(c("RJaCGH", "varSelRF"))
 @ 
 
 
@@ -602,16 +605,15 @@ know what to do).
 \subsection{Stopping \R}
 
 You can always just kill RStudio; but that is not nice. In all systems
-typing \code{q()} at the command prompt should stop R/RStudio.
+typing \code{q()} at the command prompt should stop R/RStudio. There will
+also be menu entries (e.g., ``Quit RStudio'' under ``File'', etc).
 
 <<eval=FALSE>>=
 q()
 @ 
 
-There will also be menu entries (e.g., ``Quit RStudio'' under ``File'', etc).
 
-
-In any case, say no to the question about saving the workspace.
+Say no to the question about saving the workspace.
 
 
 What if things hang? Try \code{Control-C} and/or
@@ -1110,10 +1112,11 @@ install that package).
 
 
 
-<<>>=
-library(car) ## make the car package available; this is NOT installing it. 
-             ## It is making it available
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
+<<fig.width=6, fig.height=6>>=
+library(car) ## make the car package available; this is NOT 
+             ## installing it. It is making it available
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+            data = anage)
 @ 
 
 Look at the axes, etc. 
@@ -1121,7 +1124,7 @@ Look at the axes, etc.
 You could do something very similar with the basic plot function, but it
 would not add the extra lines, boxplots, etc.
 
-<<>>=
+<<fig.width=6, fig.height=6>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
 @ 
 
@@ -1131,7 +1134,8 @@ how the different colors by Class is done in the call to plot:
 <<fig.width=4,fig.height=4>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
      col = c("salmon", "darkgreen")[Class], data = anage)
-legend(5, 5, legend = levels(anage$Class), col = c("salmon", "darkgreen"),
+legend(5, 5, legend = levels(anage$Class), 
+       col = c("salmon", "darkgreen"),
        pch = 1)
 @ 
 
@@ -1229,7 +1233,7 @@ This is all I did (the \code{save} thing will become clearer below
 ---section \ref{saveRData}):
 <<eval=FALSE>>=
 anage <-  read.table("AnAge_birds_reptiles.txt", 
-                     header=TRUE, sep="", na.strings="NA", dec=".", 
+                     header=TRUE, na.strings="NA", 
                      strip.white=TRUE)
 save(file = "anage.RData", anage)
 @ 
@@ -1328,7 +1332,8 @@ Let's repeat some of what we did with the BLAST example (section \ref{blast}).
 <<eval=FALSE>>=
 X <- read.table("hit-table-500-text.txt")
 head(X)
-## we could store what we care about in variables with better names
+## We could save what we care about in variables 
+## with better names
 align.length <- X[, 5]
 score <- X[, 13]
 
@@ -1587,7 +1592,8 @@ There are two basic ways of using a script:
   \item[Using source from a running R] You have \R\ running and do:
     \code{source(``script1.R'')}. I often add a couple of options:
 <<fig.width=3, fig.height=3>>=
-source("script1.R", echo = TRUE, max.deparse.length = 999999)
+source("script1.R", echo = TRUE, 
+       max.deparse.length = 999999)
 @     
    Now, did you notice that we got the mean printed and the figure produced?
 
@@ -1599,10 +1605,10 @@ source("script1.R", echo = TRUE, max.deparse.length = 999999)
   weeks). 
   
   There are several ways of doing it, one of which uses an invocation like
-  \verb@ R CMD BATCH script1.R @.
+  \verb@ R CMD BATCH script1.R @
   
-  There is a second set of ways, like 
-  \verb@ R --vanilla < script1.R > scrip1.Rout @. 
+  There is a second set of ways, like\\ 
+  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
   I tend to use the second one, and then add things like
   ``nohup'' before invoking \R, move it to the background, and also
   redirect standard error to the same file used for standard output (i.e.,
@@ -2386,7 +2392,7 @@ for(friend in names.of.friends) {
 
 but they can be numbers:
 
-<<lty2,fig.cap='Those line types (lty) again'>>=
+<<lty2,fig.cap='Those line types (lty) again',fig.width=4, fig.height=4>>=
 plot(c(0, 10), c(0, 10), xlab ="", ylab ="", type = "n")
 for(i in 1:10) 
   abline(h = i, lty = i, lwd = 2)
@@ -2513,11 +2519,11 @@ Using more arguments, one of them default:
 <<>>=
 plotAndLm <- function(x, y, title = "A figure") {
   lm1 <- lm(y ~ x)
-  message("\n Printing the summary of x\n")
+  cat("\n Printing the summary of x\n")
   print(summary(x))
-  message("\n Printing the summary of y\n")
+  cat("\n Printing the summary of y\n")
   print(summary(y))
-  message("\n Printing the summary of the linear regression\n")
+  cat("\n Printing the summary of the linear regression\n")
   print(summary(lm1))
   plot(y ~ x, main = title)
   abline(lm1)
@@ -2530,7 +2536,7 @@ y <- 5 + 3 *x + rnorm(20, sd = 3)
 
 (Again, I am not showing the output here. But make sure you understand
 what is happening!)
-<<results="hide",fig.keep="none">>=
+<<results="hide",fig.keep="none",>>=
 plotAndLm(x, y)
 plotAndLm(x, y, title = "A user specified title")
 output1 <- plotAndLm(x, y, title = "A user specified title")
@@ -2620,9 +2626,10 @@ And this would bring us to consider, too, why things such as this work
 at all in the way we expect:
 
 <<>>=
+c
 c <- 95
+c
 c(5, 6)
-print(c)
 c + 8
 @ 
 
@@ -2640,7 +2647,7 @@ and try to figure out what is happening.
 
 This is used, implicitly of explicitly, in a lot of code. We cannot pursue
 it here any further (though we might talk about it in class). But now,
-before we leave, we will remove ``c'':
+before we leave, we will remove our ``c'':
 <<>>=
 rm(c)
 @ 
@@ -3140,8 +3147,8 @@ mechanisms. I often use \code{try}, which is simple. For instance:
 ft <- function(x) {
     tmp <- try(log(x), silent = TRUE)
     if(inherits(tmp, "try-error")) {
-        message(paste("It looks like you did something wrong.",
-                tmp))
+        warning(paste("It looks like something did not work:\n",
+                      "   ", tmp))
     } else{
         return(tmp)
     }
@@ -3168,7 +3175,7 @@ use what you have seen above, and especially take the following as
 opportunities to practice debugging.
 
 \clearpage
-\subsection{Some Venn diagrams of genes}
+\subsection{Those common genes and some Venn diagrams}
 Someone has examined what genes are over-expressed in three different
 conditions (three different drugs). They are called ``Condition\_A.txt'',
 ``Condition\_B.txt'', ``Condition\_C.txt''. You want to understand which
@@ -3244,10 +3251,11 @@ names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
 
 There are several ways of doing this. This is the simplest I came up with.
 
+First, find the union of all gene names and return a single entry of each
+name. We do not use \code{union}, but \code{unique}, which does what we
+want here.
 
 <<>>=
-## This is the union of all gene names and contains a single entry of each
-## name. We do not use "union" but "unique", which is simpler to use here.
 all.the.genes <- sort(unique(unlist(ovxpGenes)))
 @ 
 
@@ -3308,7 +3316,8 @@ advice of avoiding \code{sapply} inside functions (see section 9.4 of his
 inside functions. So let's be more strict:
 
 <<>>=
-overexpressed <- vapply(ovxpGenes, function(x) f1(x, all.the.genes), 
+overexpressed <- vapply(ovxpGenes, 
+                        function(x) f1(x, all.the.genes), 
                         logical(length(all.the.genes)))
 rownames(overexpressed) <- all.the.genes
 @ 
@@ -3389,7 +3398,7 @@ a common prefix and end in a common postfix. We will use default values, though.
 <<>>=
 readListGenes <- function(prefix = "Condition_", 
                           postfix = "txt") {
-    ## read a bunch of files, named "prefixSOMETHING.postfix",
+    ## Read a bunch of files, named "prefixSOMETHING.postfix",
     ## and place the gene names inside in a list
     gg <- dir(pattern = paste0("^", prefix))
     ovG <-  sapply(gg, function(x) scan(x, what = ""))
@@ -3473,9 +3482,10 @@ have code readily available for this and similar tasks in several R
 packages.  Permutation tests are extremely powerful, but also misleadingly
 simple; using them correctly is often more subtle than some ``data
 scientists'' who've never taken a stats course would lead you to believe
-(are you really testing what you think you are testing?), and there are
-many scenarios/questions that might be hard to fit in them (i.e., they are
-not \textbf{the} solution to the world's problems); \textit{caveat emptor}.
+(e.g., are you really testing what you think you are testing?), and there
+are many scenarios/questions that might be hard to fit in them (i.e., they
+are not \textbf{the} solution to the world's problems); \textit{caveat
+  emptor}.
 
 
 If you do not remember or know what a permutation test is, look it
@@ -3612,9 +3622,10 @@ try running the comparison of d11 with itself with 100000 permutations).
 If we had more time, we would \textbf{definitely} write a test suite, and
 add some of the above as test cases. We cannot get into details, but there
 is one thing called \textbf{test-driven development}
-(\Burl{http://en.wikipedia.org/wiki/Test-driven_development}). Maybe you
-do not need/want to follow it completely, but writing and using tests
-should be a must for any serious project. In R there are a couple of
+(\Burl{http://en.wikipedia.org/wiki/Test-driven_development}).\\
+
+Maybe you do not need/want to follow it completely, but writing and using
+tests should be a must for any serious project. In R there are a couple of
 packages that help: ``RUnit'' is a popular one, though ``testthat'' might
 be a lot
 simpler(\Burl{http://4dpiecharts.com/2014/05/12/automatically-convert-runit-tests-to-testthat-tests/}).
@@ -3682,8 +3693,8 @@ permut.test <- function(data1, data2,
 
 
 Run it
-<<fig.cap='Two examples of permutation tests'>>=
-par(mfrow = c(1, 2))
+<<fig.cap='Two examples of permutation tests', fig.width=5, fig.height=9>>=
+par(mfrow = c(2, 1))
 tmp <- permut.test(d11, d12, num.permut = 1000)
 tmp <- permut.test(d21, d22, num.permut = 1000, 
                    fsample = sample.and.stat2)
@@ -3831,34 +3842,11 @@ sessionInfo()
 %%% mode: latex
 %%% TeX-master: t
 %%% ispell-local-dictionary: "en_US"
-%%% coding: iso-8859-15
+%%% coding: utf-8
 %%% End:
 
-
-
-
-%% Files that we need:
-
-%% this one
-%% \item \code{AnotherDataSet.txt}
-% \item \code{lastExample.R}
-% \item \code{R-quick-intro.R}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
+%% so if it is not utf-8, knitr complaints about character encoding when
+%% processing some chunks. And I guess that is because my locale is UTF-8.
   
 %%%%%%%%%%%%%% For pdf, I use runKnitr.sh which has
 
