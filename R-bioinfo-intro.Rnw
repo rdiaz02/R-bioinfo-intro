@@ -1,6 +1,6 @@
 %% ;;; -*- mode: Rnw; -*-
 
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,11pt]{article}
 
 
 <<error=FALSE, include=FALSE, cache=FALSE>>=
@@ -94,7 +94,7 @@ opts_chunk$set(size= "small", error=FALSE)
 %% To make sure things within page margins
 <<include=FALSE>>=
 rm(list = ls())
-options(width = 60)
+options(width = 67)
 @ 
 
 
@@ -1180,7 +1180,7 @@ Alternatively, we could have done
 birds <- anage[anage$Class == "Aves", ]
 @ 
 
-We can look at the 
+
 
 \subsubsection{The regression only for the birds}
 \label{sec:regression}
@@ -1396,7 +1396,7 @@ characters ---e.g, Cyrillic). So \textbf{avoid} directories with spaces,
 accents, and other non-ASCII characters, and try to keep them under 8
 characters (though that might not be a strong limitation nowadays). And
 try to place things in directories that Windows is unlikely to rename
-(e.g., \verb@ C:\Files-p1 @ is better than 
+(e.g., \verb@ C:\Files-p1 @ is better than \\
 \verb@ C:\Archivos de Programa\Manolo Perez\Mis documentos @). 
 
 Avoiding spaces, accents and other non-ASCII characters is also a good
@@ -1604,11 +1604,12 @@ source("script1.R", echo = TRUE,
   great for long running jobs (say, a set of analyses that takes two
   weeks). 
   
-  There are several ways of doing it, one of which uses an invocation like
+  There are several ways of doing it, one of which uses an invocation like\\
   \verb@ R CMD BATCH script1.R @
   
   There is a second set of ways, like\\ 
   \verb@ R --vanilla < script1.R > scrip1.Rout @ 
+  
   I tend to use the second one, and then add things like
   ``nohup'' before invoking \R, move it to the background, and also
   redirect standard error to the same file used for standard output (i.e.,

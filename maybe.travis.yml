@@ -20,6 +20,10 @@ install:
 #  - ./travis-tool.sh install_deps
 
 # script: ./travis-tool.sh run_tests
+script:
+   - Rscript -e 'library(knitr); knit("R-bioinfo-intro.Rnw")'
+   - texi2pdf R-bioinfo-intro.tex   
+
 
 after_failure:
   - ./travis-tool.sh dump_logs
