@@ -2581,7 +2581,7 @@ function. In fact, it can make some code much easier to understand.)
 The above questions are, basically, about ``where is the value of free
 variables found''. R uses lexical (or static) scoping. It can be extremely
 handy and fun, but it can lead to surprises. Good explanations here:
-\Burl{http://adv-r.had.co.nz/Functions.html#lexical-scoping} and
+\Burl{http://adv-r.had.co.nz/Functions.html\#lexical-scoping} and
 \Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
 
 
@@ -3309,7 +3309,7 @@ permut.testA <- function(data1, data2,
 Make sure you understand what we've done. For instance, note that we are
 passing a function as an argument\footnote{As for the denominator and
   numerator (the \code{+ 1}): that is a minor technical
-  detail, and it is true that it makes little difference as $n \rigtharrow
+  detail, and it is true that it makes little difference as $n \rightarrow
   \infty$. However, that is the correct way of doing it (even if many
   implementations get it wrong and do not include it). Some of the popular
   classics, such as Edgington, or Noreen, etc, already mention it very
@@ -3327,8 +3327,8 @@ It looks like it.
 Well, it is \textbf{wrong}, but we might not have noticed it. What p-value
 would you expect?
 <<>>=
-tmp <- permut.test1(d11, d11)
-tmp <- permut.test1(d12, d12)
+tmp <- permut.testA(d11, d11)
+tmp <- permut.testA(d12, d12)
 @ 
 Moral: check, check. One should check against different scenarios. (In
 fact, the above might often look correct; try running the comparison of
@@ -3535,13 +3535,13 @@ A basic piece of code that does most of the above takes less than 70 lines.
 
 
 
-\section{Document history}
-\begin{description}
-\item[1.0] November 2014.
-  \begin{itemize}
-  \item First version
-  \end{itemize}
-\end{description}
+%% \section{Document history}
+%% \begin{description}
+%% \item[1.0] November 2014.
+%%   \begin{itemize}
+%%   \item First version
+%%   \end{itemize}
+%% \end{description}
 
 \section{Session info}
 <<>>=
