@@ -72,12 +72,12 @@ opts_chunk$set(size= "small", error=FALSE)
 %% \setlength{\parskip}{0pt}
 %% \setlength{\partopsep}{1pt}
 
-\usepackage{gitinfo}
+\usepackage{gitinfo2}
 
 
 \title{A quick and crash introduction to R with a bioinformatics bent}
 
-\date{\gitAuthorDate\ {\footnotesize (\gitVtag; Rev: \gitAbbrevHash)}}
+\date{\gitAuthorDate\ {\footnotesize (Release\gitRels: Rev: \gitAbbrevHash)}}
 
 \author{Ramon Diaz-Uriarte\thanks{Dept.\ of Biochemistry, Universidad
     Autónoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
