@@ -575,7 +575,8 @@ install.packages("car")
 How do you find a package? Looking at a list of 6000 things in CRAN and
 another thousand in BioC is not a good idea. In addition to google et al.,
 there are task views in CRAN: \Burl{http://cran.r-project.org/web/views/},
-and there is a not too dissimilar thing in BioC.
+and there is a not too dissimilar thing in BioC. In addition,
+\code{findFn}, from package ``sos'' can help (see section \ref{help}).
 
 
 \subsection{Starting \R}
@@ -852,6 +853,32 @@ t.test(x ~ z)
 
 
 
+\subsection{Coding style}\label{style}
+You write R code for the computer to do something, but that code should be
+readable by humans (including not only other people besides yourself, but
+yourself in the future). Please, make sure your code is tidy and respects
+some minimal rules of civility. In particular:
+
+\begin{itemize}
+\item Do not extend beyond column 80.
+\item Use spaces appropriately; for example, write 
+  \verb@ x <- rnorm(3, mean = 2) @ and NOT 
+  \verb@ x<-rnorm(3,mean=2) @. Thesecondformisclearlyveryhardtoread.
+\end{itemize}
+
+There are many other possible coding style guides, but the above two for
+me are basic (if I grade code written by you, I will take into account
+respect of the above rules). This is not my particular silly snobbery:
+look at the code in the base R distribution, or look at the code in
+classics such as ``Modern applied statistics with S'' or ``S
+programming''(Venables and Ripley), or ``Software for data analysis''
+(Chambers), or \ldots. Programming environments (e.g., Emacs + ESS) will
+offer ways of tidying your code, and there is even a package that can help
+you do it
+(\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
+\Burl{http://yihui.name/formatR}).
+
+
 \clearpage
 \section{Three practical, crash examples}\label{crashex}
 \subsection{Plotting the results from BLAST}\label{blast}
@@ -862,7 +889,7 @@ example.  We have played with some data from an alignment. Let's take a
 quick look at a couple of things:
 \begin{itemize}
 \item The relationship between percentage identity and score.
-\item The distribution of the alignment length.
+\item The distribution of the alignment length. 
 \end{itemize}
 
 
@@ -1210,7 +1237,8 @@ The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downl
 
 Of course. Look at \code{?par} and then look for \code{pch}, \code{cex},
 \code{lty}, \code{col}. This code produces two figures (\ref{fig:pchcol}
-and \ref{fig:ltytype}) that might help:
+and \ref{fig:ltytype}) that might help (see also line types, \code{lty} in
+Figure \ref{fig:lty2}).
 
 <<pchcol,fig.width=7,fig.height=4, fig.cap='pch and col', fig.lp='fig:'>>=
 plot(c(1, 21), c(1, 2.3),
@@ -1686,8 +1714,8 @@ would have expected.
 
 The recycling rule applies also with matrices, etc.
 
-\subsection{Creating vector from other vectors: logical operations}
-\label{sec:creating-vector-from}
+\subsection{Logical operations}
+\label{logic}
 
 We can compare the elements of a vector with something, so as to obtain a
 vector of \code{TRUE, FALSE} elements. And we can combine vectors with
@@ -1706,9 +1734,18 @@ A few examples:
 v1 <- 1:5
 v1 < 3
 (v2 <- (v1 < 3))
+v11 <- c(1, 1, 3, 5, 4)
+v1 == v11
+v1 != v11
+!(v1 == v11)
+identical(v1, v11)
 v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
+!v3
 v2 & v3
 v2 | v3
+(v1 > 3) & (v11 >= 2)
+(v1 > 3) | (v11 >= 2)
+xor(v2, v3)
 @ 
 
 
@@ -2194,12 +2231,26 @@ Of course, creating a data frame is easy:
 rbind(AB, AC)
 @ 
 
-Data frames make it particularly easy to add new variables:
+Data frames make it particularly easy to add new variables to the data frame.
 
 <<>>=
 AB2$status <- rep(c("Z", "V"), 5)
 @ 
 
+
+
+\subsection{Odds and ends}
+
+\paragraph Reshaping data 
+Sometimes you will need to go from a ``wide''
+to a ``long'' format in your data, or viceversa (e.g., repeated measures
+of the same individuals over time). Look at \code{?reshape}, although I
+find that the ``reshape2'' package tends to make life much easier for this
+task.
+
+\paragraph Data table
+For dealing efficiently with large data sets, and other niceties, the
+``datatable'' package (with its datatables) can really make a difference.
 
 
 \section{Tables}\label{tables}
@@ -2209,7 +2260,7 @@ we played with above:
 
 <<>>=
 table(AB2$Sex)
-with(AB2, table(Sex, status))
+with(AB2, table(Sex, status)) ## note "with"
 xtabs( ~ Sex + status, data = AB2)
 @ 
 
@@ -2326,7 +2377,7 @@ for(friend in names.of.friends) {
 
 but they can be numbers:
 
-<<>>=
+<<lty2,fig.cap='Those line types (lty) again'>>=
 plot(c(0, 10), c(0, 10), xlab ="", ylab ="", type = "n")
 for(i in 1:10) 
   abline(h = i, lty = i, lwd = 2)
@@ -2453,11 +2504,11 @@ Using more arguments, one of them default:
 <<>>=
 plotAndLm <- function(x, y, title = "A figure") {
   lm1 <- lm(y ~ x)
-  cat("\n Printing the summary of x\n")
+  message("\n Printing the summary of x\n")
   print(summary(x))
-  cat("\n Printing the summary of y\n")
+  message("\n Printing the summary of y\n")
   print(summary(y))
-  cat("\n Printing the summary of the linear regression\n")
+  message("\n Printing the summary of the linear regression\n")
   print(summary(lm1))
   plot(y ~ x, main = title)
   abline(lm1)
@@ -2495,6 +2546,8 @@ decide what and how your functions do, print, plot, etc, etc, etc.
 And, as we will see below, many functions are often ``defined on the fly''.
 
 
+
+\subsection{Scoping}
 
 
 
@@ -3041,11 +3094,256 @@ stopifnot(identical(ovxABC, overexpressed))
 @ 
 
 
-\subsection{Permutation test}
 
+\subsubsection{And how do we know it works?}
+If we were more serious about this, probably formally adding tests would
+be warranted. See section \ref{test}. We've done some testing about, but
+this can be done much more seriously.
+
+
+\clearpage
+\subsection{Permutation test}\label{permut}
+We will write a permutation test for comparing two means. Before we get
+carried away, the code below is not the most efficient. More importantly,
+we will not deal with important time saving ideas (such as using
+equivalent statistics, an idea Edgington stressed a lot in his books) nor
+with important statistical ideas (such as using sufficient
+statistics). This is just for the sake of writing a quick and dirty
+permutation test and gaining some programming practice. Note also that you
+have code readily available for this and similar tasks in several R
+packages.  Permutation tests are extremely powerful, but also misleadingly
+simple; using them correctly is often more subtle than some ``data
+scientists'' who've never taken a stats course would lead you to believe
+(are you really testing what you think you are testing?), and there are
+many scenarios/questions that might be hard to fit in them (i.e., they are
+not \textbf{the} solution to the world's problems); \textit{caveat emptor}.
+
+
+If you do not remember or know what a permutation test is, look it
+up. I'll assume you have a general idea. Stop here about the main
+steps (remember that breaking the problem down into manageable and
+meaningful, smaller, self-contained, problems is a key part of programming). 
+
+
+Now, after thinking, this is what we need to do:
+\begin{enumerate}
+\item Compute our statistic (the difference in means here).
+\item Generate data distributions according to the null hypothesis.
+\item Compute the statistic for each new data configuration.
+\item Compare what we compute from our original data with what we obtain
+  under the null ($H_o$).
+\end{enumerate}
+
+
+
+To play around, let's create some extreme fake data:
+<<>>=
+# no difference
+d11 <- rnorm(15)
+d12 <- d11[1:7]
+# difference
+d21 <- rnorm(13)
+d22 <- d21[1:9] + 3
+@ 
+
+You can check the data will do what you want
+<<results='hide'>>=
+t.test(d11, d12)
+t.test(d21, d22)
+@ 
+
+\subsubsection{First attempt}
+Now, the code:
+<<>>=
+# for steps 1 and 3
+mean.d <- function(x1, x2) 
+  mean(x1) - mean(x2)
+
+## seems to work
+mean.d(d11, d12)
+@ 
+
+For step 3 we will examine to ways of doing it. Make sure you understand
+the differences
+<<>>=
+sample.and.stat1 <- function(x1, x2) {
+    tmp <- sample(c(x1, x2))
+    g1 <- tmp[seq(x1)]
+    g2 <- tmp[seq(from = length(x1) + 1, 
+                  to = length(tmp))]
+    return(mean.d(g1, g2))
+}
+
+sample.and.stat2 <- function(x1, x2) {
+    indices <- seq(from = 1, 
+                   to = length(x1) + length(x2))
+    indices1 <- sample(indices, length(x1))
+    indices2 <- setdiff(indices, indices1) 
+    alldata <- c(x1, x2)
+    return(mean.d(alldata[indices1], 
+                  alldata[indices2]))
+}
+@ 
+
+Compare them:
+<<>>=
+set.seed(1) 
+sample.and.stat1(d11, d12)
+sample.and.stat1(d11, d12)
+
+set.seed(1) 
+sample.and.stat2(d11, d12)
+sample.and.stat2(d11, d12)
+@ 
+Make sure you understand what happened. (Hint: are both functions
+implicitly calling the random number generator the same number of times?)
+
+
+Now, wrap the above, and create a single function:
+<<>>=
+permut.testA <- function(data1, data2, 
+                         fsample = sample.and.stat1,
+                         num.permut = 100) {
+    obs.stat <- mean.d(data1, data2)
+    
+    permut.stat <- replicate(num.permut, 
+                             fsample(data1, data2))
+    pv <- (sum(abs(permut.stat) > 
+                   abs(obs.stat)) + 1)/(num.permut + 1)
+    
+    message("\n p-value is ", pv, "\n")
+    return(list(obs.stat = obs.stat,
+                permut.stat = permut.stat,
+                pv = pv))
+}
+@ 
+
+Make sure you understand what we've done. For instance, note that we are
+passing a function as an argument\footnote{As for the denominator and
+  numerator (the \code{+ 1}): that is a minor technical
+  detail, and it is true that it makes little difference as $n \rigtharrow
+  \infty$. However, that is the correct way of doing it (even if many
+  implementations get it wrong and do not include it). Some of the popular
+  classics, such as Edgington, or Noreen, etc, already mention it very
+  clearly. Think about it: why should you add that 1?}
+
+
+Is it working?
+<<>>=
+tmp <- permut.testA(d11, d12)
+tmp <- permut.testA(d21, d22)
+@ 
+It looks like it.
+
+
+Well, it is \textbf{wrong}, but we might not have noticed it. What p-value
+would you expect?
+<<>>=
+tmp <- permut.test1(d11, d11)
+tmp <- permut.test1(d12, d12)
+@ 
+Moral: check, check. One should check against different scenarios. (In
+fact, the above might often look correct; try running the comparison of
+d11 with itself with 100000 permutations).
+
+
+\subsubsection{Test!!!}\label{test}
+
+If we had more time, we would \textbf{definitely} write a test suite, and
+add some of the above as test cases. We cannot get into details, but there
+is one thing called \textbf{test-driven development}
+(\Burl{http://en.wikipedia.org/wiki/Test-driven_development}). Maybe you
+do not need/want to follow it completely, but writing and using tests
+should be a must for any serious project. In R there are a couple of
+packages that help: ``RUnit'' is a popular one, though ``testthat'' might
+be a lot
+simpler(\Burl{http://4dpiecharts.com/2014/05/12/automatically-convert-runit-tests-to-testthat-tests/}).
+For using ``testthat'' see \Burl{http://r-pkgs.had.co.nz/tests.html} and
+\Burl{http://journal.r-project.org/archive/2011-1/RJournal\_2011-1\_Wickham.pdf}.
+
+
+\subsubsection{Second attempt}
+
+I will give the fixed code. You have to understand what changed:
+<<>>=
+permut.testB <- function(data1, data2, 
+                         fsample = sample.and.stat1,
+                         num.permut = 100) {
+    obs.stat <- mean.d(data1, data2)
+    
+    permut.stat <- replicate(num.permut, 
+                             fsample(data1, data2))
+    pv <- (sum(abs(permut.stat) >= 
+                   abs(obs.stat)) + 1)/(num.permut + 1)
+    
+    message("\n p-value is ", pv, "\n")
+    return(list(obs.stat = obs.stat,
+                permut.stat = permut.stat,
+                pv = pv))
+}
+@ 
+
+Quick check (you should do it more thoroughly)
+<<>>=
+tmp <- permut.testB(d11, d11)
+tmp <- permut.testB(d12, d12)
+@ 
+
+
+
+\subsubsection{Final thing}
+OK, that is good. But let's add a figure so things look more like in textbooks:
+
+<<>>=
+permut.test <- function(data1, data2, 
+                        fsample = sample.and.stat1, 
+                        num.permut = 100) {
+  obs.stat <- mean.d(data1, data2)
+  permut.stat <- replicate(num.permut, 
+                           fsample(data1, data2))
+  pv <- (sum(abs(permut.stat) >= abs(obs.stat)) + 
+         1) / (num.permut + 1)
+  message("\n p-value is ", pv, "\n")
+  title <- paste(deparse(substitute(data1)), "-",
+                 deparse(substitute(data2)))
+  subtitle <- paste0("Distribution of permuted statistic.",
+           " In red, observed one.") 
+  hist(permut.stat, xlim = c(min(obs.stat, 
+                      min(permut.stat)),
+                      max(obs.stat, 
+                          max(permut.stat))),
+       main = title, xlab = "", sub = subtitle)
+  abline(v = obs.stat, col = "red")
+  return(list(obs.stat = obs.stat,
+              permut.stat = permut.stat,
+              pv = pv))
+}
+@ 
+
+
+Run it
+<<fig.cap='Two examples of permutation tests'>>=
+par(mfrow = c(1, 2))
+tmp <- permut.test(d11, d12, num.permut = 1000)
+tmp <- permut.test(d21, d22, num.permut = 1000, 
+                   fsample = sample.and.stat2)
+@ 
+
+
+You might want to compare with t-tests, etc. 
+\clearpage
 \subsection{Selection bias in classification}
 
 % \bibliography{R-quick-intro}
+
+This is for you to work on your own. Show the effects of selection bias in
+classification problems. A few hints follow:
+
+\begin{itemize}
+\item For simplicity, use cross-validation.
+\end{itemize}
+
+
 
 
 \section{Document history}
@@ -3100,7 +3398,6 @@ sessionInfo()
 * To do 
   - Debugging
   - Notes about selection bias example
-  - Permutation test with R
   - A little about lexical scope?
 
   
