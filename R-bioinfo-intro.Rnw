@@ -75,11 +75,9 @@ opts_chunk$set(size= "small", error=FALSE)
 \usepackage{gitinfo}
 
 
- 
-
 \title{A quick and crash introduction to R with a bioinformatics bent}
 
-\date{\gitAuthorDate\ {\footnotesize (Rev: \gitAbbrevHash)}}
+\date{\gitAuthorDate\ {\footnotesize (\gitVtag; Rev: \gitAbbrevHash)}}
 
 \author{Ramon Diaz-Uriarte\thanks{Dept.\ of Biochemistry, Universidad
     Autónoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
@@ -100,7 +98,6 @@ options(width = 60)
 @ 
 
 
-
 \section{License and copyright}\label{license}
 
 \centerline \ccbysa
@@ -109,9 +106,6 @@ This work is Copyright, \copyright, 2014, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
-
-
-
 
 \section{Scenarios}\label{scenarios}
 \begin{itemize}
