@@ -7,7 +7,7 @@
 require(knitr, quietly = TRUE)
 opts_knit$set(concordance = TRUE)
 opts_chunk$set(size= "small", error=FALSE)
-opts_knit$set(stop_on_error = 2L)
+## opts_knit$set(stop_on_error = 2L)
 ## mytry <- function(x) try(x) ## eliminate?
 @ 
 
@@ -2887,14 +2887,264 @@ pretend you have been given some data.
 
 
 
-\section{Programming: debugging}
+\section{Debugging and catching exceptions}
+Often, things do not work as expected, and we need to debug our
+code. Debugging is a big issue. As Matloff insists, debugging is basically
+about testing your assumptions about what a piece of code is doing. In
+what follows, I provide just a very quick summary of really helpful things
+that I use often.  But there is much more. Look here: 
+
+\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/}, 
+\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/debug.shtml},
+\Burl{http://www.biostat.jhsph.edu/\%7Erpeng/docs/R-debug-tools.pdf}, and
+chapter 9 in ``Advanced R'' (available here :
+\Burl{http://adv-r.had.co.nz/Exceptions-Debugging.html}) and chapter 13 in
+the ``The art of R programming''.
 
 
-\section{Programming: lexical scope}
+
+(Oh, the examples below will show little output in these notes. Make sure
+you do type the code and play around: these are necessarily interactive
+things, and that does not play well with static notes).
 
 
+\subsection{What exactly broke?}
+
+\code{traceback} shows the call stack and helps you identify where the
+sequence of calls lead to a problem:
+
+<<>>=
+f1 <- function(x) 3 * x
+
+f2 <- function(x) 5 + f1(x)
+
+f3 <- function(z, u) {
+    v <- runif(z)
+    f2(v + u)
+}
+f3(3, 7)
+@ 
+
+<<error=TRUE>>=
+f3(-5, 6)
+traceback()
+
+f3(5, "a")
+traceback()
+@ 
+
+
+
+\subsection{\code{debug} and \code{browser}}
+
+If something breaks, you can go step by step over the execution of the
+code. For that, call \code{debug(theFunctionYouWantToDebug)}. Note that
+you can use \code{debug} with functions that you have not written. You do
+not need to edit or modify the source. Once you are done,
+\code{undebug(theFunctionYouWantToDebug)}.
+
+Try the following. When the evaluation stops, press ``c'' if you do not
+want to go into debugging mode. And you can exit from the whole debugging
+process by ``Q''
+
+<<eval=FALSE>>=
+f4 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(v + u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+debug(f4)
+f4(3, 5)
+undebug(f4)
+f4(3, 5)
+@ 
+
+You can also use \code{browser}. It is very easy to add that to a function
+you wrote, wherever you want it to stop. 
+
+<<>>=
+f4 <- function(z, u) {
+    v <- runif(z)
+    browser()
+    a <- f2(v + u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+@ 
+
+Make sure you try this, and when it stops, look around (e.g., type
+\code{ls()}, reassign values, etc).
+
+<<eval=FALSE>>=
+f4(3, 5)
+f4(3, 11)
+@ 
+
+Or you can set up conditional browsers. For example, call it only if
+\code{z > 5}:
+
+<<>>=
+f4 <- function(z, u) {
+    v <- runif(z)
+    if (z > 5) browser()
+    a <- f2(v + u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+@ 
+
+
+\subsection{Browsing arbitrary functions at arbitrary places}
+Can you place \code{browser} at arbitrary places in arbitrary functions
+including, say, from a package you have not written? Yes. You just have to
+pass it the line number, using the function \code{trace}. And how do you
+find the line number? Use \code{as.list(body(theFunctionname)}.
+
+Let's start with a simple function:
+<<>>=
+f4 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(v + u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+@ 
+
+<<eval=FALSE>>=
+as.list(body(f4))
+trace(f4, tracer = browser, at = 3)
+# notice the message
+f4
+@ 
+
+<<eval=FALSE>>=
+f4(4, 5)
+untrace(f4) ## stop tracing
+@ 
+
+
+This uses \code{lm}, which we have not written. 
+<<eval=FALSE>>=
+as.list(body(lm))
+trace(lm, tracer = browser, at = 5)
+y <- runif(100)
+x <- 1:100
+lm(y ~ x)
+## stop tracing
+untrace(lm)
+@ 
+
+
+
+\subsection{Autopsies when things fail}
+But sometimes you only want to stop when/if things fail, and look
+inside. We can ask R to do that: stop when the error occurs, and allow us
+to look around:
+
+<<eval=FALSE>>=
+f1 <- function(x) 3 * x
+
+f2 <- function(x) 5 + f1(x)
+
+f3 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(u)
+    b <- f2(v)
+    a + b
+}
+
+opt <- options(error = recover)
+## Notice the next show, as they should,
+## different frame numbers. The error is in different
+## places. You can enter in the relevant frames 
+## and look around
+f3(3, "a")
+f3(-5, 3)
+@ 
+
+
+You will be shown the possible frames, you can enter the one you want, and
+look around, etc. This is \textbf{extremely handy} in some situations, or
+when you only get errors from time to time, etc\footnote{The chapter from
+  ``Advanced R'' would seem to suggest you do \code{options(error =
+    browser)}. Nope, you have to do \code{options(error = recover)}.}.
+
+
+
+Once you are done, set the option back to what it was:
+<<eval=FALSE>>=
+options(opt)
+@ 
+
+
+
+
+\subsection{And RStudio?}
+The above are general mechanisms that will work regardless of how you use
+R. If you use RStudio, there is additional functionality
+available. Suppose you have code like this:
+
+<<eval=FALSE>>=
+f1 <- function(x) 3 * x
+
+f2 <- function(x) 5 + f1(x)
+
+f3 <- function(z, u) {
+    v <- runif(z)
+    f2(v + u)
+}
+f3(3, "a")
+@ 
+
+
+If you submit all that code to be executed, you will get an error, and
+RStudio will offer you to run it again with debug (it will be fairly
+obvious, just do it).
+
+The chapter from ``Advanced R'' explains in detail RStudio's functionality
+in this area. In addition, this is like to just get more and more
+functionality in the future (comfortable and powerful debugging are
+important features).
+
+Emacs + ESS has also its own way of doing these things.
+
+
+
+\subsection{Protecting from possible failures}
+There is exception handling in R, of course, and there are several
+mechanisms. I often use \code{try}, which is simple. For instance:
+
+<<>>=
+ft <- function(x) {
+    tmp <- try(log(x), silent = TRUE)
+    if(inherits(tmp, "try-error")) {
+        message(paste("It looks like you did something wrong.",
+                tmp))
+    } else{
+        return(tmp)
+    }
+}
+
+ft(9)
+ft("a")
+@ 
+
+The above is a silly example, of course, but suppose taking the log is not
+a fundamental part of the code, and you want to be allowed to continue, or
+you want to be the one who decides what to do without breaking a long
+analysis. This prevents the code from just failing. I use try very, very
+often when I run long simulation analysis that can take weeks: I record
+fully when a case fails (keep track of data, random number seeds, etc),
+but I allow the rest of the process to continue.
+
+More sophisticated approaches are available. Look at the references above.
 
 \section{Additional programming practice}
+
+The following sections offer some additional programming practice. Please
+use what you have seen above, and especially take the following as
+opportunities to practice debugging.
 
 \clearpage
 \subsection{Some Venn diagrams of genes}
@@ -3321,18 +3571,19 @@ Is it working?
 tmp <- permut.testA(d11, d12)
 tmp <- permut.testA(d21, d22)
 @ 
-It looks like it.
+It looks like it is.
 
 
-Well, it is \textbf{wrong}, but we might not have noticed it. What p-value
-would you expect?
+Well, in fact it is \textbf{wrong}, but we might not have noticed it. What
+p-value would you expect?
 <<>>=
 tmp <- permut.testA(d11, d11)
 tmp <- permut.testA(d12, d12)
 @ 
-Moral: check, check. One should check against different scenarios. (In
-fact, the above might often look correct; try running the comparison of
-d11 with itself with 100000 permutations).
+
+Moral: check, check, check. One should check against different
+scenarios. (In fact, the above might often look correct a lot of the time;
+try running the comparison of d11 with itself with 100000 permutations).
 
 
 \subsubsection{Test!!!}\label{test}
