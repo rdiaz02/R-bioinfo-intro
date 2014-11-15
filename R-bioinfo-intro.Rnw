@@ -3337,12 +3337,113 @@ You might want to compare with t-tests, etc.
 % \bibliography{R-quick-intro}
 
 This is for you to work on your own. Show the effects of selection bias in
-classification problems. A few hints follow:
+classification problems. This is what we want:
 
 \begin{itemize}
-\item For simplicity, use cross-validation.
+\item Simulate some data, without signal, for a number of subjects and a
+  two-class problem.
+  \item For simplicity use the randomForest algorithm. 
+  \item For simplicity, use cross-validation.
+  \item Filter genes using the p-value from a t-test.
+  \item Of course, the selection bias problem will arise when you filter
+    genes using all subjects.
+  \item You should also cross-validate including filtering within the
+    cross-validation (i.e., do not filter genes using all subjects). This
+    is, as we all know, the correct procedure.
 \end{itemize}
 
+
+
+A few hints:
+
+\begin{itemize}
+\item Install the ``randomForest'' package.
+\item Note that in randomForest you can fit a random forest to a set of
+  data, and predict on another.
+\item The simplest thing is to get just the class prediction. It would be
+  even better to also get the ``votes'' and assess classification accuracy
+  using something like Brier's score or coefficient of concordance.
+\item For cross-validation, the following lines of code show a very
+  compact way of doing it. The code is taken from Venables and Ripley, ``S
+  programming'', 2000, Springer, p.\ 175, and I have added a few notes and
+  an example:
+  
+<<results='hide'>>=
+## x2 is a data vector
+x2 <- rnorm(27)
+N <- length(x2)
+knumber <- 10  ## the k in k-fold
+## In the k-th time, we leave out as testing set those
+## subjects that have index.select = 
+## Thus, index.select is the vector of indices
+index.select <- sample(rep(1:knumber, 
+                           length = N), 
+                       N, replace = FALSE)
+
+rep(1:knumber, length = N)
+table(index.select)
+sum(index.select != 1)
+sum(index.select != 10)
+sum(index.select != 6)
+@   
+  
+Once you have that, you can do something like
+
+<<eval=FALSE>>=
+do.something.with.train.and.test <- function(train, test) {
+    ## As it says, it does something with the 
+    ## two sets of data
+}
+
+for(sample.number in 1:knumber) {
+    x2.train <- x2[index.select != sample.number]
+    x2.test <- x2[index.select == sample.number]
+    do.something.with.train.and.test(x2.train, x2.test)
+}
+@ 
+
+\item We will train a model with a set of data, and test it with those
+  left out. Again, with random forest, use \code{randomForest} and
+  \code{predict} (which is really \code{predict.randomForest}). Look at
+  the help.
+  
+\item For the simplest ``classification error'' we just compared observed
+  class with predicted class. How do you do it?
+  
+\item Beware: randomForest (as most other modeling functions) expects data
+  with subjects in rows and variables (genes) in columns.
+  
+\item For one simulated data set, you can get the effects of selection
+  bias. But you will want to repeat this several times.
+  
+  
+\item Oh, how do you compare? Is this like a paired design (for each
+  simulated data set, you get two numbers, one under selection bias and
+  one under non-selection bias)? Or is it something else? Make sure that
+  how you show your results reflects how you perform the simulations.
+  
+  
+\item The following should be function arguments (in parentheses,
+  suggested default arguments, not because they are realistic now, but
+  just to speed up the process): number of genes (1000), ``k'' in k-fold
+  cross-validation (10), number of genes that are selected to be used in
+  the classifier (10), number of times the whole process is repeated
+  (10). Number of subjects can be set to a number (50), or you can pass
+  the sizes of each of the two classes (e.g., 25 and 25); if number of
+  subjects, what would you do with odd numbers?
+  
+  
+\item The above are default arguments. But enlightenment will come easily
+  (i.e., you should) play around with those: is selection bias more severe
+  the more genes you select? The more genes you can select from? What
+  about number of subject? Etc, etc.
+
+\item You will want textual output and figures, of course.  
+  
+\end{itemize}
+
+
+A basic piece of code that does most of the above takes less than 70 lines. 
 
 
 
@@ -3397,7 +3498,6 @@ sessionInfo()
 
 * To do 
   - Debugging
-  - Notes about selection bias example
   - A little about lexical scope?
 
   
