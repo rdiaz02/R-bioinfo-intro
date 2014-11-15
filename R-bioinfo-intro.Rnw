@@ -93,13 +93,12 @@ opts_chunk$set(size= "small", error=FALSE)
 
 \tableofcontents
 
-%% To make sure things withing page margins
-%% Locale is to prevent werid chars in significant codes in regression
+%% To make sure things within page margins
 <<include=FALSE>>=
 rm(list = ls())
 options(width = 60)
 @ 
-% \addtocounter{section}{-1}
+
 
 
 \section{License and copyright}\label{license}
@@ -191,23 +190,27 @@ The structure and logic is as follows:
 \item We then go over a few practical things we need to get out of the way
   (sections \ref{basics} and \ref{console}).
 \item We then jump into \R\ with three longer examples (section
-  \ref{crash}). Again, on first reading you will not understand much of
+  \ref{crashex}). Again, on first reading you will not understand much of
   what is done, but we will go over it in class.
 \item Then, up to section \ref{back-scenarios}, we go over many details in
   a more systematic, but more boring, way. 
 \item If you understand all that is done up to that point, you should have a
 decent working understanding of how to use R, and can move on your own.
-
-\item The rest are more advanced or specific features and also include
-  some more examples.
+\item But you do not want to skip section \ref{debug}. This section covers
+  debugging and being able to debug quickly and painlessly is essential
+  for using R effectively (and enjoy it).
+\item Finally, in section \ref{more-ex} I include several longer commented
+  examples. These should bring together many of the features we have
+  mentioned, but also introduce new functions, and will give you practice
+  with programming and debugging.
 \end{itemize}
 
 
 
 The material has been ordered that way on purpose. Yes, expect some
-frustration when working through sections \ref{mistery} and \ref{crash},
+frustration when working through sections \ref{mistery} and \ref{crashex},
 but definitely look at them before class and try to understand what is
-going on. After section \ref{crash} things should be smoother (but more
+going on. After section \ref{crashex} things should be smoother (but more
 boring). And here, definitely, you \textbf{must} type things on your own
 and understand the output. I have tried to use a kind of spiraling lay
 out, working over several things repeatedly, and repeating and going
@@ -217,14 +220,14 @@ material better, connect it with other pieces, and retain it for longer.
 
 
 
-\subsection{The PDF and the HTML and the code, etc}
+\subsection{The PDF and the HTML and the code}
 
 The primary output of this document is a PDF. I also provide (and will
-use) and HTML file; this is kind of experimental (a few things might not
+use) an HTML file; this is kind of experimental (a few things might not
 be typeset correctly, or some links not work fully, etc). The HTML offers
 the advantage that we can accommodate, on the same screen, a running
 session with \R\, and have the web browser size adjusted to our liking (so
-less fiddling around that using a PDF). In the HTML, the code is in red
+less fiddling around than using a PDF). In the HTML, the code is in red
 and the output in blue. 
 
 
@@ -235,6 +238,13 @@ github repo you will not see the PDF, HTML, or R-bioinfo-intro.R files,
 since those are derived from the Rnw file).
 
 
+Note that for many commands I do not show the output (e.g., because it
+would just provide boring and space-filling output). However, make sure
+you type and understand it. You can copy of past, of course, but I
+strongly suggest you type the code and change it, modify it, etc.
+
+
+
 \subsection{Other files you need in addition to this one}
 You should have (or should get) the following files:
 \begin{itemize}
@@ -242,8 +252,10 @@ You should have (or should get) the following files:
 \item \code{AnotherDataSet.txt}
 \item \code{anage.RData}
 \item \code{lastExample.R}
-  %  blast output
-% genes for cell lines
+\item \code{Condition\_A.txt}, \code{Condition\_B.txt}, \code{Condition\_C.txt}
+\item \code{R-bioinfo-intro-html-dir.zip}: a zip file that, when
+  uncompressed, while give you a directory that contains the HTML version
+  of this PDF and a directory for the figures (used in the HTML).
 \item \code{R-bioinfo-intro.R}
 
 \end{itemize}
@@ -384,9 +396,9 @@ This is the R code:
 
 <<eval=TRUE,tidy=FALSE>>=
 randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
-clase <- factor(c(rep("sano", 20), rep("enfermo", 30)))
+class <- factor(c(rep("NC", 20), rep("cancer", 30)))
 pvalues <- apply(randomdata, 1, 
-                 function(x) t.test(x ~ clase)$p.value)
+                 function(x) t.test(x ~ class)$p.value)
 hist(pvalues)
 sum(pvalues < 0.05)
 @ 
@@ -1609,6 +1621,10 @@ source("script1.R", echo = TRUE, max.deparse.length = 999999)
 \end{description}
 
 
+In section \ref{example-multtest} you will have a chance to use and play
+with a script that reproduces what we did in section \ref{mistery}.
+
+
 \section{Basic R data structures}
 \subsection{Vectors} 
 
@@ -2241,16 +2257,15 @@ AB2$status <- rep(c("Z", "V"), 5)
 
 \subsection{Odds and ends}
 
-\paragraph Reshaping data 
-Sometimes you will need to go from a ``wide''
+Reshaping data: Sometimes you will need to go from a ``wide''
 to a ``long'' format in your data, or viceversa (e.g., repeated measures
 of the same individuals over time). Look at \code{?reshape}, although I
 find that the ``reshape2'' package tends to make life much easier for this
 task.
 
-\paragraph Data table
-For dealing efficiently with large data sets, and other niceties, the
-``datatable'' package (with its datatables) can really make a difference.
+Data table: For dealing efficiently with large data sets, and other
+niceties, the ``datatable'' package (with its datatables) can really make
+a difference.
 
 
 \section{Tables}\label{tables}
@@ -2834,7 +2849,7 @@ steps are:
 
 <<eval=TRUE,results='hide'>>=
 randomdata <- matrix(rnorm(50 * 500), ncol = 50)
-clase <- factor(c(rep("sano", 20), rep("enfermo", 30)))
+class <- factor(c(rep("NC", 20), rep("cancer", 30)))
 @ 
 
 Do we know what the output from a \textit{t-test} looks like? What do we
@@ -2842,7 +2857,7 @@ want to select? Lets play a little bit:
 
 <<>>=
  
-tmp <- t.test(randomdata[1, ] ~ clase)
+tmp <- t.test(randomdata[1, ] ~ class)
 tmp
 attributes(tmp)
 tmp$p.value
@@ -2854,7 +2869,7 @@ computations here!):
 <<fig.keep="none",eval=TRUE,results='hide'>>=
  
 pvalues <- apply(randomdata, 1, 
-                 function(x) t.test(x ~ clase)$p.value)
+                 function(x) t.test(x ~ class)$p.value)
 hist(pvalues)
 order(pvalues)
 which(pvalues < 0.05)
@@ -2886,15 +2901,17 @@ of them. If they ask you for data, you should know how to simulate data to
 pretend you have been given some data.
 
 
-
-\section{Debugging and catching exceptions}
+\clearpage
+\section{Debugging and catching exceptions}\label{debug}
 Often, things do not work as expected, and we need to debug our
 code. Debugging is a big issue. As Matloff insists, debugging is basically
 about testing your assumptions about what a piece of code is doing. In
-what follows, I provide just a very quick summary of really helpful things
-that I use often.  But there is much more. Look here: 
+what follows, I provide just a quick summary of really helpful things that
+I use often (there are some extra techniques and approaches, but really
+understanding the ones below will take you far).  
 
-\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/}, 
+Anyway, here are some additional places to look at:
+\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/},
 \Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/debug.shtml},
 \Burl{http://www.biostat.jhsph.edu/\%7Erpeng/docs/R-debug-tools.pdf}, and
 chapter 9 in ``Advanced R'' (available here :
@@ -2910,8 +2927,9 @@ things, and that does not play well with static notes).
 
 \subsection{What exactly broke?}
 
-\code{traceback} shows the call stack and helps you identify where the
-sequence of calls lead to a problem:
+\code{traceback} shows the call stack and helps you identify where things
+crashed, so you can tell which is the function where the problem shows up:
+
 
 <<>>=
 f1 <- function(x) 3 * x
@@ -2920,12 +2938,14 @@ f2 <- function(x) 5 + f1(x)
 
 f3 <- function(z, u) {
     v <- runif(z)
-    f2(v + u)
+    a <- f2(u)
+    b <- f2(3 * v)
+    return(a + b)
 }
 f3(3, 7)
 @ 
 
-<<error=TRUE>>=
+<<eval=FALSE,error=TRUE>>=
 f3(-5, 6)
 traceback()
 
@@ -2934,6 +2954,12 @@ traceback()
 @ 
 
 
+%% using f2(v + u) above is confusing, because the error jumps in f1, when
+%% it tries to evaluate.
+
+That, however, is only part of the process. In the case above, we know
+sometimes it is the call to \code{runif} and some times is the call to
+\code{f1}. But we might want to look closer at what is happening.
 
 \subsection{\code{debug} and \code{browser}}
 
@@ -2948,79 +2974,59 @@ want to go into debugging mode. And you can exit from the whole debugging
 process by ``Q''
 
 <<eval=FALSE>>=
-f4 <- function(z, u) {
-    v <- runif(z)
-    a <- f2(v + u)
-    b <- f2(3 * v)
-    return(a + b)
-}
 debug(f4)
-f4(3, 5)
-undebug(f4)
-f4(3, 5)
+f3(3, 5)
+undebug(f3) ## stop debugging
+f3(3, 5)
 @ 
 
 You can also use \code{browser}. It is very easy to add that to a function
-you wrote, wherever you want it to stop. 
-
-<<>>=
-f4 <- function(z, u) {
-    v <- runif(z)
-    browser()
-    a <- f2(v + u)
-    b <- f2(3 * v)
-    return(a + b)
-}
-@ 
-
-Make sure you try this, and when it stops, look around (e.g., type
-\code{ls()}, reassign values, etc).
+you wrote, wherever you want it to stop.  Make sure you try this, and when
+it stops, look around (e.g., type \code{ls()}, reassign values, etc).
 
 <<eval=FALSE>>=
-f4(3, 5)
-f4(3, 11)
+f3(3, 5)
+f3(3, 11)
 @ 
 
 Or you can set up conditional browsers. For example, call it only if
 \code{z > 5}:
 
 <<>>=
-f4 <- function(z, u) {
+f3 <- function(z, u) {
     v <- runif(z)
     if (z > 5) browser()
-    a <- f2(v + u)
+    a <- f2(u)
     b <- f2(3 * v)
     return(a + b)
 }
 @ 
+
+
+It is bad practice to leave \code{browser}s around (for obvious
+reasons). Likewise, you should \code{undebug} when you are done, or source
+again your function (which will have the effect of undebugging it).
 
 
 \subsection{Browsing arbitrary functions at arbitrary places}
 Can you place \code{browser} at arbitrary places in arbitrary functions
-including, say, from a package you have not written? Yes. You just have to
-pass it the line number, using the function \code{trace}. And how do you
-find the line number? Use \code{as.list(body(theFunctionname)}.
+including, say, from a package or the base system you have not written?
+Yes. You just have to pass it the line number, using the function
+\code{trace}. And how do you find the line number? Use
+\code{as.list(body(theFunctionname)}.
 
-Let's start with a simple function:
-<<>>=
-f4 <- function(z, u) {
-    v <- runif(z)
-    a <- f2(v + u)
-    b <- f2(3 * v)
-    return(a + b)
-}
+Let's start with our simple function:
+
+<<eval=FALSE>>=
+as.list(body(f3))
+trace(f3, tracer = browser, at = 3)
+
+f3 # notice the message 
 @ 
 
 <<eval=FALSE>>=
-as.list(body(f4))
-trace(f4, tracer = browser, at = 3)
-# notice the message
-f4
-@ 
-
-<<eval=FALSE>>=
-f4(4, 5)
-untrace(f4) ## stop tracing
+f3(4, 5)
+untrace(f3) ## stop tracing
 @ 
 
 
@@ -3043,17 +3049,6 @@ inside. We can ask R to do that: stop when the error occurs, and allow us
 to look around:
 
 <<eval=FALSE>>=
-f1 <- function(x) 3 * x
-
-f2 <- function(x) 5 + f1(x)
-
-f3 <- function(z, u) {
-    v <- runif(z)
-    a <- f2(u)
-    b <- f2(v)
-    a + b
-}
-
 opt <- options(error = recover)
 ## Notice the next show, as they should,
 ## different frame numbers. The error is in different
@@ -3066,10 +3061,7 @@ f3(-5, 3)
 
 You will be shown the possible frames, you can enter the one you want, and
 look around, etc. This is \textbf{extremely handy} in some situations, or
-when you only get errors from time to time, etc\footnote{The chapter from
-  ``Advanced R'' would seem to suggest you do \code{options(error =
-    browser)}. Nope, you have to do \code{options(error = recover)}.}.
-
+when you only get errors from time to time, etc.
 
 
 Once you are done, set the option back to what it was:
@@ -3103,12 +3095,47 @@ RStudio will offer you to run it again with debug (it will be fairly
 obvious, just do it).
 
 The chapter from ``Advanced R'' explains in detail RStudio's functionality
-in this area. In addition, this is like to just get more and more
-functionality in the future (comfortable and powerful debugging are
-important features).
+in this area, which includes setting breakpoints and other additional
+features.
 
 Emacs + ESS has also its own way of doing these things.
 
+
+\subsection{And warnings?}
+If you get warnings in your own code, but you don't understand it, you can
+turn warnings into errors, and use the above debugging approaches. Just do
+
+<<eval=FALSE>>=
+opt <- options(warn = 2)
+@ 
+
+And then, a warning will behave as an error. Once you are done, return
+things back to what they were:
+
+<<eval=FALSE>>=
+options(opt)
+@ 
+
+
+\subsection{Confused about where you are?}
+Sometimes, while debugging, especially if you have turned debugging on
+several functions, some of which call some others, you might get lost, and
+not know where you are. In such a case, type \code{where}. Yes, like that,
+not \code{where()}. It will give you the call stack and you will see where
+you are. You can try it:
+
+<<eval=FALSE>>=
+debug(f1); debug(f2); debug(f3)
+f3(4, 5) ## now, keeping pressing enter or n
+         ## and you'll get deeper and deeper
+         ## while in browser mode, type where
+@ 
+Return things to normal
+<<eval=FALSE>>=
+undebug(f3)
+undebug(f2)
+undebug(f1)
+@ 
 
 
 \subsection{Protecting from possible failures}
@@ -3140,7 +3167,7 @@ but I allow the rest of the process to continue.
 
 More sophisticated approaches are available. Look at the references above.
 
-\section{Additional programming practice}
+\section{Additional programming practice}\label{more-ex}
 
 The following sections offer some additional programming practice. Please
 use what you have seen above, and especially take the following as
@@ -3835,9 +3862,6 @@ sessionInfo()
 
 
 
-* To do 
-  - Debugging
-  - A little about lexical scope?
 
   
   
