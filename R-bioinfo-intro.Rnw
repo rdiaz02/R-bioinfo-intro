@@ -3169,6 +3169,28 @@ but I allow the rest of the process to continue.
 
 More sophisticated approaches are available. Look at the references above.
 
+
+
+% FIXME add this in the future?
+
+\section{Object-oriented programming and classes S3 and S4}\label{oop}
+Is object-oriented programming possible in R? Yes. In fact, there are
+three different systems for OOP. But we will not cover any in this course
+and, in fact, nothing in these notes (except for a possibly cryptic
+reference to \code{predict.randomForest}, in section \ref{selbias})
+requires you to understand any of this. But it can become
+important when you write code and it will become relevant when you read
+code from others. Look at section 10.9 in ``An introduction to R''
+(\Burl{http://cran.r-project.org/doc/manuals/r-release/R-intro.html\#Object-orientation}),
+included with your R, which only covers S3, and chapter 7 of Wickham's
+``Advanced R'', \Burl{http://adv-r.had.co.nz/OO-essentials.html}, which
+covers S3, S4, and reference classes, for more details. S3 is a relatively
+simple approach, and is the one used by most CRAN packages (and the one
+used in base and stats in R); S4 is very popular in BioConductor, but is
+much more complicated (and, I'd say, cumbersome).
+
+
+\clearpage
 \section{Additional programming practice}\label{more-ex}
 
 The following sections offer some additional programming practice. Please
@@ -3704,7 +3726,7 @@ tmp <- permut.test(d21, d22, num.permut = 1000,
 
 You might want to compare with t-tests, etc. 
 \clearpage
-\subsection{Selection bias in classification}
+\subsection{Selection bias in classification}\label{selbias}
 
 % \bibliography{R-quick-intro}
 
@@ -3806,9 +3828,9 @@ for(sample.number in 1:knumber) {
   
   
 \item The above are default arguments. But enlightenment will come easily
-  (i.e., you should) play around with those: is selection bias more severe
-  the more genes you select? The more genes you can select from? What
-  about number of subject? Etc, etc.
+  if you play around with those: is selection bias more severe the more
+  genes you select? The more genes you can select from?  What about number
+  of subjects? Etc, etc.
 
 \item You will want textual output and figures, of course.  
   
@@ -3831,6 +3853,9 @@ A basic piece of code that does most of the above takes less than 70 lines.
 <<>>=
 sessionInfo()
 @ 
+
+
+
 
 %% \section{Test}
 %% <<>>=
