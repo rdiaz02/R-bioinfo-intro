@@ -68,7 +68,7 @@ opts_chunk$set(size= "small", error=FALSE)
 
 
 %% decreasing margins after knitr output
-\setlength{\topsep}{0pt}
+%% \setlength{\topsep}{0pt}
 %% \setlength{\parskip}{0pt}
 %% \setlength{\partopsep}{1pt}
 
@@ -3200,12 +3200,15 @@ opportunities to practice debugging.
 \clearpage
 \subsection{Those common genes and some Venn diagrams}
 Someone has examined what genes are over-expressed in three different
-conditions (three different drugs). They are called ``Condition\_A.txt'',
-``Condition\_B.txt'', ``Condition\_C.txt''. You want to understand which
-are over-expressed under more than one drug. You might want to know which
-are overexpressed in three conditions, or which are overexpressed in
-exactly these two conditions, etc. Or find out how many are overexpressed
-under two of the drugs but not the third. Etc.
+conditions (three different drugs)\footnote{This data have been kindly
+  provided by Luis del Peso, at the Department of Biochemistry,
+  Universidad Aut\'onoma de
+  Madrid. \Burl{http://www.iib.uam.es/persona?id=lpeso}}. They are called
+``Condition\_A.txt'', ``Condition\_B.txt'', ``Condition\_C.txt''. You want
+to understand which are over-expressed under more than one drug. You might
+want to know which are overexpressed in three conditions, or which are
+overexpressed in exactly these two conditions, etc. Or find out how many
+are overexpressed under two of the drugs but not the third. Etc.
 
 We will walk over a case here, thinking about making the solution as
 general as possible (e.g., with other file names, and with different
@@ -3477,9 +3480,9 @@ ovxABC <- geneFiles2Mat()
 
 Wait: two final checks:
 <<>>=
-## stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
-##                     sort(Reduce(intersect, readListGenes()))
-##                     ))
+stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
+                    sort(Reduce(intersect, readListGenes()))
+                    ))
 
 stopifnot(identical(ovxABC, overexpressed))
 @ 
