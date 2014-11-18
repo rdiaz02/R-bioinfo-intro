@@ -32,7 +32,10 @@ texi2pdf $BASENAME2.tex
 sweave2html $BASENAME2
 mv $BASENAME2.html $BASENAME.html
 
+rm $BASENAME-html-dir.zip
 mkdir $BASENAME-html-dir
+rm $BASENAME-html-dir/figures_html/*.pdf
+rm $BASENAME-html-dir/figures_html/*.png
 cp $BASENAME.html ./$BASENAME-html-dir/.
 cp -a figures_html ./$BASENAME-html-dir/.
 zip -r $BASENAME-html-dir.zip $BASENAME-html-dir
