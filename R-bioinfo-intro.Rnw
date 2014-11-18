@@ -2609,17 +2609,22 @@ style) and there are issues of lexical scoping in what f2 and f3 are doing
 (and I would regard f2 as a perfectly OK function, given how f3 is, even
 if there is a free variable in f2). And all these relate, and need to
 be answered, in the context of these concepts/terms (I take here the
-definitions from the extremely clear PDF by John Fox, linked above):
+definitions from the extremely clear PDF by John Fox, linked above, with a
+few modifications following Chamber's ``Software for data analysis'', p.\
+119 and ff.\ and chapter 8 of Wickham's ``Advanced R''):
 
 \begin{description}
 \item[binding] In \code{y <- 9} y is bound to the value 9.
 \item[free variable] ``z'' is a free variable in function f1, above. It is
   not bound to anything (at least in that frame).
 \item[frame] A set of bindings (y to 9, maybe x to 77, etc).
-\item[environment] A sequence of frames. When f2 goes looking for the
-  value of ``v'' it will do so looking through a sequence of frames. R
-  will search through a sequence of frames, so understanding how that
-  sequence is ordered is crucial to understanding the above examples.
+\item[environment] You can think of it as a sequence of frames. When f2
+  (well, R) goes looking for the value of ``v'' it will do so looking
+  through a sequence of frames.  In fact, an environment has two
+  components: a frame and a reference to another environment, its parent
+  environment (or its enclosing environment); since each environment has a
+  reference to another environment, you can now easily understand the idea
+  of an environment as a sequence of frames.
 \end{description}
 
 
