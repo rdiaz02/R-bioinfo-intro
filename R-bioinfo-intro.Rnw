@@ -1,27 +1,6 @@
 %% ;;; -*- mode: Rnw; -*-
 
 \documentclass[a4paper,11pt]{article}
-
-
-<<error=FALSE, include=FALSE, cache=FALSE>>=
-require(knitr, quietly = TRUE)
-opts_knit$set(concordance = TRUE)
-opts_chunk$set(size= "small", error=FALSE)
-## opts_knit$set(stop_on_error = 2L)
-## mytry <- function(x) try(x) ## eliminate?
-@ 
-
-%% For using listings, so as to later produce HTML
-%% uncommented by the make-knitr-hmtl.sh script
-%%listings-knitr-html%%\usepackage{listings}
-%%listings-knitr-html%%\lstset{language=R}
-%%listings-knitr-html%%<<error=FALSE, include=FALSE, cache=FALSE>>=
-%%listings-knitr-html%%opts_chunk$set(fig.path = 'figure/listings-')
-%%listings-knitr-html%%options(formatR.arrow = TRUE)
-%%listings-knitr-html%%options(replace.assign = TRUE)
-%%listings-knitr-html%%render_listings()
-%%listings-knitr-html%%@ 
-
 \usepackage{graphics}
 %\usepackage[dvips]{graphicx}
 \usepackage{amssymb,amsfonts,amsmath,amsbsy}
@@ -75,6 +54,30 @@ opts_chunk$set(size= "small", error=FALSE)
 \usepackage{gitinfo2}
 
 
+
+
+%% For using listings, so as to later produce HTML
+%% uncommented by the make-knitr-hmtl.sh script
+%%listings-knitr-html%%\usepackage{listings}
+%%listings-knitr-html%%\lstset{language=R}
+
+<<setup,include=FALSE,cache=FALSE>>=
+require(knitr)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+## next are for listings, to produce HTML
+##listings-knitr-html%%options(formatR.arrow = TRUE)
+##listings-knitr-html%%render_listings()
+@ 
+
+\begin{document}
+
+%% Only takes effect after begin document?
+%%listings-knitr-html%%<<listingfigdir,error=FALSE, include=FALSE, cache=FALSE>>=
+%%listings-knitr-html%%opts_chunk$set(fig.path = 'figures_html/listings-')
+%%listings-knitr-html%%@ 
+
+
 \title{A quick and crash introduction to R with a bioinformatics bent}
 
 \date{\gitAuthorDate\ {\footnotesize (Release\gitRels: Rev: \gitAbbrevHash)}}
@@ -84,7 +87,11 @@ opts_chunk$set(size= "small", error=FALSE)
     \texttt{rdiaz02@gmail.com}}}
 
 
-\begin{document}
+%% <<>>=
+%% opts_chunk$set(size= "small", error=FALSE)
+%% @ 
+
+
 
 
 \maketitle
