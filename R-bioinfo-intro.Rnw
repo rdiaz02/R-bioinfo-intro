@@ -797,22 +797,29 @@ apropos("norm")
 help.search("normal")
 @
  
-Many functions include executable code (examples)
-<<eval=FALSE>>=
+Many help files include executable code (examples)
+<<eval=FALSE, results='hide'>>=
 example(rnorm)
-example(graphics)
+example(graphics) ## will give an error
 example(lm)
 @ 
 \noindent and note how you get to see the code that produced the figures.
 example.
 
  
-Some functions include demos
+Some help files include demos
 <<eval=FALSE>>=
 demo(graphics)
 @ 
 \noindent again, note how you get to see the code that produced the
 figures.  example.
+
+
+And some include both
+<<eval=FALSE>>=
+demo(persp)
+example(persp)
+@ 
 
 But there are many other ways of searching for help about how to do
 something with \R. Of course, you can google around, use stackoverflow,
@@ -825,7 +832,7 @@ help you search functions, etc, in packages that you do not have
 installed, ranks search results, etc. It is well documented (see
 \Burl{http://cran.r-project.org/web/packages/sos/vignettes/sos.pdf}). The
 only problem I see is that only some of the BioConductor packages are
-among those searched.
+among those searched (and you need an internet connection).
 
 Patrick Burns has a interesting blog entry about R navigation tools:
 \Burl{http://www.burns-stat.com/r-navigation-tools/}.
