@@ -1939,6 +1939,13 @@ w
 @ 
 
 
+But compare this:
+<<>>=
+w[] <- 77
+w[] <- 17:55
+w <- 17:55
+@ 
+
 
 
 
@@ -2058,7 +2065,33 @@ as.character(y)
 @ 
 
 
+\subsubsection{Factors and symbols, colors, etc, in plots}
+You often see code as follows:
 
+<<eval=FALSE>>=
+plot(y ~ x, col = c("red", "blue")[group])
+@ 
+
+where \texttt{group} is a factor. Why does that work? Oh, and then you
+might see code where we add a legend as
+
+<<eval=FALSE>>=
+legend(1, 2, legend = c("A", "B"), 
+       col = c("red", "blue")[factor(levels(group))])
+@ 
+
+
+I won't give the solution here, but these are some hints. Try the following:
+
+
+<<>>=
+gr <- c("B", "A", "A", "B", "A")
+group <- factor(gr)
+c("red", "blue")[gr]
+c("red", "blue")[group]
+c("red", "blue")[levels(group)]
+c("red", "blue")[factor(levels(group))]
+@ 
 
 
 \subsection{Matrices}
@@ -2575,6 +2608,31 @@ decide what and how your functions do, print, plot, etc, etc, etc.
 
 And, as we will see below, many functions are often ``defined on the fly''.
 
+\subsection{Order of arguments, named and unnamed arguments, etc}
+
+R is fairly flexible in how you can invoke a function and the order in
+which you pass arguments. But there are better and worse ways of doing
+it. In general, use positional matching only for the first (or first two)
+arguments, and avoid passing unnamed arguments after named ones. For instance:
+
+
+<<>>=
+f1 <- function(one, two, three) {
+    cat("one = ", one, 
+        " two = ", two, 
+        " three = ", three, "\n")}
+
+## We are OK
+f1(1, 2, 3) 
+## We are OK, but this is getting risky
+f1(two = 2, three = 3, 1) 
+## We are no longer OK. Nothing "strange" happened
+## but we would need to be very careful. So avoid it.
+f1(two = 2, 3, 1) 
+@ 
+
+The above rules are even more important when arguments with default
+arguments are considered.
 
 
 \subsection{Scoping, frames, environments, etc}\label{scoping}
@@ -2672,6 +2730,8 @@ before we leave, we will remove our ``c'':
 rm(c)
 @ 
 Oh, do you know what ``c'' we just removed?
+
+
 
 
 
