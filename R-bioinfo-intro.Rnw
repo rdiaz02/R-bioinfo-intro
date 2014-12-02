@@ -2305,11 +2305,11 @@ AB2$status <- rep(c("Z", "V"), 5)
 
 \subsection{Odds and ends}
 
-Reshaping data: Sometimes you will need to go from a ``wide''
-to a ``long'' format in your data, or viceversa (e.g., repeated measures
-of the same individuals over time). Look at \code{?reshape}, although I
-find that the ``reshape2'' package tends to make life much easier for this
-task.
+Reshaping data: Sometimes you will need to go from a ``wide'' to a
+``long'' format in your data, or viceversa (e.g., repeated measures of the
+same individuals over time). Look at \code{?reshape}, although I find that
+the ``reshape2'' package (and possibly also the ``tidyr'' package) tends
+to make life much easier for this task.
 
 Data table: For dealing efficiently with large data sets, and other
 niceties, the ``datatable'' package (with its datatables) can really make
@@ -2346,6 +2346,12 @@ be continuous. But lets create another data set:
 AC <- AB2[, c("Sex", "status")]
 table(AC)
 @ 
+
+Of course, you could do
+<<>>=
+table(AB2[, c("Sex", "status")])
+@ 
+
 So if all you have are categorical variables, the above works. And all
 this applies to more than two variables, of course.
 
@@ -2357,7 +2363,7 @@ x <-  data.frame(a = c(1,2,2,1,2,2,1),
 ## tabulate: so create a data frame with a "Freq" column
 dfx <- as.data.frame(table(x))
 
-## Recover the table
+## Recover the table (you will not do this often?)
 xtabs(Freq ~ a + b + c, data = dfx)
 ## of course, this is the same
 xtabs(~ a + b + c, data = x)
@@ -2802,6 +2808,12 @@ mean and standard deviation) and the return value is a list:
 <<>>=
 by(one.dataframe$age, list(one.dataframe$sex), 
    function(x) c(mean(x), sd(x)))
+@ 
+
+You can do much of that with aggregate too, but the output is different:
+<<>>=
+aggregate(one.dataframe$age, one.dataframe[2], 
+          function(x) c(Mean = mean(x), SD = sd(x)))
 @ 
 
 Since the need for these operations is very common (getting summaries or
