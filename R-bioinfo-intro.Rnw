@@ -254,6 +254,7 @@ You should have (or should get) the following files:
 \item \code{anage.RData}
 \item \code{lastExample.R}
 \item \code{Condition\_A.txt}, \code{Condition\_B.txt}, \code{Condition\_C.txt}
+\item \code{permafrost-zip}, a compressed directory with 5000 files.
 \item \code{R-bioinfo-intro-html-dir.zip}: a zip file that, when
   uncompressed, while give you a directory that contains the HTML version
   of this PDF and a directory for the figures (used in the HTML). You can
@@ -3289,7 +3290,195 @@ use what you have seen above, and especially take the following as
 opportunities to practice debugging.
 
 \clearpage
-\subsection{Those common genes and some Venn diagrams}
+
+
+\subsection{Is there a procaryote stop codon in here?}
+
+Someone in your lab has a set of many sequences (here, 5000) of DNA from a
+bunch of samples collected from permafrost areas.  There are some
+hypothesis about the types of organisms in those areas but, to make the
+story short, the idea is that as part of your research you want to
+separate those sequences between those that have the procaryote stop
+codons and those that don't and check:
+
+
+\begin{itemize}
+\item Are there differences in the length of the two types of sequences?
+
+\item Are there differences in the frequency of T between the two types of
+  sequences?
+  
+\end{itemize}
+
+All the files are in the directory \texttt{permafrost} (part of the
+compressed file \texttt{permafrost.zip}).
+
+%% \begin{itemize}
+%% \item generate many sequences
+%% \item get frequencies of nucleotides per sequence only in sequences with a
+%%   given codon
+%% \item more advanced: count how often that codon in each sequence
+%% \end{itemize}
+
+%% c1 <- la sequencia
+%% c2 <- strsplit(c1, "")[[1]]
+%% for(i in 1:(length(c2)-2)) print(paste0(c2[i:(i+2)]))
+
+
+%% Do not eval more than once
+<<echo=FALSE, eval = TRUE, results = 'hide'>>=
+set.seed(1234)
+nseqs <- 5000
+
+nt <- c("A", "C", "G", "T")
+
+generate <- function(l1 = 10, l2 = 500) {
+    ls <- round(runif(1, l1, l2))
+    return(paste0(sample(nt, ls, replace = TRUE), 
+                  collapse = ""))
+}
+
+generateAndWrite <- function() {
+    namef <- paste(sample(c(LETTERS, 0:9), 12), collapse = "")
+    seq <- generate()
+    writeLines(seq, con = paste0("./permafrost/", namef))
+}
+
+tmp <- replicate(nseqs, generateAndWrite())
+
+@ 
+
+
+
+What do we want to do?
+\begin{enumerate}
+\item Read all files. In fact, \textbf{any} number of files, where each
+  file is a sequence.
+\item Keep only those sequences that contain the stop codons.
+\item For those sequences that contain the stop codons, find:
+  \begin{itemize}
+  \item Frequency of T.
+  \item The length of the sequence.
+  \end{itemize}
+\end{enumerate}
+
+
+Let's do it:
+
+Read all the files. Note this: I can read \textbf{ANY} number of
+files. I assume you are above \texttt{permafrost} and then:
+<<results='hide'>>=
+files <- dir(path = "./permafrost", full.names = TRUE)
+sequences <- lapply(files, function(x) scan(x, what = ""))
+@ 
+
+
+How do we know if a sequence has a stop codon? The next will do, but note
+it is general enough to accommodate any set of codons:
+<<>>=
+stopCodons <- c("TAA", "TAG", "TGA")
+
+matchAnyCodon <- function(x, codons = stopCodons) {
+  any(sapply(codons, function(codon) grepl(codon, x)))
+}
+@ 
+
+Actually, for real, I'd use this different definition which is slightly
+faster and more strict (see also section \ref{venn}):
+
+<<>>=
+matchAnyCodon <- function(x, codons = stopCodons) {
+  any(vapply(codons, 
+             function(codon) grepl(codon, x),
+             logical(1)))
+}
+
+@ 
+
+What sequences have the stop codons? Easy:
+
+<<>>=
+seqs.stop.codon <- sapply(sequences, matchAnyCodon)
+@ 
+
+
+Split the sequences into two sets, those with and those without the stop codons:
+
+<<>>=
+seqsStop <- sequences[seqs.stop.codon]
+seqsNonStop <- sequences[!seqs.stop.codon]
+@ 
+
+Lengths?
+<<results='hide'>>=
+summary(sapply(seqsStop, nchar))
+summary(sapply(seqsNonStop, nchar))
+@ 
+
+Frequency of nucleotides? First, we need a function to break into
+characters and then tabulate; we just want the frequency of T.
+
+<<>>=
+fnucl <- function(x) {
+    indivc <- strsplit(x, "")[[1]]
+    table(indivc)[4]/nchar(x)
+}
+@ 
+
+We are done %% this breaks if I give the output
+<<results='hide'>>=
+summary(sapply(seqsStop, fnucl))
+summary(sapply(seqsNonStop, fnucl))
+
+@ 
+
+
+
+
+
+\subsection{How did I generate the data?}
+
+The data are all made up. Here is the code:
+
+%% no need for file.remove: we overwrite.
+<<eval=FALSE>>=
+setwd("permafrost")
+set.seed(1234)
+nseqs <- 5000
+
+nt <- c("A", "C", "G", "T")
+
+generate <- function(l1 = 10, l2 = 500) {
+    ls <- round(runif(1, l1, l2))
+    return(paste0(sample(nt, ls, replace = TRUE), 
+                  collapse = ""))
+}
+
+generateAndWrite <- function() {
+    namef <- paste(sample(c(LETTERS, 0:9), 12), collapse = "")
+    seq <- generate()
+    writeLines(seq, con = paste0("./permafrost/", namef))
+}
+
+tmp <- replicate(nseqs, generateAndWrite())
+
+@ 
+
+
+\subsection{A few comments}
+There is a certain degree of informality here. Note that in some functions
+I explicitly use a \texttt{return} (which is what I usually like to do),
+but in some I did not (it is not really necessary). I also used
+\texttt{sapply} a lot; in longer code or inside functions I'd have used
+something else, such as \texttt{unlist(lapply)} or \texttt{vapply}.
+
+Regardless of those details, please note how brief and expressive the R
+code can be and how easy it is to present a rather general solution.
+
+
+
+
+\subsection{Those common genes and some Venn diagrams}\label{venn}
 Someone has examined what genes are over-expressed in three different
 conditions (three different drugs)\footnote{This data have been kindly
   provided by Luis del Peso, at the Department of Biochemistry,
