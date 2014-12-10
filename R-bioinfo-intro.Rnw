@@ -1829,29 +1829,27 @@ vv[vv < 5]
 @ 
 
 
-But the following can be at times easier to understand (or to use)
+But the following is often much easier to understand (or to use)
 <<>>=
 sum(vv < 5)
 @ 
 
 Why did that work? What is \code{vv < 5} returning?
 
-\subsubsection{Names of elements}
+\subsection{Names of elements}
 \label{names-elements}
 
 The elements of a vector can have names (you should make them
 distinct). We will see soon why this is very helpful. For now, see this:
 
 <<>>=
-times.run  <-  c(first=9,second=12,third=17)
-names(times.run)
-
 ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
+names(ages)
 ages
 @
 
 
-\subsubsection{Accessing (and modifying) vector elements: indexing and subsetting}\label{vindex}
+\subsection{Accessing (and modifying) vector elements: indexing and subsetting}\label{vindex}
 
 
 \subsubsection{Vector indexing}
@@ -1901,20 +1899,17 @@ w[-c(3, 1)]
 
 Using names
 <<>>=
-(times.run  <-  c(first=9,second=8,third=7))
-times.run["second"]
-times.run[c("first", "second", "first", "third")]
 
 ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
 ages["Irene"]
-ages[c("Irene", "Juan")]
+ages[c("Irene", "Juan", "Irene")]
 @ 
 
 
 Using a logical vector \ldots
 <<>>=
 ages[c(FALSE, TRUE, TRUE, FALSE)]
-ages[c(FALSE, TRUE)] ## what is this doing?
+ages[c(FALSE, TRUE)] ## what is this doing? Avoid these things
 @ 
 
 \ldots or something that implicitly is a logical vector
@@ -1995,7 +1990,8 @@ the FAQ (question 7.31):
 
 The take home message: be extremely suspicious whenever you see an
 equality comparison of two floating-point numbers; that is unlikely to do
-what you want.
+what you want. If you know what you are doing, take a look at
+\texttt{all.equal} for near equality comparisons of objects.
 
 
 
@@ -2237,7 +2233,7 @@ A more complex list, that includes another list inside:
                       "female", "female")))))
 @ 
 
-Note that many functions in \R\  return lists.
+Note that many functions in R  return lists.
 
 
 
@@ -2707,8 +2703,8 @@ few modifications following Chamber's ``Software for data analysis'', p.\
 \end{description}
 
 
-And this would bring us to consider, too, why things such as this work
-at all in the way we expect:
+And this should bring us to consider, too, why things such as this work at
+all in the way we expect:
 
 <<>>=
 c
@@ -2738,6 +2734,32 @@ rm(c)
 @ 
 Oh, do you know what ``c'' we just removed?
 
+\subsection{The \ldots}
+
+The $\ldots$ allows you to pass further arguments that some function
+inside your function will take care of:
+
+<<>>=
+f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
+
+f0(1:5, col = "red", type = "b")
+@ 
+
+
+Make sure you understand why only \texttt{fa}) does what you
+want: 
+<<results='hide'>>=
+
+fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
+fa(1:5, "blue", pch = 8)
+
+fb <- function(x, col = "red", ...) {plot(x, col = col)}
+fb(1:5, "blue", pch = 8)
+
+fc <- function(x, col = "red") {plot(x, col = col, ...)}
+fc(1:5, "blue", pch = 8)
+
+@ 
 
 
 
@@ -3416,14 +3438,25 @@ summary(sapply(seqsNonStop, nchar))
 @ 
 
 Frequency of nucleotides? First, we need a function to break into
-characters and then tabulate; we just want the frequency of T.
+characters and then tabulate; we just want the frequency of T. But this is
+not a good idea. Why?
 
 <<>>=
-fnucl <- function(x) {
+fnucl0 <- function(x) {
     indivc <- strsplit(x, "")[[1]]
     table(indivc)[4]/nchar(x)
 }
 @ 
+
+This is better:
+<<>>=
+fnucl <- function(x) {
+    indivc <- strsplit(x, "")[[1]]
+    table(indivc)["T"]/nchar(x)
+}
+@ 
+
+
 
 We are done %% this breaks if I give the output
 <<results='hide'>>=
