@@ -2748,7 +2748,7 @@ f0(1:5, col = "red", type = "b")
 
 Make sure you understand why only \texttt{fa}) does what you
 want: 
-<<results='hide'>>=
+<<eval = FALSE, results='hide'>>=
 
 fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
 fa(1:5, "blue", pch = 8)
@@ -3389,10 +3389,12 @@ Let's do it:
 
 Read all the files. Note this: I can read \textbf{ANY} number of
 files. I assume you are above \texttt{permafrost} and then:
-<<results='hide'>>=
+<<reading-codons,results='hide'>>=
 files <- dir(path = "./permafrost", full.names = TRUE)
-sequences <- lapply(files, function(x) scan(x, what = ""))
+sequences <- lapply(files, function(x) scan(x, what = "", quiet = TRUE))
 @ 
+\noindent (using \texttt{quiet} is so as to avoid 5000 lines of
+uninteresting output).
 
 
 How do we know if a sequence has a stop codon? The next will do, but note
@@ -3424,6 +3426,15 @@ seqs.stop.codon <- sapply(sequences, matchAnyCodon)
 @ 
 
 
+Make sure nothing strange (such as missing values, it is a vector of
+length 5000, etc):
+<<results='hide'>>=
+summary(seqs.stop.codon)
+str(seqs.stop.codon)
+@ 
+
+
+
 Split the sequences into two sets, those with and those without the stop codons:
 
 <<>>=
@@ -3438,13 +3449,14 @@ summary(sapply(seqsNonStop, nchar))
 @ 
 
 Frequency of nucleotides? First, we need a function to break into
-characters and then tabulate; we just want the frequency of T. But this is
-not a good idea. Why?
+characters and then tabulate; we just want the frequency of T. But the
+following code is not a good idea and can give (and gives here) incorrect
+results. Why?
 
 <<>>=
 fnucl0 <- function(x) {
     indivc <- strsplit(x, "")[[1]]
-    table(indivc)[4]/nchar(x)
+    table(indivc)[4]/length(indivc)
 }
 @ 
 
@@ -3452,7 +3464,7 @@ This is better:
 <<>>=
 fnucl <- function(x) {
     indivc <- strsplit(x, "")[[1]]
-    table(indivc)["T"]/nchar(x)
+    table(indivc)["T"]/length(indivc)
 }
 @ 
 
@@ -3465,11 +3477,12 @@ summary(sapply(seqsNonStop, fnucl))
 
 @ 
 
+Why do we get two NAs in the second call? What could we do ---maybe if
+there is no T we want a 0, not an NA?
 
 
 
-
-\subsection{How did I generate the data?}
+\subsubsection{How did I generate the data?}
 
 The data are all made up. Here is the code:
 
@@ -3498,7 +3511,7 @@ tmp <- replicate(nseqs, generateAndWrite())
 @ 
 
 
-\subsection{A few comments}
+\subsubsection{A few comments}
 There is a certain degree of informality here. Note that in some functions
 I explicitly use a \texttt{return} (which is what I usually like to do),
 but in some I did not (it is not really necessary). I also used
@@ -3509,7 +3522,7 @@ Regardless of those details, please note how brief and expressive the R
 code can be and how easy it is to present a rather general solution.
 
 
-
+\clearpage
 
 \subsection{Those common genes and some Venn diagrams}\label{venn}
 Someone has examined what genes are over-expressed in three different
