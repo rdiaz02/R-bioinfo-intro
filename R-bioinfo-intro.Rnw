@@ -2746,7 +2746,7 @@ f0(1:5, col = "red", type = "b")
 @ 
 
 
-Make sure you understand why only \texttt{fa}) does what you
+Make sure you understand why only \texttt{fa} does what you
 want: 
 <<eval = FALSE, results='hide'>>=
 
@@ -3090,7 +3090,7 @@ want to go into debugging mode. And you can exit from the whole debugging
 process by ``Q''
 
 <<eval=FALSE>>=
-debug(f4)
+debug(f3)
 f3(3, 5)
 undebug(f3) ## stop debugging
 f3(3, 5)
@@ -3574,6 +3574,9 @@ gf <- dir(pattern = "^Condition_")
 ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
 @ 
 
+There is nothing wrong with the call to \texttt{sapply}, but using
+\texttt{lapply} there might be preferable.
+
 
 But ``Condition\_'' is repeated as a prefix. And txt as postfix.  Get rid
 of them in the names of the list:
@@ -3647,12 +3650,32 @@ f1 <- function(x, all.the.genes) {
 }
 @ 
 
+
+
+
 See if it works
 <<>>=
 head(f1(ovxpGenes[[1]], all.the.genes))
 ## and on the third?
 head(f1(ovxpGenes[[3]], all.the.genes))
 @ 
+
+
+But this is probably clearer? Using a lookup table kind of approach
+<<>>=
+f2 <- function(x, all.the.genes) {
+    vv <- rep(FALSE, length(all.the.genes))
+    names(vv) <- all.the.genes
+    vv[x] <- TRUE
+    return(vv)
+}
+@ 
+
+I leave it as an exercise to show that both functions, \texttt{f1} and
+\texttt{f2} are doing the same thing. 
+
+
+
 
 We are almost done:
 
