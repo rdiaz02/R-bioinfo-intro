@@ -3337,7 +3337,7 @@ codons and those that don't and check:
 \end{itemize}
 
 All the files are in the directory \texttt{permafrost} (part of the
-compressed file \texttt{permafrost.zip}).
+compressed file \texttt{permafrost.zip}). You will need to uncompress them.
 
 %% \begin{itemize}
 %% \item generate many sequences
