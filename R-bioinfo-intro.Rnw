@@ -903,436 +903,6 @@ you do it
 
 
 \clearpage
-\section{Three practical, crash examples}\label{crashex}
-\subsection{Plotting the results from BLAST}\label{blast}
-
-
-This is a quick example of something that is not really just a mere toy
-example.  We have played with some data from an alignment. Let's take a
-quick look at a couple of things:
-\begin{itemize}
-\item The relationship between percentage identity and score.
-\item The distribution of the alignment length. 
-\end{itemize}
-
-
-
-We will read the data and then the a couple of plots. Remember that the
-data are in ``hit-table-500-text.txt'' (don't worry, we will cover reading
-data again later, in section \ref{readingr}).
-
-<<>>=
-hit <- read.table("hit-table-500-text.txt")
-## We know, from the header of the file, that
-## alignment length is the fifth column,
-## score is the 13th and percent identity the 3rd
-hist(hit[, 5]) ## the histogram
-plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
-@ 
-
-But that can be easily improved
-
-% \setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
-%\begin{figure}[h!]
-%\begin{center}
-<<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
-par(mfrow = c(1, 2)) ## two figures side by side
-hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
-plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity", 
-     ylab = "Bit score")
-@ 
-%\end{center}
-%\label{fig-blast}
-%\caption{A quick look at the alignment results}
-%\end{figure}
-
-%\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
-
-These are five lines of code. We will now deal with a few things in a
-little more detail.
-
-And if you want to play around, you can find the best fitting plane of
-score on alignment length and identity\footnote{This is not a great, or
-  even a decent, model of the relationship, which we can see, for
-  instance, from the pattern of the deviations of the points from the
-  plane. But the key for now is the ease of plotting.} , and move it at
-will!. You will need to install two packages (section \ref{packages}):
-\code{car} and \code{rgl}.
-<<eval=FALSE>>=
-library(car)
-scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident", 
-          zlab = "Length", ylab = "Score")
-@ 
-
-By the way, some questions/answers arise from the figures. For instance:
-why does the distribution of alignment lengths seems to have three
-distinct modes? Or how can you explain the plot of score vs.\ percent
-identity? Or what does alignment length add to understanding the
-relationship? We could, in fact, fit (in one line) a linear regression to
-the relationship between Score and the other variables to formally explore
-what is going on\footnote{Not that this would be, in this case, all that
-  needed: from what we know about BLAST we can tell a lot about the
-  expected relationship between Score and the other variables}. Or
-\ldots. 
-
-\clearpage
-\subsection{A simple hypothesis test: the \textit{t-}test}
-
-Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
-have lung cancer. And we have expression data for one gen (say GenA). We
-would like to know whether the (mean) expression of GenA is the same or not
-between the two groups. A \textit{t-}test is well suited for this
-case. Here, we will use simulated data. 
-
-Simulated data? Generating simulated data is extremely useful for testing
-many procedures, emulating specific processes, etc. 
-
-
-\subsubsection{Generating random numbers}
-
-
-\R\  offers
-(pseudo)random number generators from which we can obtain random variates
-for many different distributions. For instance, do
-<<eval=FALSE,results='hide'>>=
-help(rnorm)
-help(runif)
-help(rpois)
-@ 
-
-(i.e., look at the help for those functions). 
-
-
-In fact, those numbers are generated using an algorithm. This comes from
-the Wikipedia (\Burl{http://en.wikipedia.org/wiki/Pseudorandom_number_generator}):
-
-\begin{quote}
-A pseudorandom number generator (PRNG) is an algorithm for generating a
-sequence of numbers that approximates the properties of random
-numbers. The sequence is not truly random in that it is completely
-determined by a relatively small set of initial values, called the PRNG's
-state.
-\end{quote}
-
-And 
-
-\begin{quote}
-  A PRNG can be started from an arbitrary starting state, using a seed
-  state. It will always produce the same sequence thereafter when
-  initialized with that state.
-\end{quote}
-
-
-
-Now, since we all have different machines, the actual outcome of doing, say
-<<>>=
-rnorm(5)
-@ 
-is likely to differ. 
-
-What can we do to get the exact same random numbers? The quote from the
-Wikipedia just told us: we will set the seed of the random number
-generator to force the generator to produce the same sequence of random
-numbers on all computers:
-
-<<>>=
-set.seed(2)
-@ 
-(seting the seed to 2 has no particular meaning; we could have used
-another integer; what matters is that we all use the same seed). So lets
-obtain 50 independent random samples from a normal distribution and create
-a vector for the identifiers (the ``labels'') of the subjects. 
-
-
-\subsubsection{The t-tests and some plots}
-<<>>=
-GeneA <- rnorm(50)
-round(GeneA, 3)
-(Type <- factor(c(rep("Colon", 30), rep("Lung", 20))))
-@ 
-
-Let's do a t-test:
-<<>>=
-t.test(GeneA ~ Type)
-@ 
-As should be the case (we know it, because we generated the data) the
-means of the two groups are very similar, and there are no significant
-differences between the groups.
-
-Let us now generate data where there really are differences between the
-groups, and repeat the test.
-<<>>=
-(GeneB <- c(rep(-1, 30), rep(2, 20)) + rnorm(50))
-t.test(GeneB ~ Type)
-@ 
-
-Now we find a large and significant difference between the two groups.
-
-
-
-How about some plots?
-<<fig.width=7,fig.height=7>>=
-par(mfrow = c(2, 2)) ## a 2-by-2 layout
-boxplot(GeneA ~ Type)
-stripchart(GeneA ~ Type, vertical = TRUE, pch = 1)
-boxplot(GeneB ~ Type)
-stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
-@ 
-
-
-\clearpage
-
-\subsection{Metabolic rate and body mass: more plots and a regression
-  example}
-
-You are interested in the relationship between metabolic rate and body
-mass in birds.  We will use a subset of data from the AnAge data set
-(Animal Ageing and Longevity Database) (accessed on 2014-08-19) from
-\Burl{http://genomics.senescence.info/species/}. This file contains
-longevity, metabolic rate, body mass, and a variety of other life history
-variables. The data I provide you are a small subset that includes only
-some birds and reptiles. 
-
-What I provide you is that is already stored as an R object (so I already
-took care of the \code{read.table} business for you, but if you are
-curious and want the data, skip to \ref{readanage}).
-
-
-First, let us \textbf{load} the data set, the RData file:
-
-<<>>=
-load("anage.RData")
-ls() ## a new anage object is present
-@ 
-
-
-Now, look at the data
-<<>>=
-str(anage)
-head(anage)
-summary(anage)
-@ 
-
-
-You should be able to tell what is going on with the data. And notice
-those many ``NA''.
-
-
-\subsubsection{A plot with changed scale}
-I want to plot metabolic rate vs.\ body mass. But I know (from theory and
-previous experience) that I probably want to use the log. And I want to
-get a quick idea of the spread of the points, etc. So I will use a
-function from the package \code{car} (for this to work, thus, you need to
-install that package).
-
-
-
-<<fig.width=6, fig.height=6>>=
-library(car) ## make the car package available; this is NOT 
-             ## installing it. It is making it available
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
-            data = anage)
-@ 
-
-Look at the axes, etc. 
-
-You could do something very similar with the basic plot function, but it
-would not add the extra lines, boxplots, etc.
-
-<<fig.width=6, fig.height=6>>=
-plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
-@ 
-
-Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
-us use different plotting colors for each, and let us add a legend. Notice
-how the different colors by Class is done in the call to plot:
-<<fig.width=4,fig.height=4>>=
-plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
-     col = c("salmon", "darkgreen")[Class], data = anage)
-legend(5, 5, legend = levels(anage$Class), 
-       col = c("salmon", "darkgreen"),
-       pch = 1)
-@ 
-
-Would the above work with scatterplot? Nope. You need to use a slightly
-different argument for the call, and you get automatic legend, etc:
-
-<<fig.width=4,fig.height=4>>=
-scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", 
-            data = anage)
-@ 
-
-And how did I know? Hummm \ldots: I tried, failed, and then looked at the
-help for \code{scatterplot}.
-
-
-
-\subsubsection{Transforming variables}
-
-It is actually simpler, for the regression later, to log-transform the
-variables and add them to the data set:
-
-<<>>=
-anage$logMetab <- log(anage$Metabolic.rate..W.)
-anage$logBodyMass <- log(anage$Body.mass..g.)
-@ 
-
-We just created two variables, and added them to \code{anage}.
-
-
-\subsubsection{Only the birds! Selecting specific cases}
-
-Eh, but I want only the birds. Let's select only the birds using function
-\code{subset}
-
-<<>>=
-birds <- subset(anage, Class == "Aves")
-@ 
-
-Alternatively, we could have done
-
-<<>>=
-birds <- anage[anage$Class == "Aves", ]
-@ 
-
-
-
-\subsubsection{The regression only for the birds}
-\label{sec:regression}
-
-<<>>=
-(lm1 <- lm(logMetab ~ logBodyMass, data = birds))
-@ 
-
-
-A little bit more detail:
-<<>>=
-summary(lm1)
-@ 
-We will explain what the output from that table is, if you do not remember
-your statistics classes.
-
-Note that, as with the t-test, we can access the elements of \code{lm1}:
-<<>>=
-names(lm1)
-lm1$coefficients
-@ 
-
-but, in general, it often makes more sense (when they are available) to
-use the specific accessor functions:
-<<>>=
-coef(lm1)
-@ 
-
-
-Now, do a plot and add the fitted line:
-
-<<>>=
-plot(logMetab ~ logBodyMass, data = birds)
-abline(lm1)
-@ 
-
-
-Note that the above is actually the same as doing (except the one below
-adds more stuff):
-<<>>=
-scatterplot(logMetab ~ logBodyMass, data = birds)
-@ 
-but the procedure above is a general one that will work even if John Fox
-had not written \code{scatterplot}.
-
-
-
-\subsubsection{How I read and saved the data?}\label{readanage}
-This is all I did (the \code{save} thing will become clearer below
----section \ref{saveRData}):
-<<eval=FALSE>>=
-anage <-  read.table("AnAge_birds_reptiles.txt", 
-                     header=TRUE, na.strings="NA", 
-                     strip.white=TRUE)
-save(file = "anage.RData", anage)
-@ 
-The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downloaded.
-
-
-
-
-\section{Plots: miscell}
-\subsection{Plots: Can we change colors, line types, point types, etc?}
-
-Of course. Look at \code{?par} and then look for \code{pch}, \code{cex},
-\code{lty}, \code{col}. This code produces two figures (\ref{fig:pchcol}
-and \ref{fig:ltytype}) that might help (see also line types, \code{lty} in
-Figure \ref{fig:lty2}).
-
-<<pchcol,fig.width=7,fig.height=4, fig.cap='pch and col', fig.lp='fig:'>>=
-plot(c(1, 21), c(1, 2.3),
-     type = "n", axes = FALSE, ann = FALSE)
-## show pch
-points(1:20, rep(1, 20), pch = 1:20)
-text(1:20, 1.2, labels = 1:20)
-text(11, 1.5, "pch", cex = 1.3)
-
-## show colors for rainbow palette
-points(1:20, rep(2, 20), pch = 16, col = rainbow(20))
-text(11, 2.2, "col", cex = 1.3)
-@ 
-<<ltytype,fig.width=4,fig.height=4, fig.cap='lty for values 1 to 6', fig.lp='fig:'>>=
-plot(c(0.2, 5), c(0.2, 5), type = "n", ann = FALSE, axes = FALSE)
-for(i in 1:6) {
-    abline(0, i/3, lty = i, lwd = 2)
-    text(2, 2 * (i/3), labels = i, pos = 3)
-}
-
-@ 
-
-\subsection{Saving plots}
-Can you save the plots as PDF, png, \ldots? Definitely. From RStudio you
-have a menu entry in the plot window. For non-interactive work (as when
-using scripts, section \ref{scripts}), or to make sure you have fixed
-things such as size, it is better to directly use functions such as
-\code{?png}, \code{?pdf}, etc. Look at the help of those functions. The
-second approach (explicitly calling, say, \code{pdf} from my scripts) is
-what I use.
-
-
-
-\subsection{Plots, plots, plots. Many types of plots}
-
-We have used a variety of plots. But this is only scratching the
-surface. Plotting is a big thing in \R. We have used a few, but there are
-many more. In fact, there are several approaches or systems for plots in
-\R. We will use here the basic one (the one in base \R), but notice that
-\textbf{ggplot2} is a very popular one, that produces plots many people
-find nicer. If you are interested, google for ``ggplot2''. There are two
-books about it (``ggplot2: elegant graphics for data analysis'', by
-Wickham, its creator, and ``R graphics cookbook'', by Chang, who has been
-heavily involved in ggplot2). The second one has a web page with many
-recipes: \Burl{http://www.cookbook-r.com/Graphs/}. Another popular package
-is \textbf{lattice}, also with its own book. And there are comparison
-pages of lattice and ggplot2. Another issue we haven't touched is choice
-of colors, which is not a trivial thing (and there are a variety of color
-palettes in \R; search for \code{?palette}, for example). There are also
-ways to identify points, to use 3D plots, to have dynamic plots that allow
-rotation, etc, etc.
-
-
-The following could give you an idea of some of the options:
-
-<<eval=FALSE>>=
-demo(graphics)
-example(graphics)
-example(persp)
-demo(persp)
-@ 
-
-
-And, if you have installed package ``ggplot2'' you can also do
-<<eval=FALSE>>=
-example(qplot)
-@ 
-\noindent (though the above gives just a very, very limited view of the
-range of options with ggplot2).
 
 
 
@@ -1547,98 +1117,6 @@ image''?
 
 Oh, and please go and look at the differences between \code{save.image}
 and \code{save}.
-
-
-
-
-\section{Scripts and non-interactive runs}\label{scripts}
-
-\subsection{Why use scripts}
-Keeping all of your code in one or more script(s) and evaluating the code
-from the script (instead of directly on the \R\ console) has a couple of benefits:
-\begin{itemize}
-\item It is a complete record of all you did. And you can keep it nicely
-  organized, with comments, etc.
-\item It allows you to carry out non-interactive calculations. For
-  example, running a very long analysis, or re-running completely all the
-  analysis and plots if you made a mistake, or new data are added, etc.
-\end{itemize}
-
-Thus, keeping all of your analysis in scripts is a fundamental step in
-\textbf{reproducible research}.
-
-
-
-For this section, create a very simple script typing this in a
-file and saving it as ``script1.R'':
-\begin{verbatim}
-x <- 1:100
-print(mean(x))
-plot(x)
-\end{verbatim}
-
-\subsection{Paths: where are scripts located}
-Before you can tell \R\  to use your script or read some data, you need to
-tell \R\  where, exactly, to find the scripts/data.  Re-read again what
-was explained in section \ref{wherefiles}.
-
-
-Now, for the rest of the course, I will assume that you know where your
-data files are, the scripts are, etc. Where you place them depends on what
-you want (and the permissions you have in the computer you are using).
-You will be using either of the approaches explained in
-\ref{wherefiles}. It is up to you. In this class, I will often be running
-\R\ in the very same directory where the data files and scripts are
-located. (You can assume that I have, sometime in the past, issued a
-\code{setwd} command.) This is just convenient. (Yes, this is the same
-paragraph as above. I am repeating it on purpose.)
-
-
-\subsection{Using a script}
-
-There are two basic ways of using a script:
-\begin{description}
-\item[Interactively] What we have been doing so far. RStudio, Emacs,
-  whatever, has a window (buffer, in Emacs parlance) with the code, and
-  you select pieces of it and submit them to the \R\ interpreter, running
-  in the \R\ console.
-\item[Non-interactively] Two ways again:
-  \begin{description}
-  \item[Using source from a running R] You have \R\ running and do:
-    \code{source(``script1.R'')}. I often add a couple of options:
-<<fig.width=3, fig.height=3>>=
-source("script1.R", echo = TRUE, 
-       max.deparse.length = 999999)
-@     
-   Now, did you notice that we got the mean printed and the figure produced?
-
-\item[Calling R from the shell] Open a shell, a command window, or however
-  that is called in your operating system, and run \R\ telling it to use a
-  given script file as input. This has the big advantage that you do not
-  need to keep a window with \R\ open until the job finishes. This is
-  great for long running jobs (say, a set of analyses that takes two
-  weeks). 
-  
-  There are several ways of doing it, one of which uses an invocation like\\
-  \verb@ R CMD BATCH script1.R @
-  
-  There is a second set of ways, like\\ 
-  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
-  
-  I tend to use the second one, and then add things like
-  ``nohup'' before invoking \R, move it to the background, and also
-  redirect standard error to the same file used for standard output (i.e.,
-  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}).
-  
-  Beware, the above are examples of two simple invocations. There are many
-  other options.
-  \end{description}
-
-\end{description}
-
-
-In section \ref{example-multtest} you will have a chance to use and play
-with a script that reproduces what we did in section \ref{mistery}.
 
 
 \section{Basic R data structures}
@@ -2395,6 +1873,177 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 @ 
 
 
+\section{Plots: miscell}
+\subsection{Plots: Can we change colors, line types, point types, etc?}
+
+Of course. Look at \code{?par} and then look for \code{pch}, \code{cex},
+\code{lty}, \code{col}. This code produces two figures (\ref{fig:pchcol}
+and \ref{fig:ltytype}) that might help (see also line types, \code{lty} in
+Figure \ref{fig:lty2}).
+
+<<pchcol,fig.width=7,fig.height=4, fig.cap='pch and col', fig.lp='fig:'>>=
+plot(c(1, 21), c(1, 2.3),
+     type = "n", axes = FALSE, ann = FALSE)
+## show pch
+points(1:20, rep(1, 20), pch = 1:20)
+text(1:20, 1.2, labels = 1:20)
+text(11, 1.5, "pch", cex = 1.3)
+
+## show colors for rainbow palette
+points(1:20, rep(2, 20), pch = 16, col = rainbow(20))
+text(11, 2.2, "col", cex = 1.3)
+@ 
+<<ltytype,fig.width=4,fig.height=4, fig.cap='lty for values 1 to 6', fig.lp='fig:'>>=
+plot(c(0.2, 5), c(0.2, 5), type = "n", ann = FALSE, axes = FALSE)
+for(i in 1:6) {
+    abline(0, i/3, lty = i, lwd = 2)
+    text(2, 2 * (i/3), labels = i, pos = 3)
+}
+
+@ 
+
+\subsection{Saving plots}
+Can you save the plots as PDF, png, \ldots? Definitely. From RStudio you
+have a menu entry in the plot window. For non-interactive work (as when
+using scripts, section \ref{scripts}), or to make sure you have fixed
+things such as size, it is better to directly use functions such as
+\code{?png}, \code{?pdf}, etc. Look at the help of those functions. The
+second approach (explicitly calling, say, \code{pdf} from my scripts) is
+what I use.
+
+
+
+\subsection{Plots, plots, plots. Many types of plots}
+
+We have used a variety of plots. But this is only scratching the
+surface. Plotting is a big thing in \R. We have used a few, but there are
+many more. In fact, there are several approaches or systems for plots in
+\R. We will use here the basic one (the one in base \R), but notice that
+\textbf{ggplot2} is a very popular one, that produces plots many people
+find nicer. If you are interested, google for ``ggplot2''. There are two
+books about it (``ggplot2: elegant graphics for data analysis'', by
+Wickham, its creator, and ``R graphics cookbook'', by Chang, who has been
+heavily involved in ggplot2). The second one has a web page with many
+recipes: \Burl{http://www.cookbook-r.com/Graphs/}. Another popular package
+is \textbf{lattice}, also with its own book. And there are comparison
+pages of lattice and ggplot2. Another issue we haven't touched is choice
+of colors, which is not a trivial thing (and there are a variety of color
+palettes in \R; search for \code{?palette}, for example). There are also
+ways to identify points, to use 3D plots, to have dynamic plots that allow
+rotation, etc, etc.
+
+
+The following could give you an idea of some of the options:
+
+<<eval=FALSE>>=
+demo(graphics)
+example(graphics)
+example(persp)
+demo(persp)
+@ 
+
+
+And, if you have installed package ``ggplot2'' you can also do
+<<eval=FALSE>>=
+example(qplot)
+@ 
+\noindent (though the above gives just a very, very limited view of the
+range of options with ggplot2).
+
+
+
+
+
+
+
+\section{Scripts and non-interactive runs}\label{scripts}
+
+\subsection{Why use scripts}
+Keeping all of your code in one or more script(s) and evaluating the code
+from the script (instead of directly on the \R\ console) has a couple of benefits:
+\begin{itemize}
+\item It is a complete record of all you did. And you can keep it nicely
+  organized, with comments, etc.
+\item It allows you to carry out non-interactive calculations. For
+  example, running a very long analysis, or re-running completely all the
+  analysis and plots if you made a mistake, or new data are added, etc.
+\end{itemize}
+
+Thus, keeping all of your analysis in scripts is a fundamental step in
+\textbf{reproducible research}.
+
+
+
+For this section, create a very simple script typing this in a
+file and saving it as ``script1.R'':
+\begin{verbatim}
+x <- 1:100
+print(mean(x))
+plot(x)
+\end{verbatim}
+
+\subsection{Paths: where are scripts located}
+Before you can tell \R\  to use your script or read some data, you need to
+tell \R\  where, exactly, to find the scripts/data.  Re-read again what
+was explained in section \ref{wherefiles}.
+
+
+Now, for the rest of the course, I will assume that you know where your
+data files are, the scripts are, etc. Where you place them depends on what
+you want (and the permissions you have in the computer you are using).
+You will be using either of the approaches explained in
+\ref{wherefiles}. It is up to you. In this class, I will often be running
+\R\ in the very same directory where the data files and scripts are
+located. (You can assume that I have, sometime in the past, issued a
+\code{setwd} command.) This is just convenient. (Yes, this is the same
+paragraph as above. I am repeating it on purpose.)
+
+
+\subsection{Using a script}
+
+There are two basic ways of using a script:
+\begin{description}
+\item[Interactively] What we have been doing so far. RStudio, Emacs,
+  whatever, has a window (buffer, in Emacs parlance) with the code, and
+  you select pieces of it and submit them to the \R\ interpreter, running
+  in the \R\ console.
+\item[Non-interactively] Two ways again:
+  \begin{description}
+  \item[Using source from a running R] You have \R\ running and do:
+    \code{source(``script1.R'')}. I often add a couple of options:
+<<fig.width=3, fig.height=3>>=
+source("script1.R", echo = TRUE, 
+       max.deparse.length = 999999)
+@     
+   Now, did you notice that we got the mean printed and the figure produced?
+
+\item[Calling R from the shell] Open a shell, a command window, or however
+  that is called in your operating system, and run \R\ telling it to use a
+  given script file as input. This has the big advantage that you do not
+  need to keep a window with \R\ open until the job finishes. This is
+  great for long running jobs (say, a set of analyses that takes two
+  weeks). 
+  
+  There are several ways of doing it, one of which uses an invocation like\\
+  \verb@ R CMD BATCH script1.R @
+  
+  There is a second set of ways, like\\ 
+  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
+  
+  I tend to use the second one, and then add things like
+  ``nohup'' before invoking \R, move it to the background, and also
+  redirect standard error to the same file used for standard output (i.e.,
+  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}).
+  
+  Beware, the above are examples of two simple invocations. There are many
+  other options.
+  \end{description}
+
+\end{description}
+
+
+In section \ref{example-multtest} you will have a chance to use and play
+with a script that reproduces what we did in section \ref{mistery}.
 
 
 \section{\R\  programming}
@@ -2944,6 +2593,358 @@ The situation above can be even more confusing with some matrix operations.
 To summarize: when you select only a single column or a single row of an
 array, think about whether the output should be a vector or a matrix
 
+
+
+\section{Three practical examples}\label{crashex}
+\subsection{Plotting the results from BLAST}\label{blast}
+
+
+This is a quick example of something that is not really just a mere toy
+example.  We have played with some data from an alignment. Let's take a
+quick look at a couple of things:
+\begin{itemize}
+\item The relationship between percentage identity and score.
+\item The distribution of the alignment length. 
+\end{itemize}
+
+
+
+We will read the data and then the a couple of plots. Remember that the
+data are in ``hit-table-500-text.txt'' (don't worry, we will cover reading
+data again later, in section \ref{readingr}).
+
+<<>>=
+hit <- read.table("hit-table-500-text.txt")
+## We know, from the header of the file, that
+## alignment length is the fifth column,
+## score is the 13th and percent identity the 3rd
+hist(hit[, 5]) ## the histogram
+plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
+@ 
+
+But that can be easily improved
+
+% \setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
+%\begin{figure}[h!]
+%\begin{center}
+<<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
+par(mfrow = c(1, 2)) ## two figures side by side
+hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
+plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity", 
+     ylab = "Bit score")
+@ 
+%\end{center}
+%\label{fig-blast}
+%\caption{A quick look at the alignment results}
+%\end{figure}
+
+%\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
+
+These are five lines of code. We will now deal with a few things in a
+little more detail.
+
+And if you want to play around, you can find the best fitting plane of
+score on alignment length and identity\footnote{This is not a great, or
+  even a decent, model of the relationship, which we can see, for
+  instance, from the pattern of the deviations of the points from the
+  plane. But the key for now is the ease of plotting.} , and move it at
+will!. You will need to install two packages (section \ref{packages}):
+\code{car} and \code{rgl}.
+<<eval=FALSE>>=
+library(car)
+scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident", 
+          zlab = "Length", ylab = "Score")
+@ 
+
+By the way, some questions/answers arise from the figures. For instance:
+why does the distribution of alignment lengths seems to have three
+distinct modes? Or how can you explain the plot of score vs.\ percent
+identity? Or what does alignment length add to understanding the
+relationship? We could, in fact, fit (in one line) a linear regression to
+the relationship between Score and the other variables to formally explore
+what is going on\footnote{Not that this would be, in this case, all that
+  needed: from what we know about BLAST we can tell a lot about the
+  expected relationship between Score and the other variables}. Or
+\ldots. 
+
+\clearpage
+\subsection{A simple hypothesis test: the \textit{t-}test}
+
+Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
+have lung cancer. And we have expression data for one gen (say GenA). We
+would like to know whether the (mean) expression of GenA is the same or not
+between the two groups. A \textit{t-}test is well suited for this
+case. Here, we will use simulated data. 
+
+Simulated data? Generating simulated data is extremely useful for testing
+many procedures, emulating specific processes, etc. 
+
+
+\subsubsection{Generating random numbers}
+
+
+\R\  offers
+(pseudo)random number generators from which we can obtain random variates
+for many different distributions. For instance, do
+<<eval=FALSE,results='hide'>>=
+help(rnorm)
+help(runif)
+help(rpois)
+@ 
+
+(i.e., look at the help for those functions). 
+
+
+In fact, those numbers are generated using an algorithm. This comes from
+the Wikipedia (\Burl{http://en.wikipedia.org/wiki/Pseudorandom_number_generator}):
+
+\begin{quote}
+A pseudorandom number generator (PRNG) is an algorithm for generating a
+sequence of numbers that approximates the properties of random
+numbers. The sequence is not truly random in that it is completely
+determined by a relatively small set of initial values, called the PRNG's
+state.
+\end{quote}
+
+And 
+
+\begin{quote}
+  A PRNG can be started from an arbitrary starting state, using a seed
+  state. It will always produce the same sequence thereafter when
+  initialized with that state.
+\end{quote}
+
+
+
+Now, since we all have different machines, the actual outcome of doing, say
+<<>>=
+rnorm(5)
+@ 
+is likely to differ. 
+
+What can we do to get the exact same random numbers? The quote from the
+Wikipedia just told us: we will set the seed of the random number
+generator to force the generator to produce the same sequence of random
+numbers on all computers:
+
+<<>>=
+set.seed(2)
+@ 
+(seting the seed to 2 has no particular meaning; we could have used
+another integer; what matters is that we all use the same seed). So lets
+obtain 50 independent random samples from a normal distribution and create
+a vector for the identifiers (the ``labels'') of the subjects. 
+
+
+\subsubsection{The t-tests and some plots}
+<<>>=
+GeneA <- rnorm(50)
+round(GeneA, 3)
+(Type <- factor(c(rep("Colon", 30), rep("Lung", 20))))
+@ 
+
+Let's do a t-test:
+<<>>=
+t.test(GeneA ~ Type)
+@ 
+As should be the case (we know it, because we generated the data) the
+means of the two groups are very similar, and there are no significant
+differences between the groups.
+
+Let us now generate data where there really are differences between the
+groups, and repeat the test.
+<<>>=
+(GeneB <- c(rep(-1, 30), rep(2, 20)) + rnorm(50))
+t.test(GeneB ~ Type)
+@ 
+
+Now we find a large and significant difference between the two groups.
+
+
+
+How about some plots?
+<<fig.width=7,fig.height=7>>=
+par(mfrow = c(2, 2)) ## a 2-by-2 layout
+boxplot(GeneA ~ Type)
+stripchart(GeneA ~ Type, vertical = TRUE, pch = 1)
+boxplot(GeneB ~ Type)
+stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
+@ 
+
+
+\clearpage
+
+\subsection{Metabolic rate and body mass: more plots and a regression
+  example}
+
+You are interested in the relationship between metabolic rate and body
+mass in birds.  We will use a subset of data from the AnAge data set
+(Animal Ageing and Longevity Database) (accessed on 2014-08-19) from
+\Burl{http://genomics.senescence.info/species/}. This file contains
+longevity, metabolic rate, body mass, and a variety of other life history
+variables. The data I provide you are a small subset that includes only
+some birds and reptiles. 
+
+What I provide you is that is already stored as an R object (so I already
+took care of the \code{read.table} business for you, but if you are
+curious and want the data, skip to \ref{readanage}).
+
+
+First, let us \textbf{load} the data set, the RData file:
+
+<<>>=
+load("anage.RData")
+ls() ## a new anage object is present
+@ 
+
+
+Now, look at the data
+<<>>=
+str(anage)
+head(anage)
+summary(anage)
+@ 
+
+
+You should be able to tell what is going on with the data. And notice
+those many ``NA''.
+
+
+\subsubsection{A plot with changed scale}
+I want to plot metabolic rate vs.\ body mass. But I know (from theory and
+previous experience) that I probably want to use the log. And I want to
+get a quick idea of the spread of the points, etc. So I will use a
+function from the package \code{car} (for this to work, thus, you need to
+install that package).
+
+
+
+<<fig.width=6, fig.height=6>>=
+library(car) ## make the car package available; this is NOT 
+             ## installing it. It is making it available
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+            data = anage)
+@ 
+
+Look at the axes, etc. 
+
+You could do something very similar with the basic plot function, but it
+would not add the extra lines, boxplots, etc.
+
+<<fig.width=6, fig.height=6>>=
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
+@ 
+
+Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
+us use different plotting colors for each, and let us add a legend. Notice
+how the different colors by Class is done in the call to plot:
+<<fig.width=4,fig.height=4>>=
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+     col = c("salmon", "darkgreen")[Class], data = anage)
+legend(5, 5, legend = levels(anage$Class), 
+       col = c("salmon", "darkgreen"),
+       pch = 1)
+@ 
+
+Would the above work with scatterplot? Nope. You need to use a slightly
+different argument for the call, and you get automatic legend, etc:
+
+<<fig.width=4,fig.height=4>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", 
+            data = anage)
+@ 
+
+And how did I know? Hummm \ldots: I tried, failed, and then looked at the
+help for \code{scatterplot}.
+
+
+
+\subsubsection{Transforming variables}
+
+It is actually simpler, for the regression later, to log-transform the
+variables and add them to the data set:
+
+<<>>=
+anage$logMetab <- log(anage$Metabolic.rate..W.)
+anage$logBodyMass <- log(anage$Body.mass..g.)
+@ 
+
+We just created two variables, and added them to \code{anage}.
+
+
+\subsubsection{Only the birds! Selecting specific cases}
+
+Eh, but I want only the birds. Let's select only the birds using function
+\code{subset}
+
+<<>>=
+birds <- subset(anage, Class == "Aves")
+@ 
+
+Alternatively, we could have done
+
+<<>>=
+birds <- anage[anage$Class == "Aves", ]
+@ 
+
+
+
+\subsubsection{The regression only for the birds}
+\label{sec:regression}
+
+<<>>=
+(lm1 <- lm(logMetab ~ logBodyMass, data = birds))
+@ 
+
+
+A little bit more detail:
+<<>>=
+summary(lm1)
+@ 
+We will explain what the output from that table is, if you do not remember
+your statistics classes.
+
+Note that, as with the t-test, we can access the elements of \code{lm1}:
+<<>>=
+names(lm1)
+lm1$coefficients
+@ 
+
+but, in general, it often makes more sense (when they are available) to
+use the specific accessor functions:
+<<>>=
+coef(lm1)
+@ 
+
+
+Now, do a plot and add the fitted line:
+
+<<>>=
+plot(logMetab ~ logBodyMass, data = birds)
+abline(lm1)
+@ 
+
+
+Note that the above is actually the same as doing (except the one below
+adds more stuff):
+<<>>=
+scatterplot(logMetab ~ logBodyMass, data = birds)
+@ 
+but the procedure above is a general one that will work even if John Fox
+had not written \code{scatterplot}.
+
+
+
+\subsubsection{How I read and saved the data?}\label{readanage}
+This is all I did (the \code{save} thing will become clearer below
+---section \ref{saveRData}):
+<<eval=FALSE>>=
+anage <-  read.table("AnAge_birds_reptiles.txt", 
+                     header=TRUE, na.strings="NA", 
+                     strip.white=TRUE)
+save(file = "anage.RData", anage)
+@ 
+The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downloaded.
 
 
 \section{Revisiting an example that brings a few things
