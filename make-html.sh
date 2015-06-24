@@ -1,7 +1,7 @@
 #!/bin/bash
 FILE=$1
 BASENAME=$(basename $FILE .Rnw)
-RSCRIPT="/usr/bin/Rscript"
+RSCRIPT="/home/ramon/bin/Rscript"
 BASENAME2=$BASENAME-knitr-html
 FILE2=$BASENAME2.Rnw
 
