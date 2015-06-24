@@ -106,7 +106,7 @@ options(width = 67)
 
 
 \section{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014, Ramon Diaz-Uriarte, and is
+This work is Copyright, \copyright, 2014, 2015, Ramon Diaz-Uriarte, and is
 licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -332,12 +332,15 @@ This is a partial list a books I like and use when preparing classes:
     book, in github, you can download the complete sources and build your
     own pdf).
   \end{itemize}
-\item[Stats and some programming] Introductory statistics with some
+\item[Stats and some programming] Introductory statistics (or introductory
+  data science) with some
   programming interleaved.
   \begin{itemize}
   \item \textit{Introductory statistics with R, 2nd ed}. Dalgaard.
   \item \textit{R in Action}. Kabacoff. (A second ed.\ should soon be
     available).
+    \item \textit{R Programming for Data Science}. Peng. (This is an
+      ebook and PDF, and you can pay whatever you want for it.)
   \end{itemize}
 \item[Linear models et al.] Linear models are fundamental in
   statistics. And fascinating.
