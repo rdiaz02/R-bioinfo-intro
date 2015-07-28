@@ -2597,6 +2597,9 @@ To summarize: when you select only a single column or a single row of an
 array, think about whether the output should be a vector or a matrix
 
 
+\section{(Optional: two handy packages \texttt{readr} and \texttt{dplyr})}
+\red{FIXME: zz: To be expanded; look at Peng's ``R programming for data
+  science'' book. Do we really want to include this?}
 
 \section{Three practical examples}\label{crashex}
 \subsection{Plotting the results from BLAST}\label{blast}
