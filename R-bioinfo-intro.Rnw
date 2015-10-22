@@ -220,7 +220,7 @@ other pieces, and retain it for longer.
 
 
 
-\subsection{The PDF and the HTML and the code}
+\subsection{The PDF and the code}
 
 The primary output of this document is a PDF.%%  I also provide (and will
 %% use) an HTML file; this is kind of experimental (a few things might not
@@ -229,10 +229,7 @@ The primary output of this document is a PDF.%%  I also provide (and will
 %% session with \R\, and have the web browser size adjusted to our liking (so
 %% less fiddling around than using a PDF). In the HTML, the code is in red
 %% and the output in blue. 
-
-
-
-All the original files for the document are available (again, under a
+However, all the original files for the document are available (again, under a
 Creative Commons license ---see section \ref{license}) from
 \Burl{https://github.com/rdiaz02/R-bioinfo-intro}. (Note that in the
 github repo you will not see the PDF %% HTML,
@@ -240,7 +237,7 @@ or R-bioinfo-intro.R files,
 since those are derived from the Rnw file).
 
 
-Note that for many commands I do not show the output (e.g., because it
+ For many commands I do not show the output (e.g., because it
 would just provide boring and space-filling output). However, make sure
 you type and understand it. You can copy and paste, of course, but I
 strongly suggest you type the code and change it, modify it, etc.
