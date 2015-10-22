@@ -1,5 +1,5 @@
 %% ;;; -*- mode: Rnw; -*-
-
+\synctex=1
 \documentclass[a4paper,11pt]{article}
 \usepackage{graphics}
 %\usepackage[dvips]{graphicx}
