@@ -1120,6 +1120,112 @@ Oh, and please go and look at the differences between \code{save.image}
 and \code{save}.
 
 
+\section{Scripts and non-interactive runs}\label{scripts}
+
+\subsection{Why use scripts}
+Keeping all of your code in one or more script(s) and evaluating the code
+from the script (instead of directly on the \R\ console) has a couple of benefits:
+\begin{itemize}
+\item It is a complete record of all you did. And you can keep it nicely
+  organized, with comments, etc.
+\item It allows you to carry out non-interactive calculations. For
+  example, running a very long analysis, or re-running completely all the
+  analysis and plots if you made a mistake, or new data are added, etc.
+\end{itemize}
+
+Thus, keeping all of your analysis in scripts is a fundamental step in
+\textbf{reproducible research}.
+
+
+
+For this section, create a very simple script typing this in a
+file and saving it as ``script1.R'':
+\begin{verbatim}
+x <- 1:100
+print(mean(x))
+plot(x)
+\end{verbatim}
+
+%% Nope, do not do this.
+%% <<echo=FALSE,eval=TRUE>>=
+%% sink(file = "scrtipt1.R")
+%% x <- 1:100
+%% print(mean(x))
+%% plot(x)
+%% sink()
+%% @ 
+
+
+
+
+\subsection{Paths: where are scripts located}
+Before you can tell \R\  to use your script or read some data, you need to
+tell \R\  where, exactly, to find the scripts/data.  Re-read again what
+was explained in section \ref{wherefiles}.
+
+
+Now, for the rest of the course, I will assume that you know where your
+data files are, the scripts are, etc. Where you place them depends on what
+you want (and the permissions you have in the computer you are using).
+You will be using either of the approaches explained in
+\ref{wherefiles}. It is up to you. In this class, I will often be running
+\R\ in the very same directory where the data files and scripts are
+located. (You can assume that I have, sometime in the past, issued a
+\code{setwd} command.) This is just convenient. (Yes, this is the same
+paragraph as above. I am repeating it on purpose.)
+
+
+\subsection{Using a script}
+
+There are two basic ways of using a script:
+\begin{description}
+\item[Interactively] What we have been doing so far. RStudio, Emacs,
+  whatever, has a window (buffer, in Emacs parlance) with the code, and
+  you select pieces of it and submit them to the \R\ interpreter, running
+  in the \R\ console.
+\item[Non-interactively] Two ways again:
+  \begin{description}
+  \item[Using source from a running R] You have \R\ running and do:
+    \code{source(``script1.R'')}. I often add a couple of options:
+<<fig.width=3, fig.height=3>>=
+source("script1.R", echo = TRUE, 
+       max.deparse.length = 999999)
+@     
+   Now, did you notice that we got the mean printed and the figure produced?
+
+\item[Calling R from the shell] Open a shell, a command window, or however
+  that is called in your operating system, and run \R\ telling it to use a
+  given script file as input. This has the big advantage that you do not
+  need to keep a window with \R\ open until the job finishes. This is
+  great for long running jobs (say, a set of analyses that takes two
+  weeks). 
+  
+  There are several ways of doing it. %% , one of which uses an invocation like\\
+  %% \verb@ R CMD BATCH script1.R @
+  %% There is a second set of ways, like\\ 
+  Probably the preferred way is:\\
+  
+  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
+  
+  I tend to use the second one, and then add things like
+  ``nohup'' before invoking \R, move it to the background, and also
+  redirect standard error to the same file used for standard output (i.e.,
+  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}). In
+  Windows, you might need to use \verb@ Rscript.exe @ or \verb@ R.exe @. 
+  
+  Beware, the above are examples of simple invocations. There are many
+  other options.
+  \end{description}
+
+\end{description}
+
+
+In section \ref{example-multtest} you will have a chance to use and play
+with a script that reproduces what we did in section \ref{mistery}.
+
+
+
+
 \section{Basic R data structures}
 \subsection{Vectors} 
 
@@ -2354,107 +2460,6 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 @ 
 
 
-
-\section{Scripts and non-interactive runs}\label{scripts}
-
-\subsection{Why use scripts}
-Keeping all of your code in one or more script(s) and evaluating the code
-from the script (instead of directly on the \R\ console) has a couple of benefits:
-\begin{itemize}
-\item It is a complete record of all you did. And you can keep it nicely
-  organized, with comments, etc.
-\item It allows you to carry out non-interactive calculations. For
-  example, running a very long analysis, or re-running completely all the
-  analysis and plots if you made a mistake, or new data are added, etc.
-\end{itemize}
-
-Thus, keeping all of your analysis in scripts is a fundamental step in
-\textbf{reproducible research}.
-
-
-
-For this section, create a very simple script typing this in a
-file and saving it as ``script1.R'':
-\begin{verbatim}
-x <- 1:100
-print(mean(x))
-plot(x)
-\end{verbatim}
-
-%% Nope, do not do this.
-%% <<echo=FALSE,eval=TRUE>>=
-%% sink(file = "scrtipt1.R")
-%% x <- 1:100
-%% print(mean(x))
-%% plot(x)
-%% sink()
-%% @ 
-
-
-
-
-\subsection{Paths: where are scripts located}
-Before you can tell \R\  to use your script or read some data, you need to
-tell \R\  where, exactly, to find the scripts/data.  Re-read again what
-was explained in section \ref{wherefiles}.
-
-
-Now, for the rest of the course, I will assume that you know where your
-data files are, the scripts are, etc. Where you place them depends on what
-you want (and the permissions you have in the computer you are using).
-You will be using either of the approaches explained in
-\ref{wherefiles}. It is up to you. In this class, I will often be running
-\R\ in the very same directory where the data files and scripts are
-located. (You can assume that I have, sometime in the past, issued a
-\code{setwd} command.) This is just convenient. (Yes, this is the same
-paragraph as above. I am repeating it on purpose.)
-
-
-\subsection{Using a script}
-
-There are two basic ways of using a script:
-\begin{description}
-\item[Interactively] What we have been doing so far. RStudio, Emacs,
-  whatever, has a window (buffer, in Emacs parlance) with the code, and
-  you select pieces of it and submit them to the \R\ interpreter, running
-  in the \R\ console.
-\item[Non-interactively] Two ways again:
-  \begin{description}
-  \item[Using source from a running R] You have \R\ running and do:
-    \code{source(``script1.R'')}. I often add a couple of options:
-<<fig.width=3, fig.height=3>>=
-source("script1.R", echo = TRUE, 
-       max.deparse.length = 999999)
-@     
-   Now, did you notice that we got the mean printed and the figure produced?
-
-\item[Calling R from the shell] Open a shell, a command window, or however
-  that is called in your operating system, and run \R\ telling it to use a
-  given script file as input. This has the big advantage that you do not
-  need to keep a window with \R\ open until the job finishes. This is
-  great for long running jobs (say, a set of analyses that takes two
-  weeks). 
-  
-  There are several ways of doing it, one of which uses an invocation like\\
-  \verb@ R CMD BATCH script1.R @
-  
-  There is a second set of ways, like\\ 
-  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
-  
-  I tend to use the second one, and then add things like
-  ``nohup'' before invoking \R, move it to the background, and also
-  redirect standard error to the same file used for standard output (i.e.,
-  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}).
-  
-  Beware, the above are examples of two simple invocations. There are many
-  other options.
-  \end{description}
-
-\end{description}
-
-
-In section \ref{example-multtest} you will have a chance to use and play
-with a script that reproduces what we did in section \ref{mistery}.
 
 
 \section{\R\  programming}
