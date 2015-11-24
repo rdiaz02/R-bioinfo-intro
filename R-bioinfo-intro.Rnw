@@ -252,7 +252,7 @@ You should have (or should get) the following files:
 \item \code{anage.RData}
 \item \code{lastExample.R}
 \item \code{Condition\_A.txt}, \code{Condition\_B.txt}, \code{Condition\_C.txt}
-\item \code{permafrost-zip}, a compressed directory with 5000 files.
+%% \item \code{permafrost-zip}, a compressed directory with 5000 files.
 %% \item \code{R-bioinfo-intro-html-dir.zip}: a zip file that, when
 %%   uncompressed, while give you a directory that contains the HTML version
 %%   of this PDF and a directory for the figures (used in the HTML). You can
@@ -2912,6 +2912,7 @@ approaches/syntax. Here is a blog with some examples and links:
 \Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}.
 For instance, the \code{doBy} package is really nice.
 
+%% FIXME: use the formula for aggregate
 
 
 
