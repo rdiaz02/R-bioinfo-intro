@@ -2914,6 +2914,7 @@ For instance, the \code{doBy} package is really nice.
 
 %% FIXME: use the formula for aggregate
 
+%% FIXME: use with
 
 
 \subsection{Matrices: Dropping dimensions}
