@@ -2829,6 +2829,7 @@ fc(1:5, "blue", pch = 8)
 
 \clearpage
 
+%%% FIXME: move immediately after tables
 \section{The ``apply'' family, ``aggregate'', etc}
 One of the great strengths of \R\  is operating over whole vectors, arrays,
 lists, etc. Some available functions are: \code{apply, lapply, sapply,
@@ -2914,7 +2915,12 @@ For instance, the \code{doBy} package is really nice.
 
 %% FIXME: use the formula for aggregate
 
+
 %% FIXME: use with
+=======
+%% FIXME: examples with the formula interface to aggregate
+
+
 
 
 \subsection{Matrices: Dropping dimensions}
