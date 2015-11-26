@@ -3875,6 +3875,9 @@ readListGenes <- function(prefix = "Condition_",
 Now, place everything in a matrix. First, give \code{f1} a better name
 (and you could even define \code{trueIfMatch} inside \code{geneListToMatrix}):
 
+%%% FIXME: why don't I use f2 here?
+%% and what about left_join, etc?
+
 <<>>=
 trueIfMatch <- function(x, allgenes) {
     ## Note: this could be done in fewer lines, or even
