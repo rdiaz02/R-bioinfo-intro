@@ -914,7 +914,7 @@ P.\ Spector, or the ``R Data Import/Export'' manual
 only use \code{read.table}.
 
 
-Let's repeat some of what we did with the BLAST example (section \ref{blast}).
+%% Let's repeat some of what we did with the BLAST example (section \ref{blast}).
 <<eval=FALSE>>=
 X <- read.table("hit-table-500-text.txt")
 head(X)
