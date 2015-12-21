@@ -3691,9 +3691,16 @@ names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
 
 There are several ways of doing this. This is the simplest I came up with.
 
+%% FIXME: dplyr and full_join?
+%% FIXME: some forme of reshaping?
+
 First, find the union of all gene names and return a single entry of each
 name. We do not use \code{union}, but \code{unique}, which does what we
 want here.
+
+%% what is wrong with union? that it makes no sense, since this is a
+%% vector? Nope. That it is simpler to call unique than several union
+%% invocations or something like mapping union for iterative use.
 
 <<>>=
 all.the.genes <- sort(unique(unlist(ovxpGenes)))
