@@ -105,9 +105,9 @@ options(width = 60)
 @ 
 
 \section{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014, 2015, Ramon Diaz-Uriarte, and is
-licensed under a \textbf{Creative Commons } Attribution-ShareAlike 4.0
-International License:
+This work is Copyright, \copyright, 2014, 2015, 2016, Ramon Diaz-Uriarte,
+and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
+4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
 
 \centerline \ccbysa
@@ -188,11 +188,18 @@ The structure and logic is as follows:
   document for a class).
 \item We next go over a few practical things we need to get out of the way
   (sections \ref{basics} and \ref{console}).
+  
+\item We then (sections \ref{readingr} to \ref{plotsplots}) cover in some
+  detail what are the main objects of R (vectors, data frames, matrices),
+  how to manipulate them, a few quick ideas about programming, and some
+  plotting. This can be boring, and this used to be after section
+  \ref{crashex} but some students argued strongly that they'd rather see
+  this first, so this comes now first.
 \item After that, we jump into \R\ with three longer examples (section
   \ref{crashex}). Again, on first reading you might not understand
   much of what is done, but we will go over it in class.
-\item Then, up to section \ref{back-scenarios}, we go over many details in
-  a more systematic, but more boring, way. 
+% \item Then, up to section \ref{back-scenarios}, we go over many details in
+%   a more systematic, but more boring, way. 
 \item If you understand all that is done up to that point, you should have a
 decent working understanding of how to use R, and can move on your own.
 \item But you do not want to skip section \ref{debug}: this section covers
@@ -1902,7 +1909,7 @@ a difference.
 
 
 
-\section{Plots}
+\section{Plots}\label{plotsplots}
 
 
 R is often used to produce plots as it can produce a variety of plots and
