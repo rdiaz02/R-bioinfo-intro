@@ -191,13 +191,15 @@ The structure and logic is as follows:
   
 \item We then (sections \ref{readingr} to \ref{plotsplots}) cover in some
   detail what are the main objects of R (vectors, data frames, matrices),
-  how to manipulate them, a few quick ideas about programming, and some
-  plotting. This can be boring, and this used to be after section
-  \ref{crashex} but some students argued strongly that they'd rather see
-  this first, so this comes now first.
+  how to manipulate them and some plotting. This can be boring, and this
+  used to be after section \ref{crashex} but some students argued strongly
+  that they'd rather see this first, so this comes now first.
 \item After that, we jump into \R\ with three longer examples (section
   \ref{crashex}). Again, on first reading you might not understand
-  much of what is done, but we will go over it in class.
+  all of what is done, but we will go over it in class.
+\item Then we cover tables and a little bit of programming (sections
+  \ref{tables} and \ref{rporg}).
+\item We then revisit some examples.
 % \item Then, up to section \ref{back-scenarios}, we go over many details in
 %   a more systematic, but more boring, way. 
 \item If you understand all that is done up to that point, you should have a
@@ -1914,7 +1916,7 @@ a difference.
 
 R is often used to produce plots as it can produce a variety of plots and
 they can be modified at will. In this course we will only scratch the
-surface. You will have a change to get additional practice from the exercises.
+surface. You will have a chance to get additional practice from the exercises.
 
 
 \subsection{The very basics}\label{plot-basics}
@@ -2469,7 +2471,7 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 
 
 
-\section{\R\  programming}
+\section{\R\  programming}\label{rprog}
 
 \R\  is a programming language. Comprehensive coverage is given in the books
 by Chambers ``Software for Data Analysis: Programming with R'', %% Gentleman
