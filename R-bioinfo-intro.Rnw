@@ -1667,7 +1667,7 @@ where \texttt{group} is a factor. Why does that work? Oh, and then you
 might see code where we add a legend as
 
 <<eval=FALSE>>=
-legend(1, 2, legend = c("A", "B"), 
+legend(1, 2, legend = c("A", "B"), pch = c(1, 2),
        col = c("red", "blue")[factor(levels(group))])
 @ 
 
