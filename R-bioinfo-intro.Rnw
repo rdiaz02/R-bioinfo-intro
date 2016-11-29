@@ -3669,7 +3669,9 @@ ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
 @ 
 
 There is nothing wrong with the call to \texttt{sapply}, but using
-\texttt{lapply} there might be preferable.
+\texttt{lapply} there might be preferable (but we'd need to do other
+things for dealing with the names of the files, such as use the names
+stored in the ``gf'' object).
 
 
 But ``Condition\_'' is repeated as a prefix. And txt as postfix.  Get rid
@@ -3683,19 +3685,20 @@ names(ovxpGenes) <-
                                 "\\.txt")[[1]][1])
 
 @ 
-The above can also be done as:
-<<eval=FALSE>>=
-## First line is to get the ovxpGenes names
-ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
 
+We could also do:
+<<eval=FALSE>>=
 names(ovxpGenes) <- sapply(strsplit(names(ovxpGenes), 
                                     "Condition_"), 
                            function(x) 
-                               strsplit(x[[2]], "\\.txt")[[1]][1])
+                               strsplit(x[2], "\\.txt")[[1]][1])
 @ 
 
+(Note that using \texttt{x[2]} and \texttt{x[[2]]} works equally well in
+the last example).
+
 Now, prepare an object that is very easy to use for any further analysis:
-matrix that has, as columns, the conditions, and as rows the gene
+a matrix that has, as columns, the conditions, and as rows the gene
 names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
 
 There are several ways of doing this. This is the simplest I came up with.
@@ -3734,10 +3737,10 @@ str(sapply(ovxpGenes, function(z) {match(z, all.the.genes)}))
 \noindent(I used \code{str} to show only the first part of the output).
 
 We want to return a TRUE where the gene is overexpressed and a FALSE if
-not. If we\footnote{I find it better to be as explicit as possible. An
+not \footnote{I find it better to be as explicit as possible. An
   alternative would be to return a 1 of type integer, using ``1L'', and a
   0 of type integer (0L).}. In
-other words, we want a vector for each experiment with the positions
+other words, we want a vector for each experiment with all the positions
 filled up. Lets do that directly as the return of a function:
 
 <<>>=
@@ -3775,6 +3778,21 @@ f2 <- function(x, all.the.genes) {
 I leave it as an exercise to show that both functions, \texttt{f1} and
 \texttt{f2} are doing the same thing. 
 
+And you can try another solution, one that uses the following idea:
+<<eval=FALSE>>=
+which( all.the.genes %in% x )
+@ 
+
+So:
+<<>>=
+f3 <- function(x, all.the.genes) {
+    vv <- rep(FALSE, length(all.the.genes))
+    vv[which( all.the.genes %in% x ) ] <- TRUE
+    return(vv)
+}
+
+@ 
+
 
 
 
@@ -3785,6 +3803,12 @@ overexpressed <- sapply(ovxpGenes,
                         function(x) f1(x, all.the.genes))
 rownames(overexpressed) <- all.the.genes
 @ 
+
+STOP! We gave three possible ways of doing this, with \texttt{f1},
+\texttt{f2}, \texttt{f3}: compare the output of the three (maybe using
+\texttt{identical} or, for programming, inside functions,
+\texttt{stopifnot}).
+
 
 That works. However, I think there is merit in following Hadley Wickham's
 advice of avoiding \code{sapply} inside functions (see section 9.4 of his
@@ -3869,7 +3893,10 @@ previously created (this could happen because of R's scoping rules).
 
 First, the reading data part. We will assume that we will always find all
 files with the gene identity in a directory, and that all files will have
-a common prefix and end in a common postfix. We will use default values, though.
+a common prefix and end in a common postfix. We will use default values,
+though.  Oh, by the way, I use \texttt{sapply} below, when creating
+\texttt{ovG}; why? Would you change it to use \texttt{vapply}?
+%%% I want sapply, as I want lists of different length
 
 <<>>=
 readListGenes <- function(prefix = "Condition_", 
