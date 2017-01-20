@@ -105,7 +105,7 @@ options(width = 60)
 @ 
 
 \section{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014, 2015, 2016, Ramon Diaz-Uriarte,
+This work is Copyright, \copyright, 2014, 2015, 2016, 2017, Ramon Diaz-Uriarte,
 and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -3971,7 +3971,7 @@ stopifnot(identical(ovxABC, overexpressed))
 
 \subsubsection{And how do we know it works?}
 If we were more serious about this, probably formally adding tests would
-be warranted. See section \ref{test}. We've done some testing about, but
+be warranted. See section \ref{test}. We've done some testing above, but
 this can be done much more seriously.
 
 
