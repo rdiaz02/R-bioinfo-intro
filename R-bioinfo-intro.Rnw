@@ -1860,6 +1860,7 @@ AB["2", ] ## using the rownames
 AB[, "Age"]
 AB$Age
 AB[["Age"]]
+AB["Age"]
 AB[3, 4] <- 97
 @ 
 
@@ -1899,7 +1900,8 @@ AB2$status <- rep(c("Z", "V"), 5)
 Reshaping data: Sometimes you will need to go from a ``wide'' to a
 ``long'' format in your data, or viceversa (e.g., repeated measures of the
 same individuals over time). Look at \code{?reshape}, although I find that
-the ``reshape2'' package (and possibly also the ``tidyr'' package) tends
+the ``reshape2'' package (and possibly also the ``tidyr'' package with its
+function \texttt{dcast}) tends
 to make life much easier for this task.
 
 Data table: For dealing efficiently with large data sets, and other
@@ -2010,7 +2012,9 @@ demo(persp)
 @ 
 
 
-And, if you have installed package ``ggplot2'' you can also do
+And, if you have installed package ``ggplot2'' you can also do (after
+loading the \texttt{ggplot2} package)
+
 <<eval=FALSE>>=
 example(qplot)
 @ 
@@ -2264,8 +2268,8 @@ had not written \code{scatterplot}.
 
 
 \subsubsection{How I read and saved the data?}\label{readanage}
-This is all I did (the \code{save} thing will become clearer below
----section \ref{saveRData}):
+This is all I did: %% (the \code{save} thing will become clearer below
+%% ---section \ref{saveRData}):
 <<eval=FALSE>>=
 anage <-  read.table("AnAge_birds_reptiles.txt", 
                      header=TRUE, na.strings="NA", 
@@ -2694,6 +2698,7 @@ data manipulation (dplyr) and reading large flat files (readr). Both are
 explained, in addition to the documentation of each of the packages, in
 Peng's  ``R programming for data   science'' book. 
 
+This link contains a handy summary: \Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
 
 \clearpage
 
