@@ -2471,6 +2471,233 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 
 
 
+
+\section{The ``apply'' family.  And ``aggregate'', "by", ""etc}
+One of the great strengths of \R\ is operating over whole vectors, arrays,
+lists, etc. Some available functions are: \code{apply, lapply, sapply,
+  tapply, mapply}.  Please look at the help for these functions. Here we
+will show some examples, and you should understand what is happening. Some
+of these examples use functions (anonymous functions) that we define as we
+need them in the calls of apply or aggregate (we have used these before).
+
+<<>>=
+(Z <- matrix(c(1, 27, 23, 13), nrow = 2))
+apply(Z, 1, median)
+apply(Z, 2, median)
+apply(Z, 2, min)
+@ 
+
+For those of you who have programmed before: using the ``apply'' family is
+often much, much, much more efficient (and elegant, and easy to
+understand) than using explicit loops.
+
+
+With lists we will use \code{lapply}. For example, lets look at the
+first element of each of the components of the list (see how we define a
+function on the fly):
+<<tidy=FALSE>>=
+(listA <- list(one.vector = 1:10,  hello = "Hola", 
+               one.matrix = matrix(rnorm(20), ncol = 5),
+               another.list = list(a = 5, 
+                 b = factor(c("male", "female", "female")))))
+
+lapply(listA, function(x) x[[1]])
+@ 
+
+
+When we have data that can be used to stratify or select other data, we
+often use \code{tapply}:
+
+<<tidy=FALSE>>=
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
+                            sex = factor(c("male", "female", 
+                              "female", "male", "male"))))
+
+tapply(one.dataframe$age, one.dataframe$sex, mean)
+@ 
+
+However, \code{aggregate} often returns things in a more convenient form:
+
+<<tidy=FALSE>>=
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
+                            sex = factor(c("male", "female", 
+                              "female", "male", "male"))))
+
+aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
+## make the aggregating variable explicit, 
+## and give it another name
+aggregate(one.dataframe$age, 
+          list(Sexo = one.dataframe$sex), mean)
+
+## or use the name of the column/variable
+aggregate(one.dataframe$age, 
+          one.dataframe[2], mean)
+@ 
+
+The function \code{by} is related to \code{aggregate} and \code{tapply},
+but you can use functions that return several different things (e.g., the
+mean and standard deviation) and the return value is a list:
+
+<<>>=
+by(one.dataframe$age, list(one.dataframe$sex), 
+   function(x) c(mean(x), sd(x)))
+@ 
+
+You can do much of that with aggregate too, but the output is different:
+<<>>=
+aggregate(one.dataframe$age, one.dataframe[2], 
+          function(x) c(Mean = mean(x), SD = sd(x)))
+@ 
+
+And you can use a formula interace which might be more intuitive:
+<<>>=
+aggregate(age ~ sex, data = one.dataframe,
+          function(x) c(Mean = mean(x), SD = sd(x)))
+@                              
+ 
+Sometimes, using \texttt{with} can be handy, but watch out: we need to be
+explicit about \texttt{FUN} (what would happen if we did not?). Actually,
+there are a couple of things happening here at the same time:
+<<>>=
+with(one.dataframe, 
+     aggregate(age ~ sex, 
+               FUN = function(x) c(Mean = mean(x), SD = sd(x)))
+     )
+@
+
+
+
+Another very handy function is \texttt{split}. What we will do next is an
+overkill, but knowing about split can make life simpler in many cases:
+
+<<>>=
+
+lapply(with(one.dataframe, split(one.dataframe, sex)),
+       function(y) mean(y$age))
+
+@ 
+
+Since the need for these operations is very common (getting summaries or
+applying functions to subsets of the data), there are a variety of ways of
+accomplishing them with the basic functions of R, as well as several
+additional packages that provide for different (easier? faster?)
+approaches/syntax. Here is a blog with some examples and links:
+\Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}.
+For instance, the \code{doBy} package is really nice.
+
+
+=======
+
+
+
+
+
+\subsection{Matrices: Dropping dimensions}
+
+Look at the different outputs of the selection operation:
+
+<<>>=
+(E <- matrix(1:9, nrow = 3))
+E[, 1]
+E[, 1, drop = FALSE]
+E[1, ]
+E[1, , drop = FALSE]
+
+@ 
+
+Unless we use \code{drop = FALSE}, if we select only one row or one
+column, the result is not a matrix, but a vector\footnote{row vector? column
+vector? that is a longer discussion than warranted here; nothing with two
+dimensions, anyway}. But sometimes we do we need them to remain as
+matrices. That is often the case in many matrix operations, and also when
+using \code{apply} and related.
+
+
+Suppose we select automatically (with some procedure) a set of rows that
+interest us in the matrix.
+
+<<>>=
+rows.of.interest <- c(1, 3)
+@ 
+
+We can do
+
+<<>>=
+apply(E[rows.of.interest, ], 1, median)
+
+@ 
+
+Now, imagine that in a particular case, \code{rows.of.interest} only has
+one element:
+<<>>=
+rows.of.interest <- c(3)
+@ 
+
+<<eval=FALSE>>=
+apply(E[rows.of.interest, ], 1, median)
+@ 
+
+What is the error message suggesting?
+
+But we can make sure our procedure does not crash by using \code{drop = FALSE}:
+<<>>=
+apply(E[rows.of.interest, , drop = FALSE], 1, median)
+@ 
+
+
+The situation above can be even more confusing with some matrix operations.
+
+
+% The following is actually worse, because you can get into a confusing
+% situation and have errors that are hard to catch (note: \verb=%*%= is
+% matrix multiplication). Suppose we want to multiply a matrix formed by
+% some columns of E with a matrix formed by those same rows of E. 
+
+% <<>>=
+% vector.indices <- c(1, 3)
+% E[, vector.indices] %*% E[vector.indices, ]
+% @ 
+
+
+%  the first column of E by the first row of E. We know that
+% should be a 3x3 matrix. Lets try it:
+
+% <<>>=
+% E[, 1] %*% E[1, ]
+% @ 
+
+% That is not what we wanted. We should have written:
+% <<>>=
+% E[, 1, drop = FALSE] %*% E[1, , drop = FALSE]
+% @ 
+
+% because if we drop dimensions, this is what we are doing (the following
+% are equivalent):
+
+% <<>>=
+% E[, 1] %*% E[1, ]
+% sum(E[, 1] * E[1, ])
+% sum(E[1, ] * E[, 1])
+% sum(c(1, 2, 3) * c(1, 4, 7))
+% E[1, , drop = FALSE] %*% E[, 1, drop = FALSE]
+% @ 
+
+
+To summarize: when you select only a single column or a single row of an
+array, think about whether the output should be a vector or a matrix
+
+
+\section{(Optional: two handy packages \texttt{readr} and \texttt{dplyr})}
+We won't get into details about this: Hadley Wickham has two packages,
+\texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
+data manipulation (dplyr) and reading large flat files (readr). Both are
+explained, in addition to the documentation of each of the packages, in
+Peng's  ``R programming for data   science'' book. 
+
+
+\clearpage
+
+
 \section{\R\  programming}\label{rprog}
 
 \R\  is a programming language. Comprehensive coverage is given in the books
@@ -2838,204 +3065,6 @@ fc(1:5, "blue", pch = 8)
 
 \clearpage
 
-%%% FIXME: move immediately after tables
-\section{The ``apply'' family, ``aggregate'', etc}
-One of the great strengths of \R\  is operating over whole vectors, arrays,
-lists, etc. Some available functions are: \code{apply, lapply, sapply,
-  tapply, mapply}.  Please look at the help for these functions. Here we
-will show some examples, and you should understand what is happening:
-
-<<>>=
-(Z <- matrix(c(1, 27, 23, 13), nrow = 2))
-apply(Z, 1, median)
-apply(Z, 2, median)
-apply(Z, 2, min)
-@ 
-
-For those of you who have programmed before: using the ``apply'' family is
-often much, much, much more efficient (and elegant, and easy to
-understand) than using explicit loops.
-
-
-With lists we will use \code{lapply}. For example, lets look at the
-first element of each of the components of the list (see how we define a
-function on the fly):
-<<tidy=FALSE>>=
-(listA <- list(one.vector = 1:10,  hello = "Hola", 
-               one.matrix = matrix(rnorm(20), ncol = 5),
-               another.list = list(a = 5, 
-                 b = factor(c("male", "female", "female")))))
-
-lapply(listA, function(x) x[[1]])
-@ 
-
-
-When we have data that can be used to stratify or select other data, we
-often use \code{tapply}:
-
-<<tidy=FALSE>>=
-(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
-                            sex = factor(c("male", "female", 
-                              "female", "male", "male"))))
-
-tapply(one.dataframe$age, one.dataframe$sex, mean)
-@ 
-
-However, \code{aggregate} often returns things in a more convenient form:
-
-<<tidy=FALSE>>=
-(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
-                            sex = factor(c("male", "female", 
-                              "female", "male", "male"))))
-
-aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
-## make the aggregating variable explicit, 
-## and give it another name
-aggregate(one.dataframe$age, 
-          list(Sexo = one.dataframe$sex), mean)
-
-## or use the name of the column/variable
-aggregate(one.dataframe$age, 
-          one.dataframe[2], mean)
-@ 
-
-The function \code{by} is related to \code{aggregate} and \code{tapply},
-but you can use functions that return several different things (e.g., the
-mean and standard deviation) and the return value is a list:
-
-<<>>=
-by(one.dataframe$age, list(one.dataframe$sex), 
-   function(x) c(mean(x), sd(x)))
-@ 
-
-You can do much of that with aggregate too, but the output is different:
-<<>>=
-aggregate(one.dataframe$age, one.dataframe[2], 
-          function(x) c(Mean = mean(x), SD = sd(x)))
-@ 
-
-Since the need for these operations is very common (getting summaries or
-applying functions to subsets of the data), there are a variety of ways of
-accomplishing them with the basic functions of R, as well as several
-additional packages that provide for different (easier? faster?)
-approaches/syntax. Here is a blog with some examples and links:
-\Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}.
-For instance, the \code{doBy} package is really nice.
-
-%% FIXME: use the formula for aggregate
-
-
-%% FIXME: use with
-=======
-%% FIXME: examples with the formula interface to aggregate
-
-
-
-
-\subsection{Matrices: Dropping dimensions}
-
-Look at the different outputs of the selection operation:
-
-<<>>=
-(E <- matrix(1:9, nrow = 3))
-E[, 1]
-E[, 1, drop = FALSE]
-E[1, ]
-E[1, , drop = FALSE]
-
-@ 
-
-Unless we use \code{drop = FALSE}, if we select only one row or one
-column, the result is not a matrix, but a vector\footnote{row vector? column
-vector? that is a longer discussion than warranted here; nothing with two
-dimensions, anyway}. But sometimes we do we need them to remain as
-matrices. That is often the case in many matrix operations, and also when
-using \code{apply} and related.
-
-
-Suppose we select automatically (with some procedure) a set of rows that
-interest us in the matrix.
-
-<<>>=
-rows.of.interest <- c(1, 3)
-@ 
-
-We can do
-
-<<>>=
-apply(E[rows.of.interest, ], 1, median)
-
-@ 
-
-Now, imagine that in a particular case, \code{rows.of.interest} only has
-one element:
-<<>>=
-rows.of.interest <- c(3)
-@ 
-
-<<eval=FALSE>>=
-apply(E[rows.of.interest, ], 1, median)
-@ 
-
-What is the error message suggesting?
-
-But we can make sure our procedure does not crash by using \code{drop = FALSE}:
-<<>>=
-apply(E[rows.of.interest, , drop = FALSE], 1, median)
-@ 
-
-
-The situation above can be even more confusing with some matrix operations.
-
-
-% The following is actually worse, because you can get into a confusing
-% situation and have errors that are hard to catch (note: \verb=%*%= is
-% matrix multiplication). Suppose we want to multiply a matrix formed by
-% some columns of E with a matrix formed by those same rows of E. 
-
-% <<>>=
-% vector.indices <- c(1, 3)
-% E[, vector.indices] %*% E[vector.indices, ]
-% @ 
-
-
-%  the first column of E by the first row of E. We know that
-% should be a 3x3 matrix. Lets try it:
-
-% <<>>=
-% E[, 1] %*% E[1, ]
-% @ 
-
-% That is not what we wanted. We should have written:
-% <<>>=
-% E[, 1, drop = FALSE] %*% E[1, , drop = FALSE]
-% @ 
-
-% because if we drop dimensions, this is what we are doing (the following
-% are equivalent):
-
-% <<>>=
-% E[, 1] %*% E[1, ]
-% sum(E[, 1] * E[1, ])
-% sum(E[1, ] * E[, 1])
-% sum(c(1, 2, 3) * c(1, 4, 7))
-% E[1, , drop = FALSE] %*% E[, 1, drop = FALSE]
-% @ 
-
-
-To summarize: when you select only a single column or a single row of an
-array, think about whether the output should be a vector or a matrix
-
-
-\section{(Optional: two handy packages \texttt{readr} and \texttt{dplyr})}
-We won't get into details about this: Hadley Wickham has two packages,
-\texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
-data manipulation (dplyr) and reading large flat files (readr). Both are
-explained, in addition to the documentation of each of the packages, in
-Peng's  ``R programming for data   science'' book. 
-
-
-\clearpage
 
 \section{Revisiting an example that brings a few things
   together}\label{example-multtest}
@@ -3973,6 +4002,14 @@ stopifnot(identical(ovxABC, overexpressed))
 If we were more serious about this, probably formally adding tests would
 be warranted. See section \ref{test}. We've done some testing above, but
 this can be done much more seriously.
+
+\subsubsection{\texttt{dplyr?}}
+\label{sec:dplyr}
+
+We will not cover this here, but we should add that some of the operations
+above could have used \texttt{full\_join} and similar functions in the
+R package \texttt{dplyr}.
+
 
 
 \clearpage
