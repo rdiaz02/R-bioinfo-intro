@@ -1128,6 +1128,9 @@ image''?
 Oh, and please go and look at the differences between \code{save.image}
 and \code{save}.
 
+%% FIXME: somethig about dput
+%% FIXME: something about saveRDS?
+%% FIXME: something about readLines?
 
 \section{Scripts and non-interactive runs}\label{scripts}
 
@@ -1819,17 +1822,28 @@ listA[1]
 A more complex list, that includes another list inside:
 
 <<tidy=FALSE>>=
+
 (listB <- list(one.vector = 1:10,  hello = "Hola", 
                one.matrix = matrix(rnorm(20), ncol = 5),
                another.list = 
                list(a = 5, 
                     b = factor(c("male", 
                       "female", "female")))))
+
 @ 
 
 Note that many functions in R  return lists.
 
+And what did we do here?
+<<>>=
+listB[[c(3, 4)]]
+@ 
 
+which is very different from 
+
+<<eval=TRUE,echo=TRUE,results='hide'>>=
+listB[c(3, 4)]
+@ 
 
 \subsection{Data frames}
 
@@ -1842,8 +1856,10 @@ structure, where different columns can have objects of different types
 
 
 <<>>=
+
 (AB <- read.table("AnotherDataSet.txt", 
                   header = TRUE))
+
 @ 
 
 Data frames are extremely handy for data analysis, and you will see them
@@ -2581,6 +2597,12 @@ lapply(with(one.dataframe, split(one.dataframe, sex)),
 
 @ 
 
+The above procedure is related to the split-apply-combine and the
+map-reduce approaches. And \texttt{by}, \texttt{aggregate}, and friends
+can be regarded as specially handy ways of doing the above combination of
+\texttt{split} with \texttt{*apply} and some particular summary function(s).
+
+
 Since the need for these operations is very common (getting summaries or
 applying functions to subsets of the data), there are a variety of ways of
 accomplishing them with the basic functions of R, as well as several
@@ -2698,9 +2720,14 @@ data manipulation (dplyr) and reading large flat files (readr). Both are
 explained, in addition to the documentation of each of the packages, in
 Peng's  ``R programming for data   science'' book. 
 
-This link contains a handy summary: \Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
+This link contains a handy summary of \texttt{dplyr}:
+\Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
+
+As for \texttt{readr}, check out \texttt{read_table} and \texttt{read_csv}.
 
 \clearpage
+
+
 
 
 \section{\R\  programming}\label{rprog}
