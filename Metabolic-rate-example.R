@@ -65,8 +65,11 @@ p1 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W.), data = anage) +
     geom_point() 
 p1
 
+## how can I use log?
+
 p1 + scale_x_log10() + scale_y_log10()
 
+## conditioning
 p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class)
 
 p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
@@ -75,7 +78,7 @@ p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
 p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
     geom_smooth(method = "lm", se = FALSE )
 
-
+## using color per class
 p2 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W., color = Class),
              data = anage) +
     geom_point() 
@@ -84,4 +87,39 @@ p2
 p2 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
     geom_smooth(method = "lm", se = FALSE )
 
+## single panel
+p2 + scale_x_log10() + scale_y_log10() +
+    geom_smooth(method = "lm", se = FALSE )
+
+## nope, does not work if using colors, etc
+p2 + scale_x_log10() + scale_y_log10() +
+    geom_smooth(method = "lm", se = FALSE ) +
+    scale_color_manual(values = c("red", "blue"))
+
+
+
 ## library(cowplot)
+
+
+## selection
+
+birds <- anage[anage$Class == "Aves", ]
+
+library(dplyr)
+birds2 <- dplyr::filter(anage, Class == "Aves", )
+
+## creating new variables and why might not always be good?
+## (for log transformation)
+
+
+
+
+plot(Metabolic.rate..W. ~ Body.mass..g.,
+     data = anage,
+     col = c("salmon", "darkgreen")[Class],
+     pch = c(1, 2)[Class],
+     log = "xy")
+
+legend(locator(1), legend = levels(anage$Class),
+       col = c("salmon", "darkgreen"),
+       pch = c(1, 2))
