@@ -21,8 +21,13 @@ plot(Metabolic.rate..W. ~ Body.mass..g., data = anage)
 plot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
      log = "xy")
 
+anage$logmet <- log(anage$Metabolic.rate..W.)
+anage$logbm <- log(anage$Body.mass..g)
+
+plot(logmet ~ logbm, data = anage)
 
 library(car)
+
 
 scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
      log = "xy")
@@ -40,7 +45,7 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
      col = c("red", "blue")[Class],
-     log = "xy", spread = FALSE)
+     log = "xy")
 ## did you see the warnings?
 
 ## legend?
@@ -62,7 +67,8 @@ legend(10, 2, legend = levels(anage$Class),
 library(ggplot2)
 
 p1 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W.), data = anage) +
-    geom_point() 
+    geom_point()
+
 p1
 
 ## how can I use log?
@@ -92,13 +98,14 @@ p2 + scale_x_log10() + scale_y_log10() +
     geom_smooth(method = "lm", se = FALSE )
 
 ## nope, does not work if using colors, etc
+
 p2 + scale_x_log10() + scale_y_log10() +
     geom_smooth(method = "lm", se = FALSE ) +
     scale_color_manual(values = c("red", "blue"))
 
 
 
-## library(cowplot)
+library(cowplot)
 
 
 ## selection
@@ -123,3 +130,9 @@ plot(Metabolic.rate..W. ~ Body.mass..g.,
 legend(locator(1), legend = levels(anage$Class),
        col = c("salmon", "darkgreen"),
        pch = c(1, 2))
+
+
+## todo
+## - labels con at para etiquetar tick marks
+## complete cases y table sin NAs
+## abline para plot para reptiles y aves
