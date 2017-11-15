@@ -198,7 +198,7 @@ The structure and logic is as follows:
   \ref{crashex}). Again, on first reading you might not understand
   all of what is done, but we will go over it in class.
 \item Then we cover tables and a little bit of programming (sections
-  \ref{tables} and \ref{rporg}).
+  \ref{tables} and \ref{rprog}).
 \item We then revisit some examples.
 % \item Then, up to section \ref{back-scenarios}, we go over many details in
 %   a more systematic, but more boring, way. 
@@ -335,7 +335,9 @@ This is a partial list a books I like and use when preparing classes:
 \item[Programming] As it says, just focus on programming R:
   \begin{itemize}
   \item \textit{R Programming for Data Science}. Peng. (This is an
-    ebook and PDF, and you can pay whatever you want for it.)
+    ebook and PDF, and you can pay whatever you want for it.). If you want
+    to start somewhere and use only a single reference, \textbf{I'd start
+      with this book}.
    \item \textit{Advanced R}. Wickham. (If you go to the web page for the
     book, in github, you can download the complete sources and build your
     own pdf).   
@@ -2723,7 +2725,7 @@ Peng's  ``R programming for data   science'' book.
 This link contains a handy summary of \texttt{dplyr}:
 \Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
 
-As for \texttt{readr}, check out \texttt{read_table} and \texttt{read_csv}.
+As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}.
 
 \clearpage
 
