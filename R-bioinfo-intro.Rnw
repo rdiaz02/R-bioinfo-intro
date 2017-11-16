@@ -481,7 +481,7 @@ want to use the "Dektop", that you can download from here:
 
 Ah, this is a nice topic for a long, passionate, conversation. In this
 course, we will, by default, be using RStudio. I will, however, often use
-Emacs + ESS (\Burl{ess.r-project.org/}). For those used to Eclipse, there
+Emacs + ESS (\Burl{http://ess.r-project.org/}). For those used to Eclipse, there
 is a plug-in designed to work with R: StatET
 (\Burl{http://www.walware.de/goto/statet}). Another popular interface is
 JGR (\Burl{http://www.rforge.net/JGR/}). RKward
@@ -2423,6 +2423,9 @@ xtabs( ~ Sex + status, data = AB2)
 Now, look at this:
 <<>>=
 (freqs <- as.data.frame(xtabs( ~ Sex + status, data = AB2)))
+
+as.data.frame(with(AB2, table(Sex, status)))
+
 @ 
 \noindent Did you see how easy it was?
 
@@ -2494,7 +2497,7 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 
 
 
-\section{The ``apply'' family.  And ``aggregate'', "by", ""etc}
+\section{The ``apply'' family.  And ``aggregate'', "by", etc}
 One of the great strengths of \R\ is operating over whole vectors, arrays,
 lists, etc. Some available functions are: \code{apply, lapply, sapply,
   tapply, mapply}.  Please look at the help for these functions. Here we
