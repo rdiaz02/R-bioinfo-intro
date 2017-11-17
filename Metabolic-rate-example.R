@@ -114,13 +114,10 @@ library(cowplot)
 birds <- anage[anage$Class == "Aves", ]
 
 library(dplyr)
-birds2 <- dplyr::filter(anage, Class == "Aves", )
+birds2 <- dplyr::filter(anage, Class == "Aves")
 
 ## creating new variables and why might not always be good?
 ## (for log transformation)
-
-
-
 
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
@@ -141,8 +138,10 @@ legend(locator(1), legend = levels(anage$Class),
 
 
 plot(logmet ~ logbm, data = anage,
-     xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
+     xlab = "Log body mass (g)",
+     ylab = "Log metabolic rate (W)",
      axes = FALSE)
+
 box()
 
 ## help for labels is not very helpful?
@@ -159,9 +158,18 @@ axis(side = 2, at = log(yv), labels = yv)
 ## Hummm, ugly for several reasons
 
 par(las = 1)
+
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
-     axes = FALSE, ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
+     axes = FALSE,
+     ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
+
+plot(logmet ~ logbm, data = anage,
+     xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
+     axes = FALSE,
+     ylim = c(log(0.01), max(anage$logmet)))
+
+
 box()
 axis(side = 2, at = log(yv), labels = yv)
 
@@ -179,7 +187,10 @@ par(op)
 
 
 anage.clean <- anage[
-    complete.cases(anage[, c("Class", "Metabolic.rate..W.", "Body.mass..g.")]), ]
+    complete.cases(anage[, c("Class",
+                             "Metabolic.rate..W.",
+                             "Body.mass..g.")])
+  , ]
 summary(anage.clean)
 
 anage.clean2 <- na.omit(
@@ -208,7 +219,7 @@ names(attributes(anage.clean))
 
 for(att in names(attributes(anage3))) {
     cat("\n attribute ", att, "\n")
-    print(identical(attributes(anage)[[att]], attributes(anage.clean)[[att]]))
+    print(identical(attributes(anage3)[[att]], attributes(anage.clean)[[att]]))
 }
 
 
