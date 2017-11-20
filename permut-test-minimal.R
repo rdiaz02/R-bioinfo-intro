@@ -37,8 +37,11 @@ summary(manyV)
 manyV <- replicate(1000, sampleAndStat(d21, d22))
 hist(manyV)
 hist(manyV, xlim = c(-3, 3))
+
+## note the canvas analogy!
 abline(v = mean.d(d21, d22))
 
+## more canvas :-)
 hist(manyV, xlim = c(-3, 3))
 abline(v = mean.d(d21, d22), col = "red")
 
@@ -93,3 +96,17 @@ permut.test.2(d21, d22)
 
 
 ## Now: rename functions if needed, add tests, comment things properly.
+
+
+## Oh, and what about the t.test
+
+plot(function(x) dt(x, df = 2), -3, 3, 
+     main = "t: Density",
+     ylab = "Density",
+     ylim = c(0, 0.42))
+
+
+x1 <- seq(-3, 3, length.out = 500)
+y1 <- sapply(x1, function(x) dt(x, df = 1000))
+lines(x1, y1, col = "blue")
+
