@@ -110,3 +110,4 @@ x1 <- seq(-3, 3, length.out = 500)
 y1 <- sapply(x1, function(x) dt(x, df = 1000))
 lines(x1, y1, col = "blue")
 
+
