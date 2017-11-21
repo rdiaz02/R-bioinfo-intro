@@ -2481,6 +2481,9 @@ xtabs(a ~ ., data = y)
 ## table of c, d; counts are the a and the b 
 ## (instead of just "a" or Freq)
 ## "columns are intrepreted as the levels of a variable"
+## The first subtable, labeled , ,  = a
+## counts freq. of c,d, using a as the counts. See the 6
+## for c =2 and d = 3
 xtabs(cbind(a, b) ~ ., data = y)
 ## the usual table of all
 xtabs(~ c + d + a + b, data = y)
@@ -2497,7 +2500,7 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 
 
 
-\section{The ``apply'' family.  And ``aggregate'', "by", etc}
+\section{The ``apply'' family.  And ``aggregate'', ``by'', etc}
 One of the great strengths of \R\ is operating over whole vectors, arrays,
 lists, etc. Some available functions are: \code{apply, lapply, sapply,
   tapply, mapply}.  Please look at the help for these functions. Here we
@@ -2801,7 +2804,7 @@ sure you understand what is happening.
 
 x <- y <- 0
 iteration <- 1
-while( (x < 10) & (y < 2)) {
+while( (x < 10) && (y < 2)) {
   cat(" ... iteration", iteration, "\n")
   x <- x + runif(1)
   y <- y + rnorm(1)
