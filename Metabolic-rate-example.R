@@ -162,12 +162,13 @@ par(las = 1)
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
      axes = FALSE,
-     ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
+     ylim = c(log(0.01), max(anage$logmet)))
 
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
      axes = FALSE,
-     ylim = c(log(0.01), max(anage$logmet)))
+     ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
+
 
 
 box()
@@ -207,13 +208,16 @@ identical(anage3, anage4)
 identical(anage.clean, anage3)
 
 mapply(identical, anage.clean, anage3)
+## or
+Map(identical, anage.clean, anage3)
+
 ## what gives?
 
 attributes(anage.clean)
 attributes(anage3)
 
 ## misleading
-mapply(identical, attributes(anage.clean), attributes(anage3))
+Map(identical, attributes(anage.clean), attributes(anage3))
 names(attributes(anage3))
 names(attributes(anage.clean))
 
@@ -222,9 +226,26 @@ for(att in names(attributes(anage3))) {
     print(identical(attributes(anage3)[[att]], attributes(anage.clean)[[att]]))
 }
 
+## w.o. sending to null we get a return value
+null <- lapply(names(attributes(anage3)),
+       function(u) {
+           cat("\n attribute ", u, ": ", 
+               identical(attributes(anage3)[[u]],
+                         attributes(anage.clean)[[u]]),
+               "\n")
+       })
+
+lapply(names(attributes(anage3)),
+       function(u) {
+           cat("\n attribute ", u, ": ", 
+               identical(attributes(anage3)[[u]],
+                         attributes(anage.clean)[[u]]),
+               "\n")
+       })
+
+
 
 ### ablines and regression
-
 birds <- dplyr::filter(anage, Class == "Aves")
 
 summary(lm(logmet ~ logbm, birds))
@@ -253,11 +274,6 @@ abline(mrept, col = "turquoise")
 lapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd))
 
-plot(logmet ~ logbm, anage, col = c("salmon", "turquoise")[Class])
-lapply(split(anage, anage$Class),
-       function(dd) abline(lm(logmet ~ logbm, data = dd)))
-
-
 
 plot(logmet ~ logbm, anage, col = c("salmon", "turquoise")[Class])
 lapply(split(anage, anage$Class),
@@ -280,8 +296,13 @@ lapply(split(anage, anage$Class),
 dddd <- split(anage, anage$Class)
 
 lapply(dddd, function(u) u$Class)
+
 lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd,
                               col = colores[Class])))
+
+
+
+
 
 
