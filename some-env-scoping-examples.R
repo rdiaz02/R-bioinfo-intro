@@ -1,5 +1,6 @@
 ## Functions that return functions with
 ## bindings for some arguments
+
 powb <- function(n) {
     return(function(x) x^n)
 }
@@ -91,3 +92,7 @@ f5(1:5, col = "red", two = 1:5)
 ## debug and do list(...)
 
 f5(1:5, two = 1:5, col = "red")
+
+
+
+

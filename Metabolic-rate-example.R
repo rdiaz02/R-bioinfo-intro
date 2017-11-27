@@ -285,6 +285,7 @@ colores <- c("salmon", "turquoise")
 
 ## hummm...
 plot(logmet ~ logbm, anage, col = colores[Class])
+
 lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd,
                               col = colores[Class])))
