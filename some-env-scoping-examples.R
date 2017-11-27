@@ -64,3 +64,30 @@ g4(1)
 
 y <- -1000
 g4(2)
+
+
+
+
+f4 <- function(one, two, three = 3, four) {
+    cat("one = ", one, 
+        " two = ", two, 
+        " three = ", three,
+        " four = ", four,
+        "\n")
+}
+
+## very confusing
+f4(1, 4, 3, 2)
+
+f5 <- function(one, ..., two) {
+    plot(one, two, ...)
+}
+## won't work
+f5(1:5, col = "red", 1:5)
+
+## need this, but again bad practice
+f5(1:5, col = "red", two = 1:5)
+## but two is being passed also in ...
+## debug and do list(...)
+
+f5(1:5, two = 1:5, col = "red")
