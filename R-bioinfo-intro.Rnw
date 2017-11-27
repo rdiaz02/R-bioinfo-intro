@@ -2583,6 +2583,23 @@ aggregate(age ~ sex, data = one.dataframe,
           function(x) c(Mean = mean(x), SD = sd(x)))
 @                              
  
+
+That will work when what you want to compute functions of has multiple
+columns:
+
+<<>>=
+
+one.dataframe$Y <- 1:5
+
+aggregate(cbind(age, Y) ~ sex, data = one.dataframe,
+          function(x) c(Mean = mean(x), SD = sd(x)))
+
+aggregate(one.dataframe[, c("age", "Y")],
+          list(Sex = one.dataframe$sex),
+          function(x) c(Mean = mean(x), SD = sd(x)))
+
+@ 
+
 Sometimes, using \texttt{with} can be handy, but watch out: we need to be
 explicit about \texttt{FUN} (what would happen if we did not?). Actually,
 there are a couple of things happening here at the same time:
