@@ -198,6 +198,7 @@ anage.clean2 <- na.omit(
     anage[, c("Class", "Metabolic.rate..W.", "Body.mass..g.")])
 summary(anage.clean2)
 
+## aqui nos quedamos viernes 24
 anage3 <- dplyr::filter(anage, !is.na(Metabolic.rate..W.) & !is.na(Body.mass..g.))
 anage4 <- dplyr::filter(anage, !(is.na(Metabolic.rate..W.) | is.na(Body.mass..g.)))
 summary(anage3)
@@ -302,7 +303,8 @@ lapply(split(anage, anage$Class),
                               col = colores[Class])))
 
 
-
+## see help of "by" for another example
+## of extracting coefficients by group
 
 
 
