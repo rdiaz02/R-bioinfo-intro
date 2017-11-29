@@ -2854,7 +2854,13 @@ while(TRUE) {
 Did you notice that \code{iteration <- iteration + 1} is now in a
 different place, and we initialize it with a value of 0?
 
+%% FIXME, if, if and else, if and else if
+%% FIXME switch
 
+%% FIXME: add ifelse as in, e.g.,
+%% + . + > x <- 1:10
+%% > y <- x + runif(10, -1, 1)
+%% > ifelse(x > y, "larger", "smaller")
 
 \subsection{Defining your own functions}
 
@@ -3826,7 +3832,15 @@ a list, with as many elements as conditions.
 ####    and store   as a list
 gf <- dir(pattern = "^Condition_")
 ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
+
 @ 
+
+%% Using vapply here is very hard.
+%% <<>>=
+%% ovxpGenes_b <- vapply(gf, function(x) scan(x, what = ""),
+%%                       character(1))
+%% @ 
+
 
 There is nothing wrong with the call to \texttt{sapply}, but using
 \texttt{lapply} there might be preferable (but we'd need to do other
