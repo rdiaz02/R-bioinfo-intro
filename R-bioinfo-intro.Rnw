@@ -4308,6 +4308,7 @@ For using ``testthat'' see \Burl{http://r-pkgs.had.co.nz/tests.html} and
 \Burl{http://journal.r-project.org/archive/2011-1/RJournal\_2011-1\_Wickham.pdf}.
 
 
+
 \subsubsection{Second attempt}
 
 I will give the fixed code. You have to understand what changed:
@@ -4331,9 +4332,46 @@ permut.testB <- function(data1, data2,
 
 Quick check (you should do it more thoroughly)
 <<>>=
+
 tmp <- permut.testB(d11, d11)
+
 tmp <- permut.testB(d12, d12)
 @ 
+
+
+
+Better:
+<<>>=
+
+stopifnot(suppressMessages(permut.testB(d11, d11))$pv == 1)
+stopifnot(suppressMessages(permut.testB(d12, d12))$pv == 1)
+xr <- runif(10)
+stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1)
+
+@ 
+
+
+Much better:
+
+<<>>=
+library(testthat)
+@ 
+
+<<>>=
+
+test_that("p-value = 1 when the two vectors identical", {
+    n <- 10
+    for(i in 1:n) {
+       xr <- runif(15)
+       stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1) 
+    }
+})
+
+@ 
+
+
+In fact, it is easy to argue that the test should have been written
+first. 
 
 
 
