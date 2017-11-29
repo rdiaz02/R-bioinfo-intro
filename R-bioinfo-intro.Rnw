@@ -2890,7 +2890,7 @@ function. Then, you write the \R\  code in the place where it says ``\#what
 my function does''. %% (By the way, \verb=#= is the sign that delimits the
 %% beginning of a comment). 
 The \ldots refer to other arguments passed on to
-functions called inside the main function (we won't get into this).
+functions called inside the main function.
 
 
 For example
@@ -3225,6 +3225,7 @@ crashed, so you can tell which is the function where the problem shows up:
 
 
 <<>>=
+
 f1 <- function(x) 3 * x
 
 f2 <- function(x) 5 + f1(x)
@@ -3236,10 +3237,14 @@ f3 <- function(z, u) {
     return(a + b)
 }
 f3(3, 7)
+
+
 @ 
 
 <<eval=FALSE,error=TRUE>>=
+
 f3(-5, 6)
+
 traceback()
 
 f3(5, "a")
@@ -3273,6 +3278,9 @@ undebug(f3) ## stop debugging
 f3(3, 5)
 @ 
 
+In addition to \texttt{debug} you can use \texttt{debugonce}, so you do
+not need to remember to do \texttt{undebug}.
+
 You can also use \code{browser}. It is very easy to add that to a function
 you wrote, wherever you want it to stop.  Make sure you try this, and when
 it stops, look around (e.g., type \code{ls()}, reassign values, etc).
@@ -3286,6 +3294,16 @@ Or you can set up conditional browsers. For example, call it only if
 \code{z > 5}:
 
 <<>>=
+## just browser
+f3 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(u)
+    browser()
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+## with conditional browser
 f3 <- function(z, u) {
     v <- runif(z)
     if (z > 5) browser()
@@ -3293,6 +3311,7 @@ f3 <- function(z, u) {
     b <- f2(3 * v)
     return(a + b)
 }
+
 @ 
 
 
@@ -3311,7 +3330,9 @@ Yes. You just have to pass it the line number, using the function
 Let's start with our simple function:
 
 <<eval=FALSE>>=
+
 as.list(body(f3))
+
 trace(f3, tracer = browser, at = 3)
 
 f3 # notice the message 
@@ -3325,6 +3346,8 @@ untrace(f3) ## stop tracing
 
 This uses \code{lm}, which we have not written. 
 <<eval=FALSE>>=
+
+
 as.list(body(lm))
 trace(lm, tracer = browser, at = 5)
 y <- runif(100)
@@ -3332,6 +3355,7 @@ x <- 1:100
 lm(y ~ x)
 ## stop tracing
 untrace(lm)
+
 @ 
 
 
@@ -3436,6 +3460,7 @@ There is exception handling in R, of course, and there are several
 mechanisms. I often use \code{try}, which is simple. For instance:
 
 <<>>=
+
 ft <- function(x) {
     tmp <- try(log(x), silent = TRUE)
     if(inherits(tmp, "try-error")) {
@@ -3446,8 +3471,12 @@ ft <- function(x) {
     }
 }
 
+
 ft(9)
+
+
 ft("a")
+
 @ 
 
 The above is a silly example, of course, but suppose taking the log is not
@@ -3459,6 +3488,48 @@ fully when a case fails (keep track of data, random number seeds, etc),
 but I allow the rest of the process to continue.
 
 More sophisticated approaches are available. Look at the references above.
+
+
+\subsection{Debugging functions that are not exported}
+
+If we load a package, say \texttt{OncoSimulR} (from BioConductor) we can do
+
+<<>>=
+library(OncoSimulR)
+ls(pos = 2)
+@ 
+and we see the names of the exported functions.
+
+I know there is a function called \texttt{nr_oncoSimul.internal}. You
+might not know it but maybe you got an error and when doing
+\texttt{traceback} you find out that function is where the error
+occurs. That function is not exported: that function is not supposed to be
+called directly by users (it is a function called by other functions in
+the package).
+
+In fact, notice this (results not shown)
+<<eval=TRUE, results='hide'>>=
+getAnywhere("nr_oncoSimul.internal")
+@ 
+
+so, yes, that function exists in the namespace of OncoSimulR.
+
+Can you debug it? Sure, you just have to do:
+
+<<eval=FALSE, results='hide'>>=
+debugonce(OncoSimulR:::nr_oncoSimul.internal)
+@ 
+(i.e., you use \texttt{:::}).
+
+
+You can also add browsers:
+
+<<eval=FALSE, results = 'hide'>>=
+as.list(body(OncoSimulR:::nr_oncoSimul.internal))
+trace(OncoSimulR:::nr_oncoSimul.internal, browser, at = 7)
+@ 
+(notice the message ``Tracing function blablabla (not-exported)'').
+
 
 
 
@@ -3728,6 +3799,9 @@ A <- scan("Condition_A.txt", what = "")
 B <- scan("Condition_B.txt", what = "")
 C <- scan("Condition_C.txt", what = "")
 @ 
+
+%% Note this, via full join
+%% dplyr::full_join(data.frame(g = A, A = 1), data.frame(g = B, B = 1))
 
 Which are overexpressed in both A and B? And in A, B, C?
 <<>>=
@@ -4107,10 +4181,11 @@ Now, after thinking, this is what we need to do:
 
 To play around, let's create some extreme fake data:
 <<>>=
-# no difference
+# unlikely to differ
 d11 <- rnorm(15)
 d12 <- d11[1:7]
-# difference
+
+# most likely very different
 d21 <- rnorm(13)
 d22 <- d21[1:9] + 3
 @ 
