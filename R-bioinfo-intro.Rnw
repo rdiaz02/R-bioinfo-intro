@@ -3506,7 +3506,7 @@ ls(pos = 2)
 @ 
 and we see the names of the exported functions.
 
-I know there is a function called \texttt{nr_oncoSimul.internal}. You
+I know there is a function called \texttt{nr\_oncoSimul.internal}. You
 might not know it but maybe you got an error and when doing
 \texttt{traceback} you find out that function is where the error
 occurs. That function is not exported: that function is not supposed to be
@@ -3876,6 +3876,17 @@ names(ovxpGenes) <- sapply(strsplit(names(ovxpGenes),
 (Note that using \texttt{x[2]} and \texttt{x[[2]]} works equally well in
 the last example).
 
+
+But maybe even simpler would be to use \texttt{gsub}: we do not split the
+string and then discard pieces, but directly replace the unwanted text by ``'':
+
+<<>>=
+gsub(".txt", "", gsub("Condition_", "", names(ovxpGenes)), 
+     fixed = TRUE)
+@ 
+
+
+
 Now, prepare an object that is very easy to use for any further analysis:
 a matrix that has, as columns, the conditions, and as rows the gene
 names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
@@ -3916,7 +3927,9 @@ every single cell line? This kind of works \ldots but the output is not in
 an easily usable form: \code{sapply} cannot simplify as the return objects are of
 different length.
 <<>>=
+
 str(sapply(ovxpGenes, function(z) {match(z, all.the.genes)}))
+
 @ 
 \noindent(I used \code{str} to show only the first part of the output).
 
@@ -3927,7 +3940,12 @@ not \footnote{I find it better to be as explicit as possible. An
 other words, we want a vector for each experiment with all the positions
 filled up. Lets do that directly as the return of a function:
 
+
+%%FIXME!! this is a lot simpler!!!
+%% uu <- sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+
 <<>>=
+
 f1 <- function(x, all.the.genes) {
     ## Note: this could be done in fewer lines, or even
     ## by an anonymous function used in sapply
@@ -3936,6 +3954,7 @@ f1 <- function(x, all.the.genes) {
     vv[pos.match] <- TRUE
     return(vv)
 }
+
 @ 
 
 
@@ -3949,14 +3968,20 @@ head(f1(ovxpGenes[[3]], all.the.genes))
 @ 
 
 
-But this is probably clearer? Using a lookup table kind of approach
+But this is probably clearer? Using a lookup table kind of approach; that
+is one important virtue of this solution: lookup tables are extremely easy
+to use in R because we can use names for vectors, names for rows and
+columns of matrices, etc.
+
 <<>>=
+
 f2 <- function(x, all.the.genes) {
     vv <- rep(FALSE, length(all.the.genes))
     names(vv) <- all.the.genes
     vv[x] <- TRUE
     return(vv)
 }
+
 @ 
 
 I leave it as an exercise to show that both functions, \texttt{f1} and
@@ -3978,14 +4003,25 @@ f3 <- function(x, all.the.genes) {
 @ 
 
 
+Finally, this very simple and elegant solution was suggested in class by
+zz: 
+
+<<results='hide'>>=
+sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+@ 
+
+This is, definitely, much simpler and better than my solutions above.
+
 
 
 We are almost done:
 
 <<>>=
+
 overexpressed <- sapply(ovxpGenes, 
                         function(x) f1(x, all.the.genes))
 rownames(overexpressed) <- all.the.genes
+
 @ 
 
 STOP! We gave three possible ways of doing this, with \texttt{f1},
@@ -4013,12 +4049,15 @@ Now, a few checks:
 colSums(overexpressed)
 lapply(ovxpGenes, length)
 # But if automatic, better to use stopifnot
+
 stopifnot(colSums(overexpressed) == 
               unlist(lapply(ovxpGenes, length)))
+
 
 ## And check names of genes
 h <- rownames(overexpressed)[which(overexpressed[, "A"] == 1)]
 stopifnot(identical(h, sort(ovxpGenes[["A"]])))
+
 @ 
 
 
@@ -4083,6 +4122,7 @@ though.  Oh, by the way, I use \texttt{sapply} below, when creating
 %%% I want sapply, as I want lists of different length
 
 <<>>=
+
 readListGenes <- function(prefix = "Condition_", 
                           postfix = "txt") {
     ## Read a bunch of files, named "prefixSOMETHING.postfix",
@@ -4097,6 +4137,8 @@ readListGenes <- function(prefix = "Condition_",
                                 matchpost)[[1]][1])
     return(ovG)
 }
+
+
 @ 
 
 Now, place everything in a matrix. First, give \code{f1} a better name
@@ -4116,6 +4158,7 @@ trueIfMatch <- function(x, allgenes) {
     return(vv)  
 }
 
+
 geneListToMatrix <- function(lgenes) {
     ## For you: add a meaningful comment here!
     allgenes <- sort(unique(unlist(lgenes)))
@@ -4131,17 +4174,54 @@ geneListToMatrix <- function(lgenes) {
 
 Now, create a function that will do everything:
 <<>>=
+
 geneFiles2Mat <- function(prefix = "Condition_", 
                           postfix = "txt") {
     l1 <- readListGenes(prefix = prefix, postfix = postfix)
     return(geneListToMatrix(l1))
 }
+
+@ 
+
+
+If we use the simple, elegant solution above we can write:
+
+<<>>=
+
+trueIfMatch1 <- function(lx) {
+    allgenes <- sort(unique(unlist(lx)))
+    return(sapply(lx, function(z) {allgenes  %in% z } ))
+}
+@ 
+
+or, better yet, using vapply:
+
+<<>>=
+
+
+trueIfMatch2 <- function(lx) {
+    allgenes <- sort(unique(unlist(lx)))
+    vapply(lx, function(z) {allgenes  %in% z } ,
+           logical(length(allgenes)))
+}
+@ 
+
+So that we end up with:
+<<>>=
+
+geneFiles2Mat2 <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    l1 <- readListGenes(prefix = prefix, postfix = postfix)
+    return(trueIfMatch2(l1))
+}
+
+
 @ 
 
 And now just call it:
 
 <<>>=
-ovxABC <- geneFiles2Mat()
+ovxABC <- geneFiles2Mat2()
 @ 
 
 
@@ -4168,6 +4248,10 @@ We will not cover this here, but we should add that some of the operations
 above could have used \texttt{full\_join} and similar functions in the
 R package \texttt{dplyr}.
 
+This code could get you going (results not shown)
+<<results='hide'>>=
+dplyr::full_join(data.frame(g = A, A = 1), data.frame(g = B, B = 1))
+@ 
 
 
 \clearpage
@@ -4406,6 +4490,7 @@ first.
 OK, that is good. But let's add a figure so things look more like in textbooks:
 
 <<>>=
+
 permut.test <- function(data1, data2, 
                         fsample = sample.and.stat1, 
                         num.permut = 100) {
@@ -4429,6 +4514,7 @@ permut.test <- function(data1, data2,
               permut.stat = permut.stat,
               pv = pv))
 }
+
 @ 
 
 
