@@ -2577,6 +2577,12 @@ aggregate(one.dataframe$age, one.dataframe[2],
           function(x) c(Mean = mean(x), SD = sd(x)))
 @ 
 
+%% FIXME: but with multiple summary stats, beware of the return!
+%% use cbind instead of c?
+%% http://r.789695.n4.nabble.com/aggregate-with-multiple-functions-td2290889.html
+%% or doBy and then summaryBy
+
+
 And you can use a formula interace which might be more intuitive:
 <<>>=
 aggregate(age ~ sex, data = one.dataframe,
