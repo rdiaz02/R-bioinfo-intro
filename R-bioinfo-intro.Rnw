@@ -4029,15 +4029,16 @@ We are almost done:
 <<>>=
 
 overexpressed <- sapply(ovxpGenes, 
-                        function(x) f1(x, all.the.genes))
+                        function(z) {all.the.genes %in% z})
+
 rownames(overexpressed) <- all.the.genes
 
 @ 
 
-STOP! We gave three possible ways of doing this, with \texttt{f1},
-\texttt{f2}, \texttt{f3}: compare the output of the three (maybe using
-\texttt{identical} or, for programming, inside functions,
-\texttt{stopifnot}).
+STOP! We gave several possible ways of doing this, with \texttt{f1},
+\texttt{f2}, \texttt{f3} and the \texttt{\%in\%} solution: compare the
+output of those  (maybe using \texttt{identical} or, for programming,
+inside functions, \texttt{stopifnot}).
 
 
 That works. However, I think there is merit in following Hadley Wickham's
@@ -4046,9 +4047,11 @@ advice of avoiding \code{sapply} inside functions (see section 9.4 of his
 inside functions. So let's be more strict:
 
 <<>>=
+
 overexpressed <- vapply(ovxpGenes, 
-                        function(x) f1(x, all.the.genes), 
+                        function(z) {all.the.genes %in% z},
                         logical(length(all.the.genes)))
+
 rownames(overexpressed) <- all.the.genes
 @ 
 
@@ -4196,24 +4199,17 @@ geneFiles2Mat <- function(prefix = "Condition_",
 
 If we use the simple, elegant solution above we can write:
 
-<<>>=
-
-trueIfMatch1 <- function(lx) {
-    allgenes <- sort(unique(unlist(lx)))
-    return(sapply(lx, function(z) {allgenes  %in% z } ))
-}
-@ 
-
-or, better yet, using vapply:
 
 <<>>=
-
 
 trueIfMatch2 <- function(lx) {
     allgenes <- sort(unique(unlist(lx)))
-    vapply(lx, function(z) {allgenes  %in% z } ,
+    ove <- vapply(lx, function(z) {allgenes  %in% z } ,
            logical(length(allgenes)))
+    rownames(ove) <- allgenes
+    return(ove)
 }
+
 @ 
 
 So that we end up with:
@@ -4237,11 +4233,13 @@ ovxABC <- geneFiles2Mat2()
 
 Wait: two final checks:
 <<>>=
+
 stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
                     sort(Reduce(intersect, readListGenes()))
                     ))
 
 stopifnot(identical(ovxABC, overexpressed))
+
 @ 
 
 
