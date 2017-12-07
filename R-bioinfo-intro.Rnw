@@ -3807,9 +3807,12 @@ number of drugs), in case we face the same problem in the future.
 First, read the data. They are just three vectors:
 
 <<>>=
+
 A <- scan("Condition_A.txt", what = "")
 B <- scan("Condition_B.txt", what = "")
 C <- scan("Condition_C.txt", what = "")
+
+
 @ 
 
 
@@ -4010,10 +4013,11 @@ f3 <- function(x, all.the.genes) {
 
 
 Finally, this very simple and elegant solution was suggested in class by
-zz: 
+Carlos Carretero: 
 
 <<results='hide'>>=
 sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+
 @ 
 
 This is, definitely, much simpler and better than my solutions above.
