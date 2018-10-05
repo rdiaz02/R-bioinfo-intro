@@ -8,17 +8,42 @@ summary
 methods("plot")
 ## compare to: 
 apropos("^plot\\..*")
+find("^plot\\..*")
+find("^plot\\..*", simple.words = FALSE)
 
 library(OncoSimulR)
 ## lots more now. Why? For now, see plot.fitnessEffects
 ## or plot.genotype_fitness_matrix
 methods("plot")
+apropos("^plot\\..*")
+find("^plot\\..*", simple.words = FALSE)
+
+
 
 ## all generics for a class
 methods(class = "genotype_fitness_matrix")
 methods(class = "lm")
 
+print(methods(class = "lm"), byclass = TRUE)
+print(methods(class = "lm"), byclass = FALSE)
+
 ## methods DO NOT belong to objects
+
+
+## getting the source code. From the help of methods
+
+     ## The source code for all functions is available.  For S3 functions
+     ## exported from the namespace, enter the method at the command line
+     ## as ‘generic.class’.  For S3 functions not exported from the
+     ## namespace, see ‘getAnywhere’ or ‘getS3method’.  For S4 methods,
+     ## see ‘getMethod’.
+
+add1.lm
+getAnywhere("add1.lm")
+stats:::add1.lm
+
+kappa.lm
+
 
 
 ## create new types of objects
@@ -39,13 +64,50 @@ to_CG.data.frame <- function(x) {
     if (!(all(colnames(x) %in% cns)))
         stop(paste("Column names are not ", cns))
     tmp <- x[, cns]
+    ## No data.frame class
+    class(tmp) <- c("Cholest_Gene")
+    return(tmp)
+}
+
+
+uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                 Class = "Cl1"))
+
+uu
+summary(uu)
+str(uu)
+attributes(uu)
+
+## try it without preserving the data.frame class, and then print or
+## summarize and object of that kind
+
+
+to_CG.data.frame <- function(x) {
+    cns <- c("Cholesterol", "Gene", "Class")
+    if (!(all(colnames(x) %in% cns)))
+        stop(paste("Column names are not ", cns))
+    tmp <- x[, cns]
     ## Do you know why do I preserve the data.frame class? ...
-    class(tmp) <- c("Cholest_Gene", "data.frame")
+    class(tmp) <- c("Cholest_Gene", class(tmp)) ## "data.frame")
     return(tmp)
 }
 
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                  Class = "Cl1"))
+
+print.Cholest_Gene <- function(x) {
+    u <- x[, c(1, 2)]
+    class(u) <- "data.frame"
+    print(u)
+    cat("\n hola \n")
+    print(summary(x[, 1]))
+}
+
+
+uu
+summary(uu)
+str(uu)
+attributes(uu)
 
 to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
 
@@ -58,6 +120,46 @@ to_CG.default <- function(x) {
 
 to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
 
+
+## Now, test!!!!!!!!!!!! Really, do.
+## at least:
+##  - that we can create a legitimate one from a data.frame
+##  - that it fails as we expect when data.frame with missing columns
+##  - that it fails as we expect when not a data.frame
+
+library(testthat)
+
+test_that("minimal conversions and failures", {
+
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                     Class = "Cl1")), "Cholest_Gene")
+
+    expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
+                 "For now, only methods for data.frame are available",
+                 fixed = TRUE)
+
+    expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
+                                     Class = "Cl1")),
+                 "Column names are not",
+                 fixed = TRUE)
+})
+
+## eh? This fails! And the output is ugly!!
+expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                 Class = "Cl1",
+                                 whatever = "abcd")), "Cholest_Gene")
+
+## Fix the code
+to_CG.data.frame <- function(x) {
+    cns <- c("Cholesterol", "Gene", "Class")
+    if (!(all(cns %in% colnames(x))))
+        stop(paste("Column names are not ", paste(cns, collapse = " ")))
+    tmp <- x[, cns]
+    ## Do you know why do I preserve the data.frame class? ...
+    class(tmp) <- c("Cholest_Gene", "data.frame")
+    return(tmp)
+}
+
 test_that("minimal conversions and failures", {
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                                      Class = "Cl1")), "Cholest_Gene")
@@ -68,7 +170,11 @@ test_that("minimal conversions and failures", {
                                      Class = "Cl1")),
                  "Column names are not",
                  fixed = TRUE)
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                     Class = "Cl1",
+                                     whatever = "abcd")), "Cholest_Gene")
 })
+
 
 
 plot.Cholest_Gene <- function(x, ...) {
@@ -98,9 +204,7 @@ plot(uu2)
 
 
 
-## Now create tests, etc.
-
-## And create summary and print for our new type of object
+## Now create summary and print for our new type of object and add tests.
 
 
 
@@ -111,12 +215,45 @@ plot(uu2)
 
 
 ### A quick overview of S4
+
+
+## From Wickham's Advanced R:
+## S4 works in a similar way to S3, but it adds formality and
+## rigour. Methods still belong to functions, not classes, but:
+
+##     Classes have formal definitions which describe their fields and
+##     inheritance structures (parent classes).
+
+##     Method dispatch can be based on multiple arguments to a generic
+##     function, not just one.
+
+##     There is a special operator, @, for extracting slots (aka fields)
+##     from an S4 object.
+
+
+
 library(Matrix)
 showMethods(class = "Matrix")
 showMethods("print")
 print
 ## From PatrickBurns: http://www.burns-stat.com/r-navigation-tools/
 ## However S3 generics can mutate to be both S3 and S4 generic:
+
+print(methods(class = "Matrix"))
+print(methods(class = "Matrix"), byclass = FALSE)
+print(methods("dim"), byclass = FALSE)  
+
+getAnywhere("symmpart")
+getAnywhere("dim")
+
+showMethods("Cholesky")
+getAnywhere("Cholesky")
+
+## eh? 
+showMethods("Diagonal")
+getAnywhere("Diagonal")
+
+## look at the help for both Diagonal and Cholesky
 
 m1 <- Matrix(1:9, nrow = 3)
 m2 <- Diagonal(5)

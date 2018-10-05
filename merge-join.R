@@ -80,7 +80,6 @@ match(grades, info$grade)
 [1] 3 2 2 1 3
 
 
-
 ## Using rownames
 rownames(info) <- info$grade
 info[as.character(grades), ]
