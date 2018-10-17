@@ -494,8 +494,9 @@ use Tinn-R in R courses I taught 8 to 10 years ago, but I think it has
 lost ground to RStudio, and it is only Windows. If you love vim, there is
 Vim-R-plugin (\Burl{http://www.vim.org/scripts/script.php?script_id=2628};
 \Burl{http://manuals.bioinformatics.ucr.edu/home/programming-in-r/vim-r}). And
-then, there are many other options (an outdated list is available from
-\Burl{http://www.sciviews.org/\_rgui/}, and some other entries around in
+then, there are many other options; %%  (an outdated list is available from
+%% \Burl{http://www.sciviews.org/\_rgui/}, and
+some other entries around in
 internet land are
 \Burl{http://www.theusrus.de/blog/r-guis-which-one-fits-you/} and
 \Burl{http://stats.stackexchange.com/questions/5292/good-gui-for-r-suitable-for-a-beginner-wanting-to-learn-programming-in-r}).
@@ -573,6 +574,26 @@ you to install suites of BioC packages (see
 \Burl{http://www.bioconductor.org/install/}). For example, go to
 \Burl{http://www.bioconductor.org/packages/release/bioc/html/limma.html}
 and see how instructions are clearly given there.
+
+
+Note: the new (as from about summar of 2018) way of installing BioC
+packages is via 
+<<eval=FALSE>>=
+BiocManager::install("package_name")
+@ 
+See
+\Burl{https://cran.r-project.org/web/packages/BiocManager/index.html}. But
+this is not updated even in the BioC page for most (all?) packages
+yet. The previous
+
+<<evak=FALSE>>=
+source("https://bioconductor.org/biocLite.R")
+biocLite("package_name")
+@ 
+still work, though it gives a warning. (So if today --- 2018-10-17--- you
+visit the above page for limma, and you follow the recommendation, you
+will get a warning).
+
 
 
 As we said above, sometimes packages depend on other packages. If this is
@@ -873,7 +894,9 @@ take corrective action (or realize that I was trying to do something
 silly).
 
 <<eval=FALSE>>=
-apply(F, 1, mean)
+apply(something, 1, mean)
+apply(v3, 1, mean)
+apply(F, 1, mean) ## this is an interesting one
 log("23")
 rnorm("a")
 lug(23)
