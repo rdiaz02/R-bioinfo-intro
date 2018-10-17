@@ -586,7 +586,7 @@ See
 this is not updated even in the BioC page for most (all?) packages
 yet. The previous
 
-<<evak=FALSE>>=
+<<eval=FALSE>>=
 source("https://bioconductor.org/biocLite.R")
 biocLite("package_name")
 @ 
