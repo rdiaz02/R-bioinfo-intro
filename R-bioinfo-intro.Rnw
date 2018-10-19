@@ -1863,6 +1863,10 @@ And what did we do here?
 <<>>=
 listB[[c(3, 4)]]
 @ 
+though I tend to find the last one confusing. I'd rather do
+<<>>=
+listB[[3]][4, 1]
+@ 
 
 which is very different from 
 
@@ -1957,9 +1961,9 @@ a difference.
 \section{Plots}\label{plotsplots}
 
 
-R is often used to produce plots as it can produce a variety of plots and
-they can be modified at will. In this course we will only scratch the
-surface. You will have a chance to get additional practice from the exercises.
+R can produce a variety of plots and they can be modified at will. In this
+course we will only scratch the surface. You will have a chance to get
+additional practice from the exercises.
 
 
 \subsection{The very basics}\label{plot-basics}
