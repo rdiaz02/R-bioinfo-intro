@@ -107,8 +107,6 @@ p2 + scale_x_log10() + scale_y_log10() +
 
 library(cowplot)
 
-#### Aqui nos quedamos
-
 ## selection
 
 birds <- anage[anage$Class == "Aves", ]
@@ -198,7 +196,7 @@ anage.clean2 <- na.omit(
     anage[, c("Class", "Metabolic.rate..W.", "Body.mass..g.")])
 summary(anage.clean2)
 
-## aqui nos quedamos viernes 24
+
 anage3 <- dplyr::filter(anage, !is.na(Metabolic.rate..W.) & !is.na(Body.mass..g.))
 anage4 <- dplyr::filter(anage, !(is.na(Metabolic.rate..W.) | is.na(Body.mass..g.)))
 summary(anage3)
