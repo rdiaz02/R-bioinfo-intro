@@ -2090,9 +2090,9 @@ quick look at a couple of things:
 
 
 
-We will read the data and then the a couple of plots. Remember that the
-data are in ``hit-table-500-text.txt'' (don't worry, we will cover reading
-data again later, in section \ref{readingr}).
+We will read the data and then do a couple of plots. Remember that the
+data are in ``hit-table-500-text.txt'' (we covered reading
+data in section \ref{readingr}).
 
 <<>>=
 hit <- read.table("hit-table-500-text.txt")
