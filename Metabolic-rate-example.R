@@ -3,7 +3,7 @@ anage <-  read.table("AnAge_birds_reptiles.txt",
                      header=TRUE, na.strings="NA", 
                      strip.white=TRUE)
 
-
+## Stopped here, 24-10
 ## What is in the workspace? I want it clean
 ## Not needed from above rm
 ## ls()

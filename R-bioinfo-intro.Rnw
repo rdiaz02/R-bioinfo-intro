@@ -2114,7 +2114,11 @@ hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
 plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity", 
      ylab = "Bit score")
 @ 
-%\end{center}
+
+And, for symmetry, you might want to add a main title to the second
+plot. How? 
+
+% \end{center}
 %\label{fig-blast}
 %\caption{A quick look at the alignment results}
 %\end{figure}
@@ -2307,7 +2311,16 @@ adds more stuff):
 <<>>=
 scatterplot(logMetab ~ logBodyMass, data = birds)
 @ 
-but the procedure above is a general one that will work even if John Fox
+
+or, better yet,
+
+<<>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = birds, 
+            log = "xy")
+
+@ 
+
+But the procedure above is a general one that will work even if John Fox
 had not written \code{scatterplot}.
 
 
