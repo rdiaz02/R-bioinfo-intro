@@ -135,8 +135,8 @@ legend(10, 2, legend = levels(anage$Class),
 
 library(ggplot2)
 
-p1 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W.), data = anage) +
-    geom_point()
+p1 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W.),
+             data = anage) + geom_point()
 
 p1
 
@@ -154,7 +154,9 @@ p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
     geom_smooth(method = "lm", se = FALSE )
 
 ## using color per class
-p2 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W., color = Class),
+p2 <- ggplot(aes(x = Body.mass..g.,
+                 y = Metabolic.rate..W.,
+                 color = Class),
              data = anage) +
     geom_point() 
 p2
@@ -268,9 +270,13 @@ nrow(anage.clean)
 nrow(anage.clean2)
 
 anage3 <- dplyr::filter(anage,
-                        !is.na(Metabolic.rate..W.) & !is.na(Body.mass..g.))
+                        !is.na(Metabolic.rate..W.) &
+                        !is.na(Body.mass..g.))
+
 anage4 <- dplyr::filter(anage,
-                        !(is.na(Metabolic.rate..W.) | is.na(Body.mass..g.)))
+                        !(is.na(Metabolic.rate..W.) |
+                          is.na(Body.mass..g.)))
+
 summary(anage3)
 summary(anage4)
 identical(anage3, anage4)
@@ -298,7 +304,8 @@ names(attributes(anage.clean))
 
 for(att in names(attributes(anage3))) {
     cat("\n attribute ", att, "\n")
-    print(identical(attributes(anage3)[[att]], attributes(anage.clean)[[att]]))
+    print(identical(attributes(anage3)[[att]],
+                    attributes(anage.clean)[[att]]))
 }
 
 ## let's use lapply, just to practice
