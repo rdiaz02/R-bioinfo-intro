@@ -1,12 +1,22 @@
+## A couple of things from last session
+
+m1 <- lm(runif(5) ~ rnorm(5))
+m1
+print(m1)
+apropos("anywhere")
+getAnywhere("print.lm")
+
+
+######
+## What is in the workspace? I want it clean
 rm(list = ls())
+
 anage <-  read.table("AnAge_birds_reptiles.txt", 
                      header=TRUE, na.strings="NA", 
                      strip.white=TRUE)
 
 ## Stopped here, 24-10
-## What is in the workspace? I want it clean
-## Not needed from above rm
-## ls()
+
 
 str(anage)
 head(anage)
@@ -15,38 +25,96 @@ summary(anage)
 ## Did you notice the naming of columns?
 
 
-
-plot(Metabolic.rate..W. ~ Body.mass..g., data = anage)
-
-plot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
-     log = "xy")
-
+## Simpler to do it now, so it is available later
 anage$logmet <- log(anage$Metabolic.rate..W.)
 anage$logbm <- log(anage$Body.mass..g)
 
-plot(logmet ~ logbm, data = anage)
+
+## Use different types of plot for same data
+## Illustrate split-apply-combine
+## Illustrate dealing with errors and incremental building of code
+## Illustrate reading of help
 
 library(car)
-
 
 scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
      log = "xy")
 
-## dotted lines annoying
+## too many lines; what are we getting rid of?
 scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
-     log = "xy", spread = FALSE)
+     log = "xy", smooth = FALSE)
 
-## but I have birds and reptiles
+## But I have birds and reptiles. What is smooth doing?
 scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
             data = anage,
-            log = "xy", spread = FALSE)
+            log = "xy", smooth = FALSE)
 
-## with plot?
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy", smooth = TRUE)
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy", smooth = list(smoother = loessLine,
+                                      var = TRUE))
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy", smooth = list(smoother = loessLine,
+                                      var = FALSE))
+
+## Notice col
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            col = c("orange", "green"))
+## but nope, not everything is changeable that way: e.g., cex
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            cex = c(1, 8))
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            cex = c(1, 8)[Class])
+
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            cex = c(1, 8)[anage$Class])
+
+## does plot work?
+plot(Metabolic.rate..W. ~ Body.mass..g.,
+            data = anage,
+            log = "xy",
+            cex = c(1, 8)[anage$Class])
+
+## let's try again. 
+dx <- na.omit(anage[, c("Metabolic.rate..W.", "Body.mass..g.", "Class")])
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = dx,
+            log = "xy",
+            cex = c(1, 8))
+
+cexo <- c(1,8)[dx$Class]
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+            data = dx,
+            log = "xy",
+            cex = cexo) ## OK, I give up
+
+
+
+## continue with plot
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
      col = c("red", "blue")[Class],
      log = "xy")
-## did you see the warnings?
+
 
 ## legend?
 plot(Metabolic.rate..W. ~ Body.mass..g.,
@@ -59,7 +127,8 @@ legend(10, 2, legend = levels(anage$Class),
        col = c("salmon", "darkgreen"),
        pch = c(1, 2))
 
-## adding lines more of a pain here.
+## adding lines more of a pain here. We will continue below. Detour for
+## now. ggplo2
 
 
 ## ggplot
@@ -306,4 +375,24 @@ lapply(split(anage, anage$Class),
 ## of extracting coefficients by group
 
 
+
+
+
+
+
+
+
+
+
+
+####
+
+plot(logmet ~ logbm, data = anage)
+
+
+
+## plot(Metabolic.rate..W. ~ Body.mass..g., data = anage)
+
+## plot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
+##      log = "xy")
 
