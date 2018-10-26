@@ -128,7 +128,7 @@ legend(10, 2, legend = levels(anage$Class),
        pch = c(1, 2))
 
 ## adding lines more of a pain here. We will continue below. Detour for
-## now. ggplo2
+## now to using ggplot2
 
 
 ## ggplot
@@ -166,13 +166,11 @@ p2 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
 p2 + scale_x_log10() + scale_y_log10() +
     geom_smooth(method = "lm", se = FALSE )
 
-## nope, does not work if using colors, etc
+## single panel, use other colors
 
 p2 + scale_x_log10() + scale_y_log10() +
     geom_smooth(method = "lm", se = FALSE ) +
     scale_color_manual(values = c("red", "blue"))
-
-
 
 library(cowplot)
 
@@ -183,9 +181,11 @@ birds <- anage[anage$Class == "Aves", ]
 library(dplyr)
 birds2 <- dplyr::filter(anage, Class == "Aves")
 
-## creating new variables and why might not always be good?
+## creating new variables why might not always be good?
 ## (for log transformation)
 
+
+## adding a legend interactively
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
      col = c("salmon", "darkgreen")[Class],
@@ -197,12 +197,12 @@ legend(locator(1), legend = levels(anage$Class),
        pch = c(1, 2))
 
 
+## some more manual work
+
 ## todo
 ## - labels con at para etiquetar tick marks
 ## complete cases y table sin NAs
 ## abline para plot para reptiles y aves
-
-
 
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)",
@@ -212,7 +212,7 @@ plot(logmet ~ logbm, data = anage,
 box()
 
 ## help for labels is not very helpful?
-## where?
+## where should we place the labels?
 
 summary(anage)
 exp(seq(from = -4.3, to = 2, length.out = 6))
@@ -229,20 +229,19 @@ par(las = 1)
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
      axes = FALSE,
-     ylim = c(log(0.01), max(anage$logmet)))
+     ylim = c(log(0.01), max(anage$logmet)))  ## what happened?
 
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
      axes = FALSE,
      ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
 
-
-
 box()
 axis(side = 2, at = log(yv), labels = yv)
 
 dev.off()
 
+## changing par
 op <- par(las = 1)
 
 plot(logmet ~ logbm, data = anage,
@@ -265,14 +264,18 @@ anage.clean2 <- na.omit(
     anage[, c("Class", "Metabolic.rate..W.", "Body.mass..g.")])
 summary(anage.clean2)
 
+nrow(anage.clean)
+nrow(anage.clean2)
 
-anage3 <- dplyr::filter(anage, !is.na(Metabolic.rate..W.) & !is.na(Body.mass..g.))
-anage4 <- dplyr::filter(anage, !(is.na(Metabolic.rate..W.) | is.na(Body.mass..g.)))
+anage3 <- dplyr::filter(anage,
+                        !is.na(Metabolic.rate..W.) & !is.na(Body.mass..g.))
+anage4 <- dplyr::filter(anage,
+                        !(is.na(Metabolic.rate..W.) | is.na(Body.mass..g.)))
 summary(anage3)
 summary(anage4)
 identical(anage3, anage4)
 
-## Hummm...
+## Hummm... What gives here?
 identical(anage.clean, anage3)
 
 mapply(identical, anage.clean, anage3)
@@ -284,6 +287,10 @@ Map(identical, anage.clean, anage3)
 attributes(anage.clean)
 attributes(anage3)
 
+length(attributes(anage.clean))
+length(attributes(anage3))
+
+
 ## misleading
 Map(identical, attributes(anage.clean), attributes(anage3))
 names(attributes(anage3))
@@ -294,14 +301,7 @@ for(att in names(attributes(anage3))) {
     print(identical(attributes(anage3)[[att]], attributes(anage.clean)[[att]]))
 }
 
-## w.o. sending to null we get a return value
-null <- lapply(names(attributes(anage3)),
-       function(u) {
-           cat("\n attribute ", u, ": ", 
-               identical(attributes(anage3)[[u]],
-                         attributes(anage.clean)[[u]]),
-               "\n")
-       })
+## let's use lapply, just to practice
 
 lapply(names(attributes(anage3)),
        function(u) {
@@ -311,7 +311,20 @@ lapply(names(attributes(anage3)),
                "\n")
        })
 
+## those NULL: they are ugly!!
 
+## sending to null (or whatever)
+null <- lapply(names(attributes(anage3)),
+       function(u) {
+           cat("\n attribute ", u, ": ", 
+               identical(attributes(anage3)[[u]],
+                         attributes(anage.clean)[[u]]),
+               "\n")
+       })
+
+
+
+## Back to the plot
 
 ### ablines and regression
 birds <- dplyr::filter(anage, Class == "Aves")
@@ -321,7 +334,7 @@ summary(lm(logmet ~ logbm, birds))
 plot(logmet ~ logbm, birds)
 abline(lm(logmet ~ logbm, birds))
 
-## ok but ...
+## ok but ... we want both birds and reptiles
 
 mbirds <- lm(logmet ~ logbm, data = dplyr::filter(anage, Class == "Aves"))
 ## similar to
@@ -329,16 +342,17 @@ mbirds0 <- lm(logmet ~ logbm, data = anage, subset = (Class == "Aves"))
 
 mrept <- lm(logmet ~ logbm, data = dplyr::filter(anage, Class != "Aves"))
 
-colors()
+colors() ## yes, we have a few choices . How do I choose?
 
 plot(logmet ~ logbm, anage, col = c("salmon", "turquoise")[Class])
 abline(mbirds, col = "salmon")
 abline(mrept, col = "turquoise")
 
 
-
+## Man, too much work. 
 ## nicer, smarter?
 
+## I can certainly do this. split-apply(-combine)
 lapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd))
 
@@ -346,6 +360,8 @@ lapply(split(anage, anage$Class),
 plot(logmet ~ logbm, anage, col = c("salmon", "turquoise")[Class])
 lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd)))
+## OK, looks doable. A few minor tweaks and we are done
+
 
 
 colores <- c("salmon", "turquoise")
@@ -353,10 +369,12 @@ colores <- c("salmon", "turquoise")
 ## hummm...
 plot(logmet ~ logbm, anage, col = colores[Class])
 
+## ;-(
 lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd),
                               col = colores[Class]))
 
+## yes (and we get rid of the NULL)
 lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd),
                               col = colores[dd$Class]))
@@ -366,9 +384,6 @@ dddd <- split(anage, anage$Class)
 
 lapply(dddd, function(u) u$Class)
 
-lapply(split(anage, anage$Class),
-       function(dd) abline(lm(logmet ~ logbm, data = dd,
-                              col = colores[Class])))
 
 
 ## see help of "by" for another example
