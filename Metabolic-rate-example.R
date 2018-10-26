@@ -330,6 +330,11 @@ null <- lapply(names(attributes(anage3)),
        })
 
 
+## Notes:
+##  - check Map vs mapply: where?
+##  - what we did? why?
+##  - arguments to plot?
+##  - where is this file?
 
 ## Back to the plot
 
