@@ -307,7 +307,7 @@ for(att in names(attributes(anage3))) {
     print(identical(attributes(anage3)[[att]],
                     attributes(anage.clean)[[att]]))
 }
-
+## here:
 ## let's use lapply, just to practice
 
 lapply(names(attributes(anage3)),
@@ -347,29 +347,40 @@ plot(logmet ~ logbm, birds)
 abline(lm(logmet ~ logbm, birds))
 
 ## ok but ... we want both birds and reptiles
+## let's plot both. First, we want the regression lines
 
-mbirds <- lm(logmet ~ logbm, data = dplyr::filter(anage, Class == "Aves"))
+mbirds <- lm(logmet ~ logbm,
+             data = dplyr::filter(anage, Class == "Aves"))
+
 ## similar to
-mbirds0 <- lm(logmet ~ logbm, data = anage, subset = (Class == "Aves"))
+mbirds0 <- lm(logmet ~ logbm,
+              data = anage, subset = (Class == "Aves"))
 
-mrept <- lm(logmet ~ logbm, data = dplyr::filter(anage, Class != "Aves"))
+mrept <- lm(logmet ~ logbm,
+            data = dplyr::filter(anage, Class != "Aves"))
 
+## we will want colors
 colors() ## yes, we have a few choices . How do I choose?
 
-plot(logmet ~ logbm, anage, col = c("salmon", "turquoise")[Class])
+## Now, plot the points and then add regression lines
+plot(logmet ~ logbm, anage,
+     col = c("salmon", "turquoise")[Class])
+
 abline(mbirds, col = "salmon")
 abline(mrept, col = "turquoise")
 
 
-## Man, too much work. 
-## nicer, smarter?
+## Too much work. 
+## A nicer, smarter way?
 
 ## I can certainly do this. split-apply(-combine)
 lapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd))
 
 
-plot(logmet ~ logbm, anage, col = c("salmon", "turquoise")[Class])
+plot(logmet ~ logbm, anage,
+     col = c("salmon", "turquoise")[Class])
+
 lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd)))
 ## OK, looks doable. A few minor tweaks and we are done
@@ -378,7 +389,7 @@ lapply(split(anage, anage$Class),
 
 colores <- c("salmon", "turquoise")
 
-## hummm...
+## OK, promising?
 plot(logmet ~ logbm, anage, col = colores[Class])
 
 ## ;-(
@@ -386,12 +397,12 @@ lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd),
                               col = colores[Class]))
 
-## yes (and we get rid of the NULL)
-lapply(split(anage, anage$Class),
+## yes (and get rid of the NULLs)
+junk <- lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd),
                               col = colores[dd$Class]))
 
-## if we get side tracked
+## What did we do? If we get side tracked
 dddd <- split(anage, anage$Class)
 
 lapply(dddd, function(u) u$Class)
@@ -409,17 +420,4 @@ lapply(dddd, function(u) u$Class)
 
 
 
-
-
-
-####
-
-plot(logmet ~ logbm, data = anage)
-
-
-
-## plot(Metabolic.rate..W. ~ Body.mass..g., data = anage)
-
-## plot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
-##      log = "xy")
 

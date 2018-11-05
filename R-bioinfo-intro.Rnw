@@ -2848,7 +2848,9 @@ for(friend in names.of.friends) {
 but they can be numbers:
 
 <<lty2,fig.cap='Those line types (lty) again',fig.width=4, fig.height=4>>=
+
 plot(c(0, 10), c(0, 10), xlab ="", ylab ="", type = "n")
+
 for(i in 1:10) 
   abline(h = i, lty = i, lwd = 2)
 
@@ -2908,6 +2910,53 @@ different place, and we initialize it with a value of 0?
 %% > y <- x + runif(10, -1, 1)
 %% > ifelse(x > y, "larger", "smaller")
 
+
+You can do confusing things. It is better to avoid them, and to avoid
+using the loop index:
+
+<<>>=
+
+rm(i)
+
+for(i in 1:10) { x <- i}
+
+i
+
+@ 
+
+
+<<>>=
+
+rm(i)
+
+for(i in 1:10) { 
+    cat("\n before", i)
+    i <- (i - 3)
+    cat("  after ", i)
+}
+
+i
+
+@ 
+
+This is OK, though
+
+<<>>=
+
+rm(i)
+
+i <- 0
+
+repeat {
+    i <- runif(1, -1, 0.5)
+    cat(".")
+    if(i > 0.2) break
+}
+
+i
+
+@ 
+
 \subsection{Defining your own functions}
 
 As the ``Introduction to R'' manual says
@@ -2947,6 +2996,7 @@ functions called inside the main function.
 
 For example
 <<>>=
+
 multByTwo <- function(x) {
   z <- 2 * x
   return(z)
@@ -2960,11 +3010,13 @@ multByTwo(45)
 
 Another example
 <<>>=
+
 plotAndSummary <- function(x) {
-  plot(x)
-  print(summary(x))
+    plot(x)
+    print(summary(x))
 }
 x <- rnorm(50)
+
 @ 
 
 (I won't be showing the output of plotAndSummary: but make sure you do it,
@@ -2978,6 +3030,7 @@ plotAndSummary(runif(24))
 
 Using more arguments, one of them default:
 <<>>=
+
 plotAndLm <- function(x, y, title = "A figure") {
   lm1 <- lm(y ~ x)
   cat("\n Printing the summary of x\n")
@@ -3062,6 +3115,16 @@ f1 <- function(x) {
 What will be the value of ``z'' used by f1? Play with it. Try to get that
 to work.
 
+And here?
+<<eval=FALSE>>=
+z <- -100
+
+f11 <- function(y) {
+    z <- 10
+    f1(y)
+}
+
+@ 
 
 Or what will happen here?
 
@@ -3144,6 +3207,33 @@ rm(c)
 @ 
 Oh, do you know what ``c'' we just removed?
 
+
+\subsection{Functions that return NULL and invisible}
+\label{sec:scop-fram-envir}
+
+Compare these
+<<>>=
+fa <- function(x) cat("\n ", x, "\n")
+fa(4)
+aa <- fa(4)
+aa
+class(aa)
+
+fb <- function(x) x
+fb(4)
+bb <- fb(4)
+bb
+class(bb)
+
+fc <- function(x) invisible(x)
+fc(4)
+cc <- fc(4)
+cc
+(fc(4))
+
+@ 
+
+
 \subsection{The \ldots}
 
 The $\ldots$ allows you to pass further arguments that some function
@@ -3171,7 +3261,21 @@ fc(1:5, "blue", pch = 8)
 
 @ 
 
+\subsection{local}
+\label{sec:local}
 
+Look at this
+<<>>=
+
+i <- 2
+local({cat("i ", i); i <- 99; cat(";  i = ", i)})
+i
+
+try(rm(vv))
+local({vv <- 99; cat("vv = ", vv)})
+try(vv)
+
+@ 
 \clearpage
 
 
