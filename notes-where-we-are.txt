@@ -1,1 +1,2 @@
-done hasta mostrar rnorm [2018-10-30]
+done hasta sink/save.image [2018-11-06]
+debemos empezar scripts
