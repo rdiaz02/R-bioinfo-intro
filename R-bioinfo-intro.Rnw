@@ -3392,6 +3392,7 @@ f3 <- function(z, u) {
     b <- f2(3 * v)
     return(a + b)
 }
+
 f3(3, 7)
 
 
@@ -3476,6 +3477,9 @@ reasons). Likewise, you should \code{undebug} when you are done, or source
 again your function (which will have the effect of undebugging it).
 
 
+When browsing or debugging, notice the difference between \texttt{c}  and
+\texttt{s} (continue and step into). Play with it with \texttt{f3}.
+
 \subsection{Browsing arbitrary functions at arbitrary places}
 Can you place \code{browser} at arbitrary places in arbitrary functions
 including, say, from a package or the base system you have not written?
@@ -3514,7 +3518,12 @@ untrace(lm)
 
 @ 
 
+We can also use the \texttt{edit} option with trace:
 
+<<eval=FALSE>>=
+trace("lm", edit = "emacs")
+trace("lm", edit = TRUE)
+@ 
 
 \subsection{Autopsies when things fail}
 But sometimes you only want to stop when/if things fail, and look
@@ -4632,6 +4641,17 @@ test_that("p-value = 1 when the two vectors identical", {
 
 @ 
 
+<<eval=FALSE>>=
+
+test_that("p_v 1", {
+    ntests <- 100
+    for(i in 1:ntests) {
+        xr <- rnorm(10)
+        expect_identical(permut.testB(xr, xr)$pv, 1)
+    }
+})
+
+@ 
 
 In fact, it is easy to argue that the test should have been written
 first. 
