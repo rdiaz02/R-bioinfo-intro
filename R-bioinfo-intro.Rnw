@@ -4043,8 +4043,10 @@ But maybe even simpler would be to use \texttt{gsub}: we do not split the
 string and then discard pieces, but directly replace the unwanted text by ``'':
 
 <<>>=
+
 gsub(".txt", "", gsub("Condition_", "", names(ovxpGenes)), 
      fixed = TRUE)
+
 @ 
 
 
@@ -4513,6 +4515,51 @@ sample.and.stat2(d11, d12)
 @ 
 Make sure you understand what happened. (Hint: are both functions
 implicitly calling the random number generator the same number of times?)
+
+
+
+<<>>=
+
+set.seed(1) 
+null <- sample.and.stat1(d11, d12)
+runif(1)
+
+set.seed(1) 
+null <- sample.and.stat2(d11, d12)
+runif(1)
+
+set.seed(1)
+null <- runif(length(d11))
+runif(1)
+
+set.seed(1)
+null <- runif(length(c(d11, d12)))
+runif(1)
+
+
+## of course, this makes no difference
+
+set.seed(2) 
+null <- sample.and.stat1(d11, d12)
+runif(1)
+
+set.seed(2) 
+null <- sample.and.stat2(d11, d12)
+runif(1)
+
+set.seed(2)
+null <- runif(length(d11))
+runif(1)
+
+set.seed(2)
+null <- runif(length(c(d11, d12)))
+runif(1)
+@ 
+
+
+%% Now, jump to permut-test-2.R
+
+
 
 
 Now, wrap the above, and create a single function:
