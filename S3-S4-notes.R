@@ -24,8 +24,11 @@ find("^plot\\..*", simple.words = FALSE)
 methods(class = "genotype_fitness_matrix")
 methods(class = "lm")
 
+?methods
 print(methods(class = "lm"), byclass = TRUE)
 print(methods(class = "lm"), byclass = FALSE)
+
+
 
 ## methods DO NOT belong to objects
 
@@ -41,6 +44,7 @@ print(methods(class = "lm"), byclass = FALSE)
 add1.lm
 getAnywhere("add1.lm")
 stats:::add1.lm
+getS3method("add1", "lm")
 
 kappa.lm
 
