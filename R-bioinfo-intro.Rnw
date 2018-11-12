@@ -4044,8 +4044,14 @@ string and then discard pieces, but directly replace the unwanted text by ``'':
 
 <<>>=
 
+ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
+
 gsub(".txt", "", gsub("Condition_", "", names(ovxpGenes)), 
      fixed = TRUE)
+
+names(ovxpGenes) <- gsub(".txt", "", gsub("Condition_", "", 
+                                          names(ovxpGenes)), 
+                         fixed = TRUE)
 
 @ 
 
@@ -4055,7 +4061,269 @@ Now, prepare an object that is very easy to use for any further analysis:
 a matrix that has, as columns, the conditions, and as rows the gene
 names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
 
-There are several ways of doing this. This is the simplest I came up with.
+
+First, find the union of all gene names and return a single entry of each
+name. We do not use \code{union}, but \code{unique}, which does what we
+want here.
+
+%% what is wrong with union? that it makes no sense, since this is a
+%% vector? Nope. That it is simpler to call unique than several union
+%% invocations or something like mapping union for iterative use.
+
+<<>>=
+all.the.genes <- sort(unique(unlist(ovxpGenes)))
+@ 
+
+
+Now, there are several ways of getting our matrix.
+
+First, using a lookup table kind of approach; that is one important virtue
+of this solution: lookup tables are extremely easy to use in R because we
+can use names for vectors, names for rows and columns of matrices, etc.
+
+<<>>=
+
+f2 <- function(x, all.the.genes) {
+    vv <- rep(FALSE, length(all.the.genes))
+    names(vv) <- all.the.genes
+    vv[x] <- TRUE
+    return(vv)
+}
+
+f2(ovxpGenes[[1]], all.the.genes)
+
+@ 
+
+
+
+Alternatively, this very simple and elegant solution was suggested in
+class by Carlos Carretero:
+
+<<results='hide'>>=
+
+sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+
+@ 
+
+This is, definitely, much simpler and better than my solution above.
+
+
+
+
+
+We are almost done:
+
+<<>>=
+
+overexpressed <- sapply(ovxpGenes, 
+                        function(z) {all.the.genes %in% z})
+
+rownames(overexpressed) <- all.the.genes
+
+@ 
+
+STOP! We gave several possible ways of doing this: compare the
+output of those  (maybe using \texttt{identical} or, for programming,
+inside functions, \texttt{stopifnot}). Or, even better, use a formal
+testing framework (such as testthat or RUnit).
+
+
+That works. However, I think there is merit in following Hadley Wickham's
+advice of avoiding \code{sapply} inside functions (see section 9.4 of his
+``Advanced R''), and in a second we will be putting some of the above
+inside functions. So let's be more strict:
+
+<<>>=
+
+overexpressed <- vapply(ovxpGenes, 
+                        function(z) {all.the.genes %in% z},
+                        logical(length(all.the.genes)))
+
+rownames(overexpressed) <- all.the.genes
+
+@ 
+
+
+Now, a few checks:
+
+<<>>=
+## note the following two match
+colSums(overexpressed)
+lapply(ovxpGenes, length)
+# But if automatic, better to use stopifnot
+
+stopifnot(colSums(overexpressed) == 
+              unlist(lapply(ovxpGenes, length)))
+
+
+## And check names of genes
+h <- rownames(overexpressed)[which(overexpressed[, "A"] == 1)]
+stopifnot(identical(h, sort(ovxpGenes[["A"]])))
+
+@ 
+
+
+Now, a plot after all this work (you will need to install ``limma'' ---go
+to section \ref{packages})
+<<>>=
+library(limma)
+vennDiagram(overexpressed)
+@ 
+
+And it is now also trivial to find out which are overexpressed in
+arbitrary conditions. For instance (the number is the row number),
+overexpressed in both A and B:
+<<>>=
+
+which(overexpressed[, "A"] & overexpressed[, "B"])
+length(which(overexpressed[, "A"] & overexpressed[, "B"]))
+@ 
+
+or
+
+<<>>=
+sum(overexpressed[, "A"] * overexpressed[, "B"])
+@ 
+
+And which are induced in all?
+<<>>=
+which(rowSums(overexpressed) == 3)
+## or safer?
+which(rowSums(overexpressed) > 2.99)
+@ 
+
+And how many are overexpressed in 3, in 2, and in 1?
+<<>>=
+table(rowSums(overexpressed))
+@ 
+
+Etc, etc.
+
+
+By the way, once we have the list of genes, finding the intersection of
+all is simple (this might be considered more advanced, but is great
+because this will work with lists of arbitrary number of components):
+<<>>=
+sort(Reduce(intersect, ovxpGenes))
+@ 
+
+
+
+\subsubsection{A few functions to do the job automatically}
+Drawing the Venn diagram and the last operations of tables and finding
+out which are overexpressed is the fun thing. But we had to do some work
+that, if we are going to repeat, we might want to automate. Let's do that.
+Notice that all we need to do is just generalize slightly over what we
+did. That is all.
+
+Note, however, that inside the new functions I will often shorten the
+names of variables or at least make them slightly different from
+above. Why? Because inside the function I can afford to shorten it, and it
+leads to cleaner code, and because I avoid accidentally using objects
+previously created (this could happen because of R's scoping rules).
+
+
+
+First, the reading data part. We will assume that we will always find all
+files with the gene identity in a directory, and that all files will have
+a common prefix and end in a common postfix. We will use default values,
+though.  Oh, by the way, I use \texttt{sapply} below, when creating
+\texttt{ovG}; why? Would you change it to use \texttt{vapply}?
+%%% I want sapply, as I want lists of different length
+
+<<>>=
+
+readListGenes <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    ## Read a bunch of files, named "prefixSOMETHING.postfix",
+    ## and place the gene names inside in a list
+    gg <- dir(pattern = paste0("^", prefix))
+    ovG <-  sapply(gg, function(x) scan(x, what = ""))
+    matchpost <- paste0("\\.", postfix)
+    names(ovG) <- 
+    sapply(names(ovG), 
+           function(x) strsplit(strsplit(x, 
+                                         prefix)[[1]][2], 
+                                matchpost)[[1]][1])
+    return(ovG)
+}
+
+
+@ 
+
+Now, place everything in a matrix.
+
+
+<<>>=
+
+trueIfMatch <- function(lx) {
+    allgenes <- sort(unique(unlist(lx)))
+    ove <- vapply(lx, function(z) {allgenes  %in% z } ,
+           logical(length(allgenes)))
+    rownames(ove) <- allgenes
+    return(ove)
+}
+
+@ 
+
+So that we end up with:
+<<>>=
+
+geneFiles2Mat <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    l1 <- readListGenes(prefix = prefix, postfix = postfix)
+    return(trueIfMatch(l1))
+}
+
+
+@ 
+
+And now just call it:
+
+<<>>=
+ovxABC <- geneFiles2Mat()
+@ 
+
+
+Wait: two final checks:
+<<>>=
+
+stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
+                    sort(Reduce(intersect, readListGenes()))
+                    ))
+
+stopifnot(identical(ovxABC, overexpressed))
+
+@ 
+
+
+
+\subsubsection{And how do we know it works?}
+If we were more serious about this, probably formally adding tests would
+be warranted. See section \ref{test}. We've done some testing above, but
+this can be done much more seriously.
+
+\subsubsection{\texttt{dplyr?}}
+\label{sec:dplyr}
+
+We will not cover this here, but we should add that some of the operations
+above could have used \texttt{full\_join} and similar functions in the
+R package \texttt{dplyr}.
+
+This code could get you going (results not shown)
+<<results='hide'>>=
+
+dfj <- dplyr::full_join(data.frame(g = A, A = 1), data.frame(g = B, B = 1))
+
+sum(dfj[, "A"] * dfj[, "B"], na.rm = TRUE)
+
+@ 
+
+
+
+\subsubsection{Other solutions in lieu of f2}
+
+%% This is the simplest I came up with.
 
 %% FIXME: dplyr and full_join?
 
@@ -4167,7 +4435,7 @@ f3 <- function(x, all.the.genes) {
 @ 
 
 
-Finally, this very simple and elegant solution was suggested in class by
+This very simple and elegant solution was suggested in class by
 Carlos Carretero: 
 
 <<results='hide'>>=
@@ -4179,242 +4447,52 @@ This is, definitely, much simpler and better than my solutions above.
 
 
 
-We are almost done:
 
-<<>>=
 
-overexpressed <- sapply(ovxpGenes, 
-                        function(z) {all.the.genes %in% z})
+%% First, give \code{f1} a better name
+%% (and you could even define \code{trueIfMatch} inside \code{geneListToMatrix}):
 
-rownames(overexpressed) <- all.the.genes
+%% %%% FIXME: why don't I use f2 here?
+%% %% and what about left_join, etc?
 
-@ 
+%% <<>>=
 
-STOP! We gave several possible ways of doing this, with \texttt{f1},
-\texttt{f2}, \texttt{f3} and the \texttt{\%in\%} solution: compare the
-output of those  (maybe using \texttt{identical} or, for programming,
-inside functions, \texttt{stopifnot}).
+%% trueIfMatch <- function(x, allgenes) {
+%%     ## Note: this could be done in fewer lines, or even
+%%     ## by an anonymous function used in sapply
+%%     vv <- rep(FALSE, length(allgenes))
+%%     pos.match <- match(x, allgenes)
+%%     vv[pos.match] <- TRUE
+%%     return(vv)  
+%% }
 
 
-That works. However, I think there is merit in following Hadley Wickham's
-advice of avoiding \code{sapply} inside functions (see section 9.4 of his
-``Advanced R''), and in a second we will be putting some of the above
-inside functions. So let's be more strict:
+%% geneListToMatrix <- function(lgenes) {
+%%     ## For you: add a meaningful comment here!
+%%     allgenes <- sort(unique(unlist(lgenes)))
+%%     ox <- vapply(lgenes, 
+%%                  function(x) trueIfMatch(x, allgenes), 
+%%                  logical(length(allgenes)))
+%%     rownames(ox) <- allgenes  
+%%     return(ox)
+%% }
 
-<<>>=
+%% @ 
 
-overexpressed <- vapply(ovxpGenes, 
-                        function(z) {all.the.genes %in% z},
-                        logical(length(all.the.genes)))
 
-rownames(overexpressed) <- all.the.genes
-@ 
+%% Now, create a function that will do everything:
+%% <<>>=
 
+%% geneFiles2Mat <- function(prefix = "Condition_", 
+%%                           postfix = "txt") {
+%%     l1 <- readListGenes(prefix = prefix, postfix = postfix)
+%%     return(geneListToMatrix(l1))
+%% }
 
-Now, a few checks:
-<<>>=
-## note the following two match
-colSums(overexpressed)
-lapply(ovxpGenes, length)
-# But if automatic, better to use stopifnot
+%% @ 
 
-stopifnot(colSums(overexpressed) == 
-              unlist(lapply(ovxpGenes, length)))
 
-
-## And check names of genes
-h <- rownames(overexpressed)[which(overexpressed[, "A"] == 1)]
-stopifnot(identical(h, sort(ovxpGenes[["A"]])))
-
-@ 
-
-
-Now, a plot after all this work (you will need to install ``limma'' ---go
-to section \ref{packages})
-<<>>=
-library(limma)
-vennDiagram(overexpressed)
-@ 
-
-And it is now also trivial to find out which are overexpressed in
-arbitrary conditions. For instance (the number is the row number),
-overexpressed in both A and B:
-<<>>=
-which(overexpressed[, "A"] & overexpressed[, "B"])
-@ 
-
-And which are induced in all?
-<<>>=
-which(rowSums(overexpressed) == 3)
-## or safer?
-which(rowSums(overexpressed) > 2.99)
-@ 
-
-And how many are overexpressed in 3, in 2, and in 1?
-<<>>=
-table(rowSums(overexpressed))
-@ 
-
-Etc, etc.
-
-
-By the way, once we have the list of genes, finding the intersection of
-all is simple (this might be considered more advanced, but is great
-because this will work with lists of arbitrary number of components):
-<<>>=
-sort(Reduce(intersect, ovxpGenes))
-@ 
-
-
-
-\subsubsection{A few functions to do the job automatically}
-Drawing the Venn diagram and the last operations of tables and finding
-out which are overexpressed is the fun thing. But we had to do some work
-that, if we are going to repeat, we might want to automate. Let's do that:
-Notice that all we need to do is just generalize slightly over what we
-did. That is all.
-
-Note, however, that inside the new functions I will often shorten the
-names of variables or at least make them slightly different from
-above. Why? Because inside the function I can afford to shorten it, and it
-leads to cleaner code, and because I avoid accidentally using objects
-previously created (this could happen because of R's scoping rules).
-
-
-
-First, the reading data part. We will assume that we will always find all
-files with the gene identity in a directory, and that all files will have
-a common prefix and end in a common postfix. We will use default values,
-though.  Oh, by the way, I use \texttt{sapply} below, when creating
-\texttt{ovG}; why? Would you change it to use \texttt{vapply}?
-%%% I want sapply, as I want lists of different length
-
-<<>>=
-
-readListGenes <- function(prefix = "Condition_", 
-                          postfix = "txt") {
-    ## Read a bunch of files, named "prefixSOMETHING.postfix",
-    ## and place the gene names inside in a list
-    gg <- dir(pattern = paste0("^", prefix))
-    ovG <-  sapply(gg, function(x) scan(x, what = ""))
-    matchpost <- paste0("\\.", postfix)
-    names(ovG) <- 
-    sapply(names(ovG), 
-           function(x) strsplit(strsplit(x, 
-                                         prefix)[[1]][2], 
-                                matchpost)[[1]][1])
-    return(ovG)
-}
-
-
-@ 
-
-Now, place everything in a matrix. First, give \code{f1} a better name
-(and you could even define \code{trueIfMatch} inside \code{geneListToMatrix}):
-
-%%% FIXME: why don't I use f2 here?
-%% and what about left_join, etc?
-
-<<>>=
-
-trueIfMatch <- function(x, allgenes) {
-    ## Note: this could be done in fewer lines, or even
-    ## by an anonymous function used in sapply
-    vv <- rep(FALSE, length(allgenes))
-    pos.match <- match(x, allgenes)
-    vv[pos.match] <- TRUE
-    return(vv)  
-}
-
-
-geneListToMatrix <- function(lgenes) {
-    ## For you: add a meaningful comment here!
-    allgenes <- sort(unique(unlist(lgenes)))
-    ox <- vapply(lgenes, 
-                 function(x) trueIfMatch(x, allgenes), 
-                 logical(length(allgenes)))
-    rownames(ox) <- allgenes  
-    return(ox)
-}
-
-@ 
-
-
-Now, create a function that will do everything:
-<<>>=
-
-geneFiles2Mat <- function(prefix = "Condition_", 
-                          postfix = "txt") {
-    l1 <- readListGenes(prefix = prefix, postfix = postfix)
-    return(geneListToMatrix(l1))
-}
-
-@ 
-
-
-If we use the simple, elegant solution above we can write:
-
-
-<<>>=
-
-trueIfMatch2 <- function(lx) {
-    allgenes <- sort(unique(unlist(lx)))
-    ove <- vapply(lx, function(z) {allgenes  %in% z } ,
-           logical(length(allgenes)))
-    rownames(ove) <- allgenes
-    return(ove)
-}
-
-@ 
-
-So that we end up with:
-<<>>=
-
-geneFiles2Mat2 <- function(prefix = "Condition_", 
-                          postfix = "txt") {
-    l1 <- readListGenes(prefix = prefix, postfix = postfix)
-    return(trueIfMatch2(l1))
-}
-
-
-@ 
-
-And now just call it:
-
-<<>>=
-ovxABC <- geneFiles2Mat2()
-@ 
-
-
-Wait: two final checks:
-<<>>=
-
-stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
-                    sort(Reduce(intersect, readListGenes()))
-                    ))
-
-stopifnot(identical(ovxABC, overexpressed))
-
-@ 
-
-
-
-\subsubsection{And how do we know it works?}
-If we were more serious about this, probably formally adding tests would
-be warranted. See section \ref{test}. We've done some testing above, but
-this can be done much more seriously.
-
-\subsubsection{\texttt{dplyr?}}
-\label{sec:dplyr}
-
-We will not cover this here, but we should add that some of the operations
-above could have used \texttt{full\_join} and similar functions in the
-R package \texttt{dplyr}.
-
-This code could get you going (results not shown)
-<<results='hide'>>=
-dplyr::full_join(data.frame(g = A, A = 1), data.frame(g = B, B = 1))
-@ 
+%% If we use the simple, elegant solution above we can write:
 
 
 \clearpage
