@@ -1,1 +1,6 @@
 [2018-11-08]: terminamos indexando vectores en 9.5.1 y con nombres
+73
+
+- skip floating point comps
+- fast over factors
+  - will do when plots
