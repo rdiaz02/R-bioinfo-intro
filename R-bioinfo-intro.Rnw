@@ -4233,6 +4233,10 @@ though.  Oh, by the way, I use \texttt{sapply} below, when creating
 
 <<>>=
 
+## string, string (pre and post-fix file names) ->
+##                 list with contents of files
+## Files contain gene names
+## List has as many elements as files
 readListGenes <- function(prefix = "Condition_", 
                           postfix = "txt") {
     ## Read a bunch of files, named "prefixSOMETHING.postfix",
@@ -4255,7 +4259,9 @@ Now, place everything in a matrix.
 
 
 <<>>=
-
+## list of gene names -> logical matrix (nrow = unique genes,
+##                                       ncol = length of list)
+##                       for gene present/absent in each list component
 trueIfMatch <- function(lx) {
     allgenes <- sort(unique(unlist(lx)))
     ove <- vapply(lx, function(z) {allgenes  %in% z } ,
@@ -4268,6 +4274,10 @@ trueIfMatch <- function(lx) {
 
 So that we end up with:
 <<>>=
+## string, string (pre and post-fix file names) ->
+##                        logical matrix (nrow = unique genes,
+##                                       ncol = length of list)
+##                       for gene present/absent in each file
 
 geneFiles2Mat <- function(prefix = "Condition_", 
                           postfix = "txt") {
