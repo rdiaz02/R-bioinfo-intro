@@ -1,4 +1,3 @@
-
 ## Note the UseMethod. These are generics
 print
 plot
@@ -6,37 +5,34 @@ summary
 
 ## all methods for a generic
 methods("plot")
-## compare to: 
-apropos("^plot\\..*")
-find("^plot\\..*")
-find("^plot\\..*", simple.words = FALSE)
 getAnywhere(plot.TukeyHSD)
 
+
+## What is available changes depending on what packages we have loaded.
 methods("plot")
 
 library(OncoSimulR)
 ## lots more now. Why? For now, see plot.fitnessEffects
 ## or plot.genotype_fitness_matrix
-methods("plot")
-apropos("^plot\\..*")
-find("^plot\\..*", simple.words = FALSE)
-
-
+plot.fitnessEffects
+OncoSimulR::plot.fitnessEffects
+OncoSimulR:::plot.fitnessEffects
+getAnywhere(plot.fitnessEffects)
 
 ## all generics for a class
 methods(class = "genotype_fitness_matrix")
 methods(class = "lm")
 
 ?methods
-print(methods(class = "lm"), byclass = TRUE)
-print(methods(class = "lm"), byclass = FALSE)
+## print(methods(class = "lm"), byclass = TRUE)
+## print(methods(class = "lm"), byclass = FALSE)
 
 
 
-## methods DO NOT belong to objects
+## Methods DO NOT belong to objects
 
 
-## getting the source code. From the help of methods
+## Getting the source code. From the help of methods
 
      ## The source code for all functions is available.  For S3 functions
      ## exported from the namespace, enter the method at the command line
@@ -48,12 +44,11 @@ add1.lm
 getAnywhere("add1.lm")
 stats:::add1.lm
 getS3method("add1", "lm")
-
+## This is exported. No problem here
 kappa.lm
 
 
-
-## create new types of objects
+## Create new types of objects
 
 library(testthat)
 
@@ -71,7 +66,7 @@ to_CG.data.frame <- function(x) {
     if (!(all(colnames(x) %in% cns)))
         stop(paste("Column names are not ", cns))
     tmp <- x[, cns]
-    ## No data.frame class
+    ## Notice I do not set this to be of data.frame class
     class(tmp) <- c("Cholest_Gene")
     return(tmp)
 }
@@ -80,15 +75,14 @@ to_CG.data.frame <- function(x) {
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                  Class = "Cl1"))
 
+## Oooops!!! Ugly!!
 uu
+## Even uglier
 summary(uu)
 str(uu)
 attributes(uu)
 
-## try it without preserving the data.frame class, and then print or
-## summarize and object of that kind
-
-
+## Second attempt.
 to_CG.data.frame <- function(x) {
     cns <- c("Cholesterol", "Gene", "Class")
     if (!(all(colnames(x) %in% cns)))
@@ -101,30 +95,38 @@ to_CG.data.frame <- function(x) {
 
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                  Class = "Cl1"))
+## Using existing functionality for free
+summary(uu)
+print(uu)
+uu
+
+## Let's do something more sophisticated
 
 print.Cholest_Gene <- function(x) {
     u <- x[, c(1, 2)]
     class(u) <- "data.frame"
     print(u)
-    cat("\n hola \n")
+    cat("\n hola; now printing summary of first column \n")
     print(summary(x[, 1]))
 }
 
 
 uu
+## Of course, this still works
 summary(uu)
+## Notice what is says about class
 str(uu)
 attributes(uu)
 
 to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
-
-## but ugly? write a default that will fail
+## But that was ugly? write a default that will fail gracefully
+## And we can extend as needs arise.
 
 to_CG.default <- function(x) {
     stop("For now, only methods for data.frame are available.")
 }
 
-
+## Much better
 to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
 
 
@@ -136,15 +138,13 @@ to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
 
 library(testthat)
 
+## go step by step here?
 test_that("minimal conversions and failures", {
-
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                                      Class = "Cl1")), "Cholest_Gene")
-
     expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
                  "For now, only methods for data.frame are available",
                  fixed = TRUE)
-
     expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
                                      Class = "Cl1")),
                  "Column names are not",
@@ -155,17 +155,30 @@ test_that("minimal conversions and failures", {
 expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                                  Class = "Cl1",
                                  whatever = "abcd")), "Cholest_Gene")
+## why??
 
-## Fix the code
+dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                 Class = "Cl1",
+                                 whatever = "abcd"))
+## OK, it failed. But why?
+debugonce(to_CG.data.frame)
+
+dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                 Class = "Cl1",
+                                 whatever = "abcd"))
+
+## Fix the code: we reverted the %in%
+
 to_CG.data.frame <- function(x) {
     cns <- c("Cholesterol", "Gene", "Class")
     if (!(all(cns %in% colnames(x))))
         stop(paste("Column names are not ", paste(cns, collapse = " ")))
     tmp <- x[, cns]
-    ## Do you know why do I preserve the data.frame class? ...
-    class(tmp) <- c("Cholest_Gene", "data.frame")
+    class(tmp) <- c("Cholest_Gene", class(x))
     return(tmp)
 }
+
+## Add the test the failed to the set of tests
 
 test_that("minimal conversions and failures", {
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
@@ -182,7 +195,7 @@ test_that("minimal conversions and failures", {
                                      whatever = "abcd")), "Cholest_Gene")
 })
 
-
+## play with some plotting code
 
 plot.Cholest_Gene <- function(x, ...) {
     class(x) <- "data.frame"
@@ -209,7 +222,9 @@ uu2[, "Class"] <- factor(uu2[, "Class"])
 plot(uu2)
 
 
-
+## Of course, this works
+methods("to_CG")
+methods(class = "data.frame")
 
 ## Now create summary and print for our new type of object and add tests.
 
@@ -241,29 +256,18 @@ plot(uu2)
 
 library(Matrix)
 showMethods(class = "Matrix")
-showMethods("print")
-print
 ## From PatrickBurns: http://www.burns-stat.com/r-navigation-tools/
-## However S3 generics can mutate to be both S3 and S4 generic:
+##  S3 generics can mutate to be both S3 and S4 generic:
 
-print(methods(class = "Matrix"))
-print(methods(class = "Matrix"), byclass = FALSE)
-print(methods("dim"), byclass = FALSE)  
+## Compare these two between a session of R without loading Matrix
+showMethods("print")
+print 
 
-getAnywhere("symmpart")
-getAnywhere("dim")
 
-showMethods("Cholesky")
-getAnywhere("Cholesky")
-
-## eh? 
-showMethods("Diagonal")
-getAnywhere("Diagonal")
-
-## look at the help for both Diagonal and Cholesky
-
+## Access to elements
 m1 <- Matrix(1:9, nrow = 3)
 m2 <- Diagonal(5)
+
 x <- 0:10
 y <- c(26, 17, 13, 12, 20, 5, 9, 8, 5, 4, 8)
 fit1 <- lm(y ~ x)
@@ -302,10 +306,4 @@ m2@Dim
 ## Bioconductor packages, which need to model complicated
 ## interrelationships between biological objects.
 
-## If you’ve programmed in a mainstream OO language, RC will seem very
-## natural. But because they can introduce side effects through mutable
-## state, they are harder to understand.
-
-getClass(class(m1))
-getClass(class(fit1))
-getClass("list")
+## And there are other systems, like reference classes.
