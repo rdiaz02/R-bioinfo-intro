@@ -9,7 +9,7 @@ cc <- powb(3)
 cc(2)
 
 as.list(environment(cc))
-## ls(envir = environment(cc))
+ls(envir = environment(cc))
 
 ## not that helpful
 as.list(environment(powb))
@@ -18,6 +18,23 @@ as.list(environment(powb))
 fab <- function(a, b) 2 * a
 fab(3) ## no error
 
+
+
+## What is in the ...?
+## use list(...)
+f6 <- function(one, two, ...) {
+    plot(one, two, ...)
+}
+
+debugonce(f6)
+
+f6(1:10, 1:10, col = "red", lty = 2)
+## now, use list(...) inside
+
+
+### Stop here
+
+## More scoping
 f2 <- function(x) {
     yy <- 5 + x
     return(yy)
@@ -69,6 +86,7 @@ g4(2)
 
 
 
+## Miscellaneous things not to do
 f4 <- function(one, two, three = 3, four) {
     cat("one = ", one, 
         " two = ", two, 
@@ -88,13 +106,8 @@ f5(1:5, col = "red", 1:5)
 
 ## need this, but again bad practice
 f5(1:5, col = "red", two = 1:5)
-## but two is being passed also in ...
-## debug and do list(...)
 
 f5(1:5, two = 1:5, col = "red")
 
-
-
-## debug  with :::
 
 
