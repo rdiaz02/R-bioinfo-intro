@@ -8,7 +8,10 @@
 ----------
 
 - debugging
-- examples
-- OOP
-- scoping
+- examples: permut-test-2.R
+- OOP: S3-S4-notes-simplified.R
+- scoping: some-env-scoping-examples.R
 - packages
+- merge-join.R
+- reshape-long-wide.R
+

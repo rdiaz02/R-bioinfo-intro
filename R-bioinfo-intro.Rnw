@@ -4081,7 +4081,7 @@ First, using a lookup table kind of approach; that is one important virtue
 of this solution: lookup tables are extremely easy to use in R because we
 can use names for vectors, names for rows and columns of matrices, etc.
 
-<<>>=
+<<results='hide'>>=
 
 f2 <- function(x, all.the.genes) {
     vv <- rep(FALSE, length(all.the.genes))
