@@ -4323,7 +4323,10 @@ R package \texttt{dplyr}.
 This code could get you going (results not shown)
 <<results='hide'>>=
 
-dfj <- dplyr::full_join(data.frame(g = A, A = 1), data.frame(g = B, B = 1))
+library(dplyr)
+
+dfj <- dplyr::full_join(data.frame(g = A, A = 1), 
+                        data.frame(g = B, B = 1))
 
 sum(dfj[, "A"] * dfj[, "B"], na.rm = TRUE)
 
