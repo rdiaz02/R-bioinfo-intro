@@ -1,0 +1,25 @@
+- asunto lm y conditional browsing with y < 0
+- packages
+
+
+
+
+
+- terminamos justo en sample.and.stat1 y 2, dando mismos y luego distintos
+  valores con same seed.
+
+
+- apply t.test y p.value[ejemplos]
+
+
+
+how it tells the difference c() and "c" as a variable?
+    - en lo de Burns?
+    - en Wickham?
+    - match.fun
+
+
+- debugging
+- examples
+- OOP
+- scoping

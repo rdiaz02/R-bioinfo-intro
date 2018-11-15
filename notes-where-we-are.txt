@@ -4,3 +4,11 @@
 - skip floating point comps
 - fast over factors
   - will do when plots
+
+----------
+
+- debugging
+- examples
+- OOP
+- scoping
+- packages
