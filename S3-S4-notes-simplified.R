@@ -14,10 +14,10 @@ methods("plot")
 library(OncoSimulR)
 ## lots more now. Why? For now, see plot.fitnessEffects
 ## or plot.genotype_fitness_matrix
+getAnywhere(plot.fitnessEffects)
 plot.fitnessEffects
 OncoSimulR::plot.fitnessEffects
 OncoSimulR:::plot.fitnessEffects
-getAnywhere(plot.fitnessEffects)
 
 ## all generics for a class
 methods(class = "genotype_fitness_matrix")
@@ -140,11 +140,15 @@ library(testthat)
 
 ## go step by step here?
 test_that("minimal conversions and failures", {
+
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                                      Class = "Cl1")), "Cholest_Gene")
+
+
     expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
                  "For now, only methods for data.frame are available",
                  fixed = TRUE)
+
     expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
                                      Class = "Cl1")),
                  "Column names are not",

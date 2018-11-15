@@ -8,8 +8,9 @@ powb <- function(n) {
 cc <- powb(3)
 cc(2)
 
-as.list(environment(cc))
 ls(envir = environment(cc))
+
+as.list(environment(cc))
 
 ## not that helpful
 as.list(environment(powb))
@@ -31,8 +32,6 @@ debugonce(f6)
 f6(1:10, 1:10, col = "red", lty = 2)
 ## now, use list(...) inside
 
-
-### Stop here
 
 ## More scoping
 f2 <- function(x) {
@@ -85,6 +84,31 @@ g4(2)
 
 
 
+## From a question in class, 2018-11-14:
+##      what if there is no y defined in the environment
+##      where g5 is defined?
+
+g6 <- function(u) {
+    g5 <- function(x) x + y
+    ## y <- 100 ## No y in here
+    g5(u)
+}
+
+## paranoid check: no g5
+g5 ## ok, error
+
+y <- 100
+g6(1)
+
+y <- 2
+g6(1)
+
+rm(y)
+g6(1) ## fails
+
+
+
+### Stop here
 
 ## Miscellaneous things not to do
 f4 <- function(one, two, three = 3, four) {
