@@ -2791,7 +2791,7 @@ data manipulation (dplyr) and reading large flat files (readr). Both are
 explained, in addition to the documentation of each of the packages, in
 Peng's  ``R programming for data   science'' book. 
 
-This link contains a handy summary of \texttt{dplyr}:
+This link has a handy summary of \texttt{dplyr}:
 \Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
 
 As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}.
@@ -2820,7 +2820,7 @@ languages in Bioinformatics (and explains its fast adoption).
 
 
 \subsection{Flow control}
-\R\  contains usual constructions for flow control and conditional
+\R\  has the usual constructions for flow control and conditional
 execution: \code{if, ifelse, for, while, repeat, switch, break}. Before
 continuing, please note that \code{for} loops are rarely the best
 solution: the \code{apply} family of functions ---see below--- is often a better
@@ -2858,7 +2858,7 @@ for(i in 1:10)
 
 (note that in the example above I could get away without using braces
 ---\code{``\{\}''}--- after the \code{for} because the complete expression
-is only one command, \code{abline}). 
+is only one function call, \code{abline}). 
 
 \code{while} keeps repeating a set of instructions until a condition is
 fulfilled. In this example, the condition is actually two conditions. Make
