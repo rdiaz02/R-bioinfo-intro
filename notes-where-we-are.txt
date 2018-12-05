@@ -1,9 +1,11 @@
 - debugging
 - examples: permut-test-2.R
+
+some of this could be after the exercise on the 11-XII
+
 - OOP: S3-S4-notes-simplified.R
 - scoping: some-env-scoping-examples.R
 - packages
 - merge-join.R
 - reshape-long-wide.R
 
-some of this could be after the exercise on the 11-XII
