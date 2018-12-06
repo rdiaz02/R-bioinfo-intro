@@ -1610,6 +1610,15 @@ the FAQ (question 7.31):
 \end{quote}
 
 
+This might be an even simpler example (taken from an example I saw from
+Ivo Balbaert in his book ``Julia 1.0 Programming'')
+
+<<>>=
+0.1 + 0.2 == 0.3
+(0.1 + 0.2) - 0.3
+@ 
+
+
 The take home message: be extremely suspicious whenever you see an
 equality comparison of two floating-point numbers; that is unlikely to do
 what you want. If you know what you are doing, take a look at
