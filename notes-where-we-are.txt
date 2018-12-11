@@ -1,4 +1,8 @@
 - debugging
+- classes S3: minimal thing
+- testthat
+
+
 - examples: permut-test-2.R
 
 some of this could be after the exercise on the 11-XII
