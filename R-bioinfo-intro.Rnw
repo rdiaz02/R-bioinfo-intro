@@ -84,7 +84,7 @@ opts_knit$set(stop_on_error = 2L)
 
 \author{Ramon Diaz-Uriarte\thanks{Dept.\ of Biochemistry, Universidad
     Aut\'onoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
-    \texttt{rdiaz02@gmail.com}}}
+    \texttt{r.diaz@uam.es}}}
 
 
 %% <<>>=
