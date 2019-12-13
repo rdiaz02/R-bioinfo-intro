@@ -2688,7 +2688,10 @@ applying functions to subsets of the data), there are a variety of ways of
 accomplishing them with the basic functions of R, as well as several
 additional packages that provide for different (easier? faster?)
 approaches/syntax. Here is a blog with some examples and links:
-\Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}.
+\Burl{https://www.r-bloggers.com/say-it-in-r-with-by-apply-and-friends/}
+(the original entry, at
+\Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}, 
+is no longer available). 
 For instance, the \code{doBy} package is really nice.
 
 
