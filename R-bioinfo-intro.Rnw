@@ -3537,6 +3537,15 @@ trace("lm", edit = "emacs")
 trace("lm", edit = TRUE)
 @ 
 
+%%% For me, I use
+% as default editor ecf
+% #!/bin/bash
+% emacsclient -s  /tmp/emacs1000/server -c $1
+% and have it as my default editor so I can do
+% trace("something", edit = TRUE)
+% or
+% trace("something", edit = "ecf")
+
 \subsection{Autopsies when things fail}
 But sometimes you only want to stop when/if things fail, and look
 inside. We can ask R to do that: stop when the error occurs, and allow us
