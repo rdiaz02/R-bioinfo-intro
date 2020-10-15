@@ -1,0 +1,5197 @@
+%% ;;; -*- mode: Rnw; -*-
+\synctex=1
+\documentclass[a4paper,11pt]{article}
+\usepackage{graphics}
+%\usepackage[dvips]{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsbsy}
+\usepackage{geometry}
+\geometry{verbose,a4paper,tmargin=28mm,bmargin=28mm,lmargin=30mm,rmargin=30mm}
+\usepackage{setspace}
+\singlespacing
+\usepackage{url}
+\usepackage{nameref}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+
+\usepackage[small]{caption}
+\usepackage{hyperref}
+
+\usepackage{color}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{#1}} %From B. Bolker
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+% \newcommand{\R}{{something or other R}} but this gets to be a mess. And
+% ugly. 
+\newcommand{\R}{R}
+
+\newcommand{\flspecific}[1]{{\textit{#1}}}
+
+\newcounter{exercise}
+\numberwithin{exercise}{section}
+\newcommand{\exnumber}{\addtocounter{exercise}{1} \theexercise \thinspace}
+
+\usepackage[copyright]{ccicons}
+
+\usepackage[authoryear, round, sort]{natbib}
+\bibliographystyle{chicago}
+
+
+%% decreasing margins after knitr output
+%% \setlength{\topsep}{0pt}
+%% \setlength{\parskip}{0pt}
+%% \setlength{\partopsep}{1pt}
+
+\usepackage{gitinfo2}
+
+
+
+
+%% For using listings, so as to later produce HTML
+%% uncommented by the make-knitr-hmtl.sh script
+%%listings-knitr-html%%\usepackage{listings}
+%%listings-knitr-html%%\lstset{language=R}
+
+<<setup,include=FALSE,cache=FALSE>>=
+require(knitr)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+## next are for listings, to produce HTML
+##listings-knitr-html%%options(formatR.arrow = TRUE)
+##listings-knitr-html%%render_listings()
+@ 
+
+\begin{document}
+
+%% Only takes effect after begin document?
+%%listings-knitr-html%%<<listingfigdir,error=FALSE, include=FALSE, cache=FALSE>>=
+%%listings-knitr-html%%opts_chunk$set(fig.path = 'figures_html/listings-')
+%%listings-knitr-html%%@ 
+
+
+\title{A quick and crash introduction to R with a bioinformatics bent}
+
+\date{\gitAuthorDate\ {\footnotesize (Release\gitRels: Rev: \gitAbbrevHash)}}
+
+\author{Ramon Diaz-Uriarte\thanks{Dept.\ of Biochemistry, Universidad
+    Aut\'onoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
+    \texttt{r.diaz@uam.es}}}
+
+
+%% <<>>=
+%% opts_chunk$set(size= "small", error=FALSE)
+%% @ 
+
+
+
+
+\maketitle
+
+\tableofcontents
+
+%% To make sure things within page margins
+<<include=FALSE>>=
+rm(list = ls())
+options(width = 60)
+@ 
+
+\section{License and copyright}\label{license}
+This work is Copyright, \copyright, 2014, 2015, 2016, 2017, Ramon Diaz-Uriarte,
+and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
+4.0 International License:
+\Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+
+\centerline \ccbysa
+
+\section{Scenarios}\label{scenarios}
+\begin{itemize}
+  
+\item You are designing an experiment: 20 plates are to be assigned
+  (randomly) to 4 conditions. You are too young (or too old) to cut paper
+  into pieces, place it in a urn, etc. You want a better, faster
+  way. Specially because your next experiment will involve 300 units, not
+  20.
+  
+  
+\item The authors of a paper claim there is a weak relationship between
+  levels of protein A and growth. However, you know that some of the
+  samples are from males and some are from females, and you suspect the
+  correlation is present only in males. The authors provide the complete
+  data and you want to check for differences in correlation pattern
+  between males and females.
+  
+  
+\item You've been working on a microarray study. For 100 subjects (50 of
+  them with leukemia, 50 of them healthy) you have the $Cy3/Cy5$ intensity
+  ratios for 300,000 spots. You just got the email with the compressed
+  data file. You are leaving for home. In less than five minutes you'd
+  like to get a quick idea of what the data look like: maximum and minimum
+  values for all spots, average for 5 specific control spots
+  (corresponding to probes 10, 23, 56, 10,004, 20,000), and a
+  quick-and-dirty statistical test of differences for two specific probes,
+  probe 7000 and 99,000, that correspond to two well know genes.
+  
+
+\item Tomorrow you'll look at the data in more detail. For a set of 20
+  selected probes you will want to: a) take a look at the mean of the
+  intensity, variance of intensity, and the mean of the intensity in each
+  of the two groups; b) plot the intensity vs.\ the age of the subject; c)
+  plot the log of the intensity vs.\ the age of the subject.
+
+  
+%% \item A paper describes a specific growth curve model (some non-linear
+%%   function). You would like to see what the actual curve looks like, and
+%%   how much variation you get if you modify the parameters slightly. 
+ 
+  
+\end{itemize}
+
+For each of those problems, would you \ldots
+
+\begin{itemize}
+\item Know how to do it?
+\item Do it quickly?
+\item Save all the steps of what you did so that 6 months from today you
+  know \textbf{exactly} what you did, can repeat it, and apply it to new data?
+\end{itemize}
+
+
+This course is a quick introduction to an ``environment for statistical
+computing and graphics'' that will allow you to carry out each of the above.
+
+
+
+\section{This document and how to use it}
+
+This document is to be used a crash and relatively quick introduction to
+R, with a clear Bioinformatics bias\footnote{OK, there is an example with
+birds, reptiles, metabolic rates, body size, etc, that is not really
+bioinformatics but \ldots it is a neat data set and matches with some of
+my early scientific loves.}.
+
+The structure and logic is as follows:
+
+\begin{itemize}
+\item First, with the scenarios above, we try to motivate you.
+\item I then (section \ref{mistery}) show a six-line real example of a common problem in
+  Bioinformatics (multiple testing). You might not understand much of what
+  is done, but I will explain it in class (this is not a textbook, but a
+  document for a class).
+\item We next go over a few practical things we need to get out of the way
+  (sections \ref{basics} and \ref{console}).
+  
+\item We then (sections \ref{readingr} to \ref{plotsplots}) cover in some
+  detail what are the main objects of R (vectors, data frames, matrices),
+  how to manipulate them and some plotting. This can be boring, and this
+  used to be after section \ref{crashex} but some students argued strongly
+  that they'd rather see this first, so this comes now first.
+\item After that, we jump into \R\ with three longer examples (section
+  \ref{crashex}). Again, on first reading you might not understand
+  all of what is done, but we will go over it in class.
+\item Then we cover tables and a little bit of programming (sections
+  \ref{tables} and \ref{rprog}).
+\item We then revisit some examples.
+% \item Then, up to section \ref{back-scenarios}, we go over many details in
+%   a more systematic, but more boring, way. 
+\item If you understand all that is done up to that point, you should have a
+decent working understanding of how to use R, and can move on your own.
+\item But you do not want to skip section \ref{debug}: this section covers
+  debugging. Being able to debug quickly and painlessly is essential
+  for using R effectively (and enjoying it even while debugging).
+\item Finally, in section \ref{more-ex} I include several longer commented
+  examples. These should bring together many of the features we have
+  mentioned, but also introduce new functions, and will give you practice
+  with programming and debugging.
+\end{itemize}
+
+
+
+The material has been ordered that way on purpose. Yes, expect some
+frustration when working through sections \ref{mistery} and \ref{crashex},
+but definitely look at them before class and try to understand what is
+going on. After section \ref{crashex} things should be smoother (but more
+boring, until we get to section \ref{more-ex}). And here, definitely, you
+\textbf{must} type things on your own and understand the output. I have
+tried to use a kind of spiraling lay out, working over several things
+repeatedly, and repeating and going deeper on some key ideas. Hopefully,
+this will allow you to understand the material better, connect it with
+other pieces, and retain it for longer.
+
+
+
+
+\subsection{The PDF and the code}
+
+The primary output of this document is a PDF.%%  I also provide (and will
+%% use) an HTML file; this is kind of experimental (a few things might not
+%% be typeset correctly, or some links not work fully, etc). The HTML offers
+%% the advantage that we can accommodate, on the same screen, a running
+%% session with \R\, and have the web browser size adjusted to our liking (so
+%% less fiddling around than using a PDF). In the HTML, the code is in red
+%% and the output in blue. 
+However, all the original files for the document are available (again, under a
+Creative Commons license ---see section \ref{license}) from
+\Burl{https://github.com/rdiaz02/R-bioinfo-intro}. (Note that in the
+github repo you will not see the PDF %% HTML,
+or R-bioinfo-intro.R files,
+since those are derived from the Rnw file).
+
+
+ For many commands I do not show the output (e.g., because it
+would just provide boring and space-filling output). However, make sure
+you type and understand it. You can copy and paste, of course, but I
+strongly suggest you type the code and change it, modify it, etc.
+
+
+
+\subsection{Other files you need in addition to this one}
+You should have (or should get) the following files:
+\begin{itemize}
+\item \code{hit-table-500-text.txt}
+\item \code{AnotherDataSet.txt}
+\item \code{anage.RData}
+\item \code{lastExample.R}
+\item \code{Condition\_A.txt}, \code{Condition\_B.txt}, \code{Condition\_C.txt}
+%% \item \code{permafrost-zip}, a compressed directory with 5000 files.
+%% \item \code{R-bioinfo-intro-html-dir.zip}: a zip file that, when
+%%   uncompressed, while give you a directory that contains the HTML version
+%%   of this PDF and a directory for the figures (used in the HTML). You can
+%%   open the HTML with any browser.
+%% \item \code{script1.R}
+\item \code{R-bioinfo-intro.R}
+\end{itemize}
+
+
+All of the files above (except the last) are mentioned or used in this
+document. What about \code{R-bioinfo-intro.R}? That is all the \R\ code
+used in this document.
+
+
+\subsection{R and Bioinformatics}
+
+If you are reading this document, it is probably because you already have
+some idea of what \R\ is. So no long details here. A summary is ``R is a
+free software environment for statistical computing and graphics.''
+(\Burl{http://www.r-project.org/}) and ``R is 'GNU S', a freely available
+language and environment for statistical computing and graphics which
+provides a wide variety of statistical and graphical techniques: linear
+and nonlinear modelling, statistical tests, time series analysis,
+classification, clustering, etc. '' (\Burl{http://cran.r-project.org/}).
+
+
+Virtually all of the statistical analysis done in Bioinformatics can be
+conducted with R. Moreover, ``data mining'' (which is, according to some
+authors, simply ``statistics + marketing'') is well covered in \R:
+clustering (often called ``unsupervised analysis'') in many of its
+variants (hierarchical, k-means and family, mixture models, fuzzy, etc),
+bi-clustering, classification and discrimination (from discriminant
+analysis to classification trees, bagging, support vector machines, etc),
+all have many packages in \R. Thus, tasks such as finding homogeneous
+subgroups in sets of genes/subjects, identifying genes that show
+differential expression (with adjustment for multiple testing), building
+class-prediction algorithms to separate good from bad prognosis patients
+as a function of genetic profile, or identifying regions of the genome
+with losses/gains of DNA (copy number alterations) can all be carried out
+in \R\ out-of-the-box (see BioConductor and CRAN).
+
+
+[A proselitizing note] \R\ is free software, meaning ``free'' as in free
+speech (not free as in free beer; in Spanish, free as in "libre", not free
+as in "gratis"). The definition of free software is explained, for
+instance, in \Burl{http://www.gnu.org/philosophy/free-sw.html}. Why does
+it matter that \R\ is free software? For one thing, it makes your access
+to it simple and easy. As well, you can play with the system and look at
+the inside (you can look at the original code) and do with that code a
+variety of things, including modifying it, learning from it, etc. In
+addition, that \R\ is free software is, arguably, one of the reasons of
+its incredible success (and, for instance, one explanation for why there
+are over 6000 contributed, and free software, packages). Moreover,
+Bioinformatics, as we know it, would not exist without free
+software. Newton, and others before him, used the expression ``standing on
+the shoulders of giants'' when explaining how the development of science
+and other intellectual pursuits builds upon past accomplishments; in
+Bioinformatics (and many other fields), we are also standing on the
+shoulders of millions of lines of free software.
+
+\subsection{Some references}
+When you download \R\ you also download ``An introduction to R'', which is
+an excellent intro. There are many freely available documents (of variable
+quality, of course) here:
+\Burl{http://cran.r-project.org/other-docs.html}. Many books are listed
+(and some briefly commented) here: \Burl{http://www.r-project.org/doc/bib/R-books.html}.
+
+This is a partial list a books I like and use when preparing classes:
+
+\begin{description}
+\item[Programming] As it says, just focus on programming R:
+  \begin{itemize}
+  \item \textit{R Programming for Data Science}. Peng. (This is an
+    ebook and PDF, and you can pay whatever you want for it.). If you want
+    to start somewhere and use only a single reference, \textbf{I'd start
+      with this book}.
+   \item \textit{Advanced R}. Wickham. (If you go to the web page for the
+    book, in github, you can download the complete sources and build your
+    own pdf).   
+  \item \textit{The art of R programming}. Matloff.
+  \end{itemize}
+\item[Stats and some programming] Introductory statistics (or introductory
+  data science) with some
+  programming interleaved.
+  \begin{itemize}
+  \item \textit{Introductory statistics with R, 2nd ed}. Dalgaard.
+  \item \textit{R in Action}. Kabacoff. (A second ed.\  available since
+    June 2015).
+
+  \end{itemize}
+\item[Linear models et al.] Linear models are fundamental in
+  statistics. And fascinating.
+  \begin{itemize}
+  \item \textit{An R companion to applied regression}. Cox and
+    Weisberg. John Fox is also the author of an excellent textbook (now in
+    its second edition) about linear models. This companion is absolutely
+    fantastic (and can be used even if you don't have the other
+    textbook). You probably want this book.
+  \item \textit{Regression modeling strategies, 2nd ed}. Harell. Among its
+    many virtues, this book contains excellent discussions of the
+    problems of variable selection.
+  \item Faraway has two books on linear models with \R, both published by
+    CRC. Wood is the author of a great book on Generalized Additive Models
+    (also CRC). Etc, etc.
+  \end{itemize}
+\item[Machine learning] Machine learning, classification, etc. And many of
+  the examples are bioinformatics-inspired.
+  \begin{itemize}
+  \item \textit{Applied predictive modeling}. Kuhn and Johnson.
+  \item \textit{An introduction to statistical learning}. James, Witten,
+    Hastie, Tibshirani. The PDF of the book is available for download from
+    their web page.
+  \end{itemize}
+  
+\end{description}
+
+There are of course many others (including classics such as the two by
+Venables and Ripley, or Chamber's \textit{Software for data analysis},
+many specific to some fields, several devoted to graphics, etc, etc).
+There is also a (short) list of books I think are not worth it; ask me
+about them in class.
+
+
+\clearpage
+
+\section{Very basics of using \R}\label{basics}
+
+\subsection{Installing \R}
+  
+Go to CRAN, \Burl{http://cran.r-project.org/}. Now, if you know what
+source code is, and you want to compile R, go to Sources
+(\Burl{http://cran.r-project.org/sources.html}). Otherwise, just download
+a binary for your operating system (\Burl{http://cran.r-project.org/bin/}).
+
+\begin{itemize}
+\item For Linux, most distros have pre-built binaries, so with Debian
+     use apt-get install r-base r-base-dev, with Fedora and RH yum install
+     whatever, etc. There are instructions in the CRAN page if you need
+     them, though, for many distros.
+
+     However, if you use Ubuntu, please read the instructions in
+     \Burl{http://cran.r-project.org/bin/linux/ubuntu/README.html}, since the
+     default Ubuntu packages can be  outdated.
+
+     
+\item If you use Windows, you want to install "base". It says so
+     clearly: "Binaries for base distribution (managed by Duncan
+     Murdoch). This is what you want to install R for the first time."
+
+     
+   \item If you use Mac, if you play with installation options, note that
+     you need to install the tcl/Tk X11 libraries. If you run into
+     trouble, make sure to read the FAQ
+     (\Burl{http://cran.r-project.org/bin/macosx/RMacOSX-FAQ.html}).
+
+
+\item However you do it, please make sure you have a recent version of R.
+\end{itemize}
+
+  
+  % \item You can change the language if you want. For Spanish, use ``es'' (or
+  %   edit directly the {\tt Rconsole} file).
+  % \end{itemize}
+  
+\subsection{Installing RStudio}\label{rstudio}
+  
+There are a variety of ways of interacting and using R. For ease, and
+because it is a really nice piece of software, we will use RStudio. We
+want to use the "Dektop", that you can download from here:
+\Burl{http://www.rstudio.com/products/rstudio/download/}.
+
+
+
+
+\subsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
+
+Ah, this is a nice topic for a long, passionate, conversation. In this
+course, we will, by default, be using RStudio. I will, however, often use
+Emacs + ESS (\Burl{http://ess.r-project.org/}). For those used to Eclipse, there
+is a plug-in designed to work with R: StatET
+(\Burl{http://www.walware.de/goto/statet}). Another popular interface is
+JGR (\Burl{http://www.rforge.net/JGR/}). RKward
+(\Burl{http://rkward.sourceforge.net/wiki/Main_Page}) is also popular in
+some places (this was originally Linux-only, but not anymore). Some Mac
+users are very happy just the default, plain, interface provided by R
+under Mac OS X. And some Windows users like Tinn-R
+(\Burl{http://nbcgib.uesc.br/lec/software/editores/tinn-r/en}); I used to
+use Tinn-R in R courses I taught 8 to 10 years ago, but I think it has
+lost ground to RStudio, and it is only Windows. If you love vim, there is
+Vim-R-plugin (\Burl{http://www.vim.org/scripts/script.php?script_id=2628};
+\Burl{http://manuals.bioinformatics.ucr.edu/home/programming-in-r/vim-r}). And
+then, there are many other options; %%  (an outdated list is available from
+%% \Burl{http://www.sciviews.org/\_rgui/}, and
+some other entries around in
+internet land are
+\Burl{http://www.theusrus.de/blog/r-guis-which-one-fits-you/} and
+\Burl{http://stats.stackexchange.com/questions/5292/good-gui-for-r-suitable-for-a-beginner-wanting-to-learn-programming-in-r}).
+
+If you plan to spend a fair amount of time doing Bioinformatics, then
+you'll spend a fair amount of time programming, probably using a variety
+of languages (R, Python, C, Perl, Java, PHP, etc). Becoming used to a
+programmer-friendly editor that ``understands'' all of the languages you
+use is thus worth it. Choosing an editor is a highly personal issue. Emacs
+is an editor and then a lot of other things (that is what I use, for
+programming, editing text, email, etc); if you use Emacs then Emacs + ESS
+is the perfect combination for you. For vim users, there is the
+vim-R-plugin. Those who come from the Java world might be familiar with
+Eclipse (and, thus, you'll want to give StatET a try). Kate is another
+great editor that understands many editors and it easy to submit code to
+an R process running in the terminal, but it lacks some nice features that
+RStudio and Emacs+ESS have (but RKward might then be a nice option). Some
+people (myself) like to use a single editor for most/all editing
+tasks. Some other people jump around (they use RStudio for R, Eclipse for
+Java, and maybe Kate for Python). You get to choose.
+
+
+Note, though, that one thing is syntax highlighting (and syntax
+highlighting for R is available for many, many editors) and another is the
+ability to interact with an R session, provide shortcuts for displaying
+help, offering object browsers, etc. Of course, you are the one who must
+weight the choices.
+
+
+The summary (highly biased?): I definitely prefer Emacs (+ ESS), but in
+this course I will not attempt to teach you Emacs + ESS. So if you do not
+know Emacs, then try RStudio, which is what we will ``officially''
+use. However, if you like Eclipse, then use Eclipse with StatEt. If you
+like Kate, use Kate, etc, but I might not be able to help you.
+
+
+Note that all of the above have a different purpose from R Commander
+(\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/}) which, as it says, is
+a basic statistics GUI for R. In this course we will rarely (if at all)
+use R Commander, since these notes are focused on programming and using R
+from the command line. However, I do recommend that you play around with R
+Commander. Another GUI for statistics with R (that I have not used but
+know is liked by some people) is Deducer:
+\Burl{http://www.deducer.org}.
+
+
+
+
+
+\subsection{Installing R packages}\label{packages}
+Most ``for real'' work with \R\ you do will require installation of
+packages. Packages provide additional functionality. Packages are
+available from many different sources, but possibly the major ones now are
+CRAN and BioConductor.
+
+If a package is available from CRAN you can do
+
+<<eval=FALSE>>=
+install.packages("car")
+@ 
+(for example --- this installs the \code{car} package and its
+dependencies).
+
+If you want to install more than one package you can do (don't execute the
+code below as we will not use those packages)
+<<eval=FALSE>>=
+install.packages(c("RJaCGH", "varSelRF"))
+@ 
+
+
+In Bioinformatics, BioConductor (\Burl{http://www.bioconductor.org}) is a
+well known source of many different packages. BioConductor packages can be
+installed in several ways, and there is a semi-automated tool that allows
+you to install suites of BioC packages (see
+\Burl{http://www.bioconductor.org/install/}). For example, go to
+\Burl{http://www.bioconductor.org/packages/release/bioc/html/limma.html}
+and see how instructions are clearly given there. The involve doing
+something like 
+<<eval=FALSE>>=
+BiocManager::install("package_name")
+@ 
+
+% See
+% \Burl{https://cran.r-project.org/web/packages/BiocManager/index.html}.
+% But
+% this is not updated even in the BioC page for most (all?) packages
+% yet. The previous
+
+% <<eval=FALSE>>=
+% source("https://bioconductor.org/biocLite.R")
+% biocLite("package_name")
+% @ 
+% still work, though it gives a warning. (So if today --- 2018-10-17--- you
+% visit the above page for limma, and you follow the recommendation, you
+% will get a warning).
+
+
+
+As we said above, sometimes packages depend on other packages. If this is
+the case, by default, the above mechanisms will also install dependencies.
+
+
+With some GUIs (under some of the operating systems) you can also install
+packages from a menu entry. For instance, under Windows, there is an entry
+in the menu bar called \textbf{Packages}, which allows you to install from
+the Internet, change the repositories, install from local zip files,
+etc. Likewise, from RStudio there is an entry for installing packages
+(under ``Tools'').
+
+
+Packages are also available from other places (RForge, github,
+etc); you will often find instructions there.
+
+
+
+Now, make sure you install package ``car'', which we will use below:
+
+<<eval=FALSE>>=
+install.packages("car")
+@ 
+(or do it from the menu of RStudio).
+
+
+
+How do you find a package? Looking at a list of 6000 things in CRAN and
+another thousand in BioC is not a good idea. In addition to google et al.,
+there are task views in CRAN: \Burl{http://cran.r-project.org/web/views/},
+and there is a not too dissimilar thing in BioC. In addition,
+\code{findFn}, from package ``sos'' can help (see section \ref{help}).
+
+
+\subsection{Starting \R}
+
+If you use RStudio, just start RStudio (icons should have been placed
+wherever they are placed in your operating system, or start if from the
+command line if you know how to/like to do that). From what I've been
+told, RStudio should be available from the menus in your desktop, in
+Windows, Linux, or Mac OS.
+
+If you use other systems (Emacs + ESS, Eclipse, RKward, Kate, etc) just use
+the appropriate procedure (I assume that if you are using any of these you
+know what to do).
+
+
+
+\subsection{Stopping \R}
+
+You can always just kill RStudio; but that is not nice. In all systems
+typing \code{q()} at the command prompt should stop R/RStudio. There will
+also be menu entries (e.g., ``Quit RStudio'' under ``File'', etc).
+
+<<eval=FALSE>>=
+q()
+@ 
+
+
+Say no to the question about saving the workspace.
+
+
+What if things hang? Try \code{Control-C} and/or
+\code{Esc}.
+
+
+\subsection{Activities}
+\label{sec:activities}
+
+\begin{enumerate}
+\item Start R (just R, not RStudio) from your operating system.
+\item Make sure you are able to do this operation: 3 + 2
+\item Now, start RStudio
+\item In RStudio, locate the console (bottom left, maybe?). Add 3 and 2
+  again.
+\item Now, open a new R Scritp (File, Open, New File, R Script). Write the
+  following
+
+\begin{verbatim}
+ x <- 9
+ 3 * 3
+\end{verbatim}
+
+  and execute it. Go to ``Code'' and use ``Run selected line(s)'' and
+  ``Run region''
+
+\item In the console, type \texttt{help(rnorm)} (and then enter). What happens?
+\item Can you see how you are offered suggestions as you type?
+\item Install a package. Do it using \texttt{install.packages}. You can
+  also try using RStudio. The package to install is called ``varSelRF''.
+
+  \item Install the \texttt{limma} package from Bioconductor.
+
+  \item Open this file (this ``R-bioinfo-intro-Q.Rnw'') in Rstudio. It is
+    a 
+
+\end{enumerate}
+
+
+
+
+\clearpage
+\section{This will not be mysterious at the end of the course}\label{mistery}
+
+(This is an example we go over in section \ref{example-multtest}, p.\ 
+\pageref{example-multtest}, with a different number of genes).
+
+We might have heard about the multiple testing problem with microarrays:
+if we look at the p-values from a large number of tests, we can be mislead
+into thinking there is something happening (i.e., there are differentially
+expressed genes) when, in fact, there is absolutely no signal in the
+data. Now, you are convinced by this. But you have a stubborn colleague
+who isn't. You have decided to use a simple numerical example to show her
+the problem.
+
+
+This is the fictitious scenario: 50 subjects, and of those 30 have cancer
+and 20 don't. You measure 1000 genes, but none of the genes have any real
+difference between the two groups; for simplicity, all genes have the same
+distribution. You will do a t-test per gene, show a histogram of the
+p-values, and report the number of ``significant'' genes (genes with p <
+0.05).
+
+
+This is the R code:
+
+<<eval=TRUE,tidy=FALSE, fig.height=5>>=
+randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
+class <- factor(c(rep("NC", 20), rep("cancer", 30)))
+pvalues <- apply(randomdata, 1, 
+                 function(x) t.test(x ~ class)$p.value)
+hist(pvalues)
+sum(pvalues < 0.05)
+@ 
+
+The example could be made faster, you could write a function, prepare
+nicer plots, etc, but the key is that in six lines of code you have
+settled the discussion. 
+
+Let's try to understand what we did. % But first, we need to install \R, and
+% maybe some additional packages.
+
+
+\subsection{Activities}
+\label{sec:activities-1}
+
+\begin{enumerate}
+\item In class, we will give a broad overview of:
+  \begin{enumerate}
+  \item vectors
+  \item matrices
+  \item arrays
+  \item data frames
+  \item lists
+  \item factors
+  \end{enumerate}
+
+
+\item Type (do not copy-and-paste!) the example above in a new script and then
+  execute it. If you get syntax errors, make sure you verify what you
+  wrote. If (but only if) you become desperate, copy-paste the code into a
+  script and execute it (or into a file and run it).
+  
+  
+\item Play with the following and try to understand what is happening. We
+  will explain it in class:
+<<activ1, eval=TRUE,tidy=FALSE, echo=TRUE, results=FALSE, fig.show='hide'>>=
+randomdata[1, ]
+randomdata[, 1]
+randomdata[2, ]
+randomdata[, 2]
+randomdata[2, 3]
+
+class
+as.numeric(class)
+
+pvalues[1]
+
+t.test(randomdata[1, ] ~ class)
+
+t.test(randomdata[1, ] ~ class)$p.value
+
+pvalues[1:10] < 0.05
+
+sum(c(TRUE, TRUE, FALSE))
+
+hist(c(1, 2, 7, 7, 7, 8, 8))
+@
+
+
+
+\end{enumerate}
+
+
+\section{The R console for interactive calculations}\label{console}
+In what follows, I will assume that you are either running \R\ from
+RStudio, or that you know your way around and are using some other means
+(e.g., directly from the \R\ icon in Windows, or from Emacs + ESS in any
+operating system, or using Eclipse, etc).
+
+Regardless of how you interact with \R, once you start an interactive \R\
+session, there will always be a console, which is where you can enter
+commands to have them executed by \R. In RStudio, for instance, the
+console is usually located on the bottom left.
+
+Now, move to the console and at the prompt (which will often start with
+\code{>}) type ``1 + 2'' (without the quotes) and press \code{Enter}:
+
+<<>>=
+1 + 2
+@ 
+
+(All the code for this document is available, so you can copy and paste
+from the original code directly. If you copy code from other documents,
+say a PDF, that show the prompt, do not copy the prompt itself. That
+should not be an issue in this document, though, as the code sections do
+not show the prompt).
+
+
+Look at the output. In this document, code chunks, if they show output,
+will show the output preceded by \code{\#\#}. In R (as in Python), \code{\#}
+is the comment character. In your console, you will NOT see the \code{\#\#}
+preceding the output. This is just the way it is formatted in this
+document.
+
+Note also that you see a \code{[1]}, before the \code{3}. Why? Because the
+output of that operation is, really, a vector of length 1, and \R\ is
+showing its index. Here it does not help much, but it would if we were to
+print 40 numbers:
+
+<<>>=
+1:40
+@ 
+
+
+Now, assign \code{1 + 2} that to a variable:
+
+<<>>=
+v1 <- 1 + 2
+@ 
+\noindent(you can also use \code{=} for assignment, but I prefer not to).
+
+And now display its value
+
+<<>>=
+v1
+@ 
+
+If you want to be more verbose, do
+<<>>=
+print(v1)
+@ 
+
+
+Alternatively, you could surround the expression in parentheses:
+<<>>=
+(v1 <- 1 + 2)
+@ 
+and that makes the assignment AND shows you the value just assigned to
+\code{v1}.
+
+Finally, you could do
+<<>>=
+v1 <- 1 + 2; v1
+@ 
+thus separating the two commands with a \code{;}, though that is rarely
+a good idea except for very special cases.
+
+
+It is also possible to break commands, if it is clear to \R\ that the
+expression is not yet finished:
+\begin{verbatim}
+v2 <-  4 - ( 3 * [Enter]
+2)
+\end{verbatim}
+
+You will see a \code{+} that indicates the line is being continued: \R\ is
+still expecting more input (in this case, you must close the parenthesis
+and add something after the \code{*}). But sometimes things get
+confusing. You can bail out by typing \code{Ctrl + c} (Unix) or
+\code{Escape}, and abort the calculation.
+
+
+Of course, use parenthesis as you think appropriate to make the meaning of
+an expression clear. \R\ uses, for the usual functions, the usual
+precedence rules. If in doubt, use parentheses. 
+
+<<>>=
+v11 <- 3 * ( 5 + sqrt(13) - 3^(1/(4 + 1)))
+@ 
+
+
+By the way, if you want to modify partially what you typed, you can repeat
+the previous commands with the up-arrow ($\uparrow$)
+in RStudio (or Alt-p in ESS); and then move around also using $\uparrow$ ,
+etc. You also have tab completion: if you get at the prompt, type \code{v}
+and press tab you should be given a bunch of options (that include v1 and
+v2, plus several functions that start with ``v'').
+
+
+
+\subsubsection{Activities}
+\label{sec:activities-2}
+
+\begin{enumerate}
+\item Make sure you type every single one of the expressions above and
+  that all of them make sense to you. Do not skip any one. If things do
+  not make sense, ask in class.
+\end{enumerate}
+
+\subsection{Naming variables}
+We created \code{v1} and \code{v2} above. Names of variables in \R\ must 
+begin with a letter (also a period, though this will make them
+hidden). Then you can mix letters, numbers, \code{.} and
+\code{\_}. Variable names are case sensitive, so \code{v1} and \code{V1}
+are different things. 
+
+Once you have something in a variable, you can just use it instead of that
+something:
+
+<<>>=
+v3 <- 5
+(v4 <- v1 + v3)
+(v5 <- v1 * v3)
+(v6 <- v1 / v3)
+@ 
+
+
+Newer assignments silently \textbf{overwrite} previous assignments:
+<<>>=
+(z2 <- 33)
+z2 <- 999
+z2
+z2 <- "Now z2 is a sentence"
+z2
+@ 
+
+You can delete a variable
+<<>>=
+rm(z2)
+@
+
+\subsubsection{Activities}
+\label{sec:activities-3}
+
+\begin{enumerate}
+\item Make sure you type every single one of the expressions above and
+  that all of them make sense to you. Do not skip any one. If things do
+  not make sense, ask in class.
+\end{enumerate}
+
+\subsection{Getting help}\label{help}
+
+Look at one help page:
+<<eval=FALSE>>=
+help(mean)
+@ 
+
+Now, shorter:
+<<eval=FALSE>>=
+?mean
+@ 
+
+
+Now let's use the help to l ,earn about the help system (and yes, read or
+take a quick look at it):
+<<eval=FALSE>>=
+?help
+?apropos
+@
+ 
+Now, try
+<<eval=FALSE>>=
+?normal
+?rnorm
+apropos("normal")
+apropos("norm")
+help.search("normal")
+@
+ 
+Many help files include executable code (examples)
+<<eval=FALSE, results='hide'>>=
+example(rnorm)
+example(graphics) ## will give an error
+example(lm)
+@ 
+\noindent and note how you get to see the code that produced the figures.
+example.
+
+ 
+Some help files include demos
+<<eval=FALSE>>=
+demo(graphics)
+@ 
+\noindent again, note how you get to see the code that produced the
+figures.  example.
+
+
+And some include both
+<<eval=FALSE>>=
+demo(persp)
+example(persp)
+@ 
+
+But there are many other ways of searching for help about how to do
+something with \R. Of course, you can google around, use stackoverflow,
+etc. There are mailing lists for \R\, and for specific interest groups in \R.
+
+
+There is a package, ``sos''
+(\Burl{http://cran.r-project.org/web/packages/sos/index.html}), that can
+help you search functions, etc, in packages that you do not have
+installed, ranks search results, etc. It is well documented (see
+\Burl{http://cran.r-project.org/web/packages/sos/vignettes/sos.pdf}). The
+only problem I see is that only some of the BioConductor packages are
+among those searched (and you need an internet connection).
+
+Patrick Burns has a interesting blog entry about R navigation tools:
+\Burl{http://www.burns-stat.com/r-navigation-tools/}.
+
+
+Oh, by the way, RStudio includes an integrated help browser. Use it if you
+use RStudio.
+
+\subsubsection{Activities}
+\label{sec:activities-4}
+
+\begin{enumerate}
+\item Make sure you type every single one of the expressions above and
+  that all of them make sense to you. Do not skip any one. If things do
+  not make sense, ask in class.
+\end{enumerate}
+
+%% FIXME: about here
+
+\subsection{Error messages}
+The best way to learn to use \R\  is to use it. As explained before,
+mistakes are harmless, so you should play and experiment. However, there
+are two key attitudes that will make your learning a lot faster: first,
+using the help system, and second \textbf{paying attention to the error
+  messages}. Yes, the error messages are written in English, not some
+weird, unintelligible language. Sometimes they are a little bit cryptic,
+but more often than not, if you read them carefully, you will see how to
+approach to problem to fix the mistake, or will realize that what you
+typed makes no sense.
+
+Lets look at a few. These are not representative or common or anything
+like it. But you should read them, understand them, and think about how to
+take corrective action (or realize that I was trying to do something
+silly).
+
+<<eval=FALSE>>=
+apply(something, 1, mean)
+apply(v3, 1, mean)
+apply(F, 1, mean) ## this is an interesting one
+log("23")
+rnorm("a")
+lug(23)
+rnorm(23, 1, 1, 1, 34)
+x <- 1:10
+y <- 11:21
+plot(x, y)
+lm(y ~ x)
+z <- 1:10
+t.test(x ~ z)
+@ 
+
+\subsubsection{Activities}
+\label{sec:activities-5}
+
+\begin{enumerate}
+\item Make sure you try to understand the error messages from the above
+  expressions. Some will be complicated, and we will explain them. Others
+  should be very easy to understand.
+
+  Type each one of the statements on its own. Or copy the above in a
+  script, and execute line by line.
+
+\end{enumerate}
+
+
+\subsection{Coding style}\label{style}
+You write R code for the computer to do something, but that code should be
+readable by humans (including not only other people besides yourself, but
+yourself in the future). Please, make sure your code is tidy and respects
+some minimal rules of civility. In particular:
+
+\begin{itemize}
+\item Do not extend beyond column 80.
+\item Use spaces appropriately; for example, write 
+  \verb@ x <- rnorm(3, mean = 2) @ and NOT 
+  \verb@ x<-rnorm(3,mean=2) @. Thesecondformisclearlyveryhardtoread.
+\end{itemize}
+
+There are many other possible coding style guides, but the above two for
+me are basic (if I grade code written by you, I will take into account
+respect of the above rules). This is not my particular silly snobbery:
+look at the code in the base R distribution, or look at the code in
+classics such as ``Modern applied statistics with S'' or ``S
+programming''(Venables and Ripley), or ``Software for data analysis''
+(Chambers), or \ldots. Programming environments (e.g., Emacs + ESS) will
+offer ways of tidying your code, and there is even a package that can help
+you do it
+(\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
+\Burl{http://yihui.name/formatR}).
+
+
+\clearpage
+
+
+
+\section{Entering data into \R\ and saving data from \R}\label{readingr}
+There are many ways to load data into \R\ (for example, see the book by
+P.\ Spector, or the ``R Data Import/Export'' manual
+\Burl{http://cran.r-project.org/doc/manuals/R-data.html}). Here we will
+only use \code{read.table}.
+
+
+%% Let's repeat some of what we did with the BLAST example (section \ref{blast}).
+<<eval=FALSE>>=
+X <- read.table("hit-table-500-text.txt")
+head(X)
+## We could save what we care about in variables 
+## with better names
+align.length <- X[, 5]
+score <- X[, 13]
+
+@ 
+
+
+To see a slightly different example, open \code{AnotherDataSet.txt}. Now do:
+<<>>=
+another.data.set <- read.table("AnotherDataSet.txt", 
+                               header = TRUE)
+summary(another.data.set)
+@ 
+
+Notice that we used the variable names (and took those names from the
+header), and the object is not a matrix, but a data frame (we will see
+this later).
+
+
+\subsection{But where are those files?}\label{wherefiles}
+Of course, for \R\ to read those files, you need to tell \R\
+\textbf{exactly} where those files are located. This is always the source
+of a lot of grief, but is really simple. These are some cases and ways
+of dealing with them:
+
+\begin{enumerate}
+\item The file you are trying to read lives exactly in the same working
+  directory where \R\ is running. OK, easy: just read as in the examples above.
+  \begin{itemize}
+  \item How do you know what is the working directory where \R\ is
+    running? Type \code{getwd()}.
+  \item How do you know where the file you want to read is? Eh, this is up
+    to you! You should know that (or ask your operating system or search
+    facilities for it).
+  \end{itemize}
+\item The file you are trying to read \textbf{DOES NOT} live exactly in the same working
+  directory where \R\ is running. You can either:
+  \begin{enumerate}
+  \item Tell \R\ where the file is: specify the full path. Suppose your
+    file, ``f1.txt'', is in ``C:/tmp''. Then, say \code{X <-
+      read.table(``C:/tmp/f1.txt'')}. 
+    \item Move \R's working directory to the place where your files
+      live. Two ways:
+      \begin{enumerate}
+      \item Use \code{setwd(``someplace'')}, where ``someplace'' is the
+        place where your files live.
+      \item Under RStudio, go to ``Session'', ``Set working directory''
+        (which, in fact, is just a call to \code{setwd})
+      \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+This is all there is to it. And if you make a mistake, \R\ will let you
+know. 
+
+
+Now, under Windows the true names of directories can be a mysterious thing
+(specially if you have things displayed in a language that is not English,
+and even more if you use directory names with spaces, accents, or other
+characters ---e.g, Cyrillic). So \textbf{avoid} directories with spaces,
+accents, and other non-ASCII characters, and try to keep them under 8
+characters (though that might not be a strong limitation nowadays). And
+try to place things in directories that Windows is unlikely to rename
+(e.g., \verb@ C:\Files-p1 @ is better than \\
+\verb@ C:\Archivos de Programa\Manolo Perez\Mis documentos @). 
+
+Avoiding spaces, accents and other non-ASCII characters is also a good
+idea under Unix/Linux (though here there is no problem with file and
+directory names that are very long).
+
+
+
+
+Now, for the rest of the course, I will assume that you know where your
+data files are, the scripts are, etc. Where you place them depends on what
+you want (and the permissions you have in the computer you are using).
+You will be using either of the approaches explained in
+\ref{wherefiles}. It is up to you. In this class, I will often be running
+\R\ in the very same directory where the data files and scripts are
+located. (You can assume that I have, sometime in the past, issued a
+\code{setwd} command.) This is just convenient.
+
+
+\subsection{Missing values}
+And what happens with missing values? Try running the examples above after
+doing this:
+
+\begin{itemize}
+\item Substitute a value by ``NA'' (without the quotes).
+\item Substitute a value by nothing; in other words, just delete a value
+  (but not the character for separating columns). (Beware that in this
+  case you often will want to be explicit about the separator in
+  \code{read.table}.)
+\end{itemize}
+
+You can specify the character that R should interpret as a missing value,
+but the above two procedures are standard. And when you do either of the
+above, in the data that is read you should see a ``NA''. The best is, as
+usual, to be explicit: use an ``NA'' in your original data, or use some
+other special character string to identify them.
+
+\subsection{Very large data sets}
+Yes, \R\ can deal with huge data sets. You just don't want to read them
+with \code{read.table}, or at least you do not want to use
+\code{read.table} without helping it recognize the types of columns, etc,
+etc. Look specially at the help for \code{scan}, try data base solutions,
+etc. (See the book by P.\ Spector, or the ``R Data Import/Export'' manual
+\Burl{http://cran.r-project.org/doc/manuals/R-data.html}). For even larger
+things, of specialized uses, there are packages such as \code{ff} or
+\code{bigmemory}.
+
+
+\subsection{Saving tables, data, and results}
+
+How can you save data, results, etc? Saving data in matrix or tabular form
+is easily done with \code{write.table}. 
+
+<<>>=
+write.table(another.data.set, 
+            file = "the.table.I.just.saved.txt")
+@ 
+
+Open that file in an editor of your choice.
+
+
+You can also save part or all the output from a session. You can copy and
+paste, or you can use commands such as \code{sink}.
+
+
+Of course, similar considerations apply here as in section
+\ref{wherefiles}: think where you want to save things.
+
+
+
+
+
+\subsection{Saving an \R session: .RData}\label{saveRData}
+And how can you save all you have been doing? The simplest way is to use
+\code{save.image}. Please, look at the help for that command. We will use
+a simple example:
+
+<<echo=TRUE,results="hide">>=
+save.image(file = "this.RData")
+getwd()
+@ 
+
+Note where that file is saved (in the current working directory, which is
+what \code{getwd()} tells you).
+
+Now open another \R. Go to the directory where \code{this.RData} is. And do:
+
+<<echo=FALSE,eval=TRUE,results='hide'>>=
+rm(list = ls())
+@
+
+<<>>=
+ls()
+@ 
+
+
+The above tells you what you have in your ``working environment''. There
+is nothing in there, since we just started. Now, do:
+
+<<eval=FALSE>>=
+load("this.RData")
+ls()
+v1
+v11
+summary(another.data.set)
+@ 
+
+
+So all the stuff we had before is available in the new \R\  session. (Now
+that we are done with this example, close the \R\  session you just opened).
+
+
+Now, lets try a different example. Do:
+
+<<eval=FALSE>>=
+save.image()
+@ 
+
+
+And now open a new \R\  in that directory. What happens? (Try doing
+\code{ls()} or \\
+\code{summary(another.data.set)}). 
+
+So be careful with this: you can end up using stuff you didn't know was
+there!!!!  (The truth is that we were told what happened: did you notice
+the ``[Previously saved workspace restored]''?).
+
+
+And, by the way, do you understand what \R\ tries to do when it asks ``Save workspace
+image''? 
+
+
+
+Oh, and please go and look at the differences between \code{save.image}
+and \code{save}.
+
+%% FIXME: somethig about dput
+%% FIXME: something about saveRDS?
+%% FIXME: something about readLines?
+
+\section{Scripts and non-interactive runs}\label{scripts}
+
+\subsection{Why use scripts}
+Keeping all of your code in one or more script(s) and evaluating the code
+from the script (instead of directly on the \R\ console) has a couple of benefits:
+\begin{itemize}
+\item It is a complete record of all you did. And you can keep it nicely
+  organized, with comments, etc.
+\item It allows you to carry out non-interactive calculations. For
+  example, running a very long analysis, or re-running completely all the
+  analysis and plots if you made a mistake, or new data are added, etc.
+\end{itemize}
+
+Thus, keeping all of your analysis in scripts is a fundamental step in
+\textbf{reproducible research}.
+
+
+
+For this section, create a very simple script typing this in a
+file and saving it as ``script1.R'':
+\begin{verbatim}
+x <- 1:100
+print(mean(x))
+plot(x)
+\end{verbatim}
+
+%% Nope, do not do this.
+%% <<echo=FALSE,eval=TRUE>>=
+%% sink(file = "scrtipt1.R")
+%% x <- 1:100
+%% print(mean(x))
+%% plot(x)
+%% sink()
+%% @ 
+
+
+
+
+\subsection{Paths: where are scripts located}
+Before you can tell \R\  to use your script or read some data, you need to
+tell \R\  where, exactly, to find the scripts/data.  Re-read again what
+was explained in section \ref{wherefiles}.
+
+
+Now, for the rest of the course, I will assume that you know where your
+data files are, the scripts are, etc. Where you place them depends on what
+you want (and the permissions you have in the computer you are using).
+You will be using either of the approaches explained in
+\ref{wherefiles}. It is up to you. In this class, I will often be running
+\R\ in the very same directory where the data files and scripts are
+located. (You can assume that I have, sometime in the past, issued a
+\code{setwd} command.) This is just convenient. (Yes, this is the same
+paragraph as above. I am repeating it on purpose.)
+
+
+\subsection{Using a script}
+
+There are two basic ways of using a script:
+\begin{description}
+\item[Interactively] What we have been doing so far. RStudio, Emacs,
+  whatever, has a window (buffer, in Emacs parlance) with the code, and
+  you select pieces of it and submit them to the \R\ interpreter, running
+  in the \R\ console.
+\item[Non-interactively] Two ways again:
+  \begin{description}
+  \item[Using source from a running R] You have \R\ running and do:
+    \code{source(``script1.R'')}. I often add a couple of options:
+<<fig.width=3, fig.height=3>>=
+source("script1.R", echo = TRUE, 
+       max.deparse.length = 999999)
+@     
+   Now, did you notice that we got the mean printed and the figure produced?
+
+\item[Calling R from the shell] Open a shell, a command window, or however
+  that is called in your operating system, and run \R\ telling it to use a
+  given script file as input. This has the big advantage that you do not
+  need to keep a window with \R\ open until the job finishes. This is
+  great for long running jobs (say, a set of analyses that takes two
+  weeks). 
+  
+  There are several ways of doing it. %% , one of which uses an invocation like\\
+  %% \verb@ R CMD BATCH script1.R @
+  %% There is a second set of ways, like\\ 
+  Probably the preferred way is:\\
+  
+  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
+  
+  I tend to use the second one, and then add things like
+  ``nohup'' before invoking \R, move it to the background, and also
+  redirect standard error to the same file used for standard output (i.e.,
+  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}). In
+  Windows, you might need to use \verb@ Rscript.exe @ or \verb@ R.exe @. 
+  
+  Beware, the above are examples of simple invocations. There are many
+  other options.
+  \end{description}
+
+\end{description}
+
+
+In section \ref{example-multtest} you will have a chance to use and play
+with a script that reproduces what we did in section \ref{mistery}.
+
+
+
+
+\section{Basic R data structures}
+\subsection{Vectors} 
+
+Vectors are one of the simplest data structures in \R. They store a set of
+objects (all of the same kind), one after the other, in a single
+dimension. We've seen many:
+
+<<>>=
+v1 <- c(1, 2, 3)
+v2 <- c("a", "b", "cucu")
+v3 <- c(1.9, 2.5, 0.6)
+@ 
+
+That, by the way, shows the simplest way of creating a vector in \R: use
+\code{c} to concatenate a bunch of things.
+
+
+Many functions (see \code{?Arithmetic}, \code{?log}, \code{?exp},
+\code{?Trig}) operate directly on whole vectors:
+
+<<>>=
+log(v1)
+exp(v3)
+2 * v1
+v3/0.7
+@ 
+
+And what functions are there for things like addition, multiplication,
+exponentiation, division, remainder, etc? As we said, see
+\code{?Arithmetic}, \code{?log}, \code{?exp}, \code{?Trig}.
+
+
+
+\subsubsection{Functions for creating vectors}
+
+We can create vectors by concatenating elements. We just saw that. But
+there are two very handy functions for creating vectors that have some
+structure: \code{seq} (from ``sequence'') and \code{rep} (from
+repeat). Examine these examples carefully:
+
+
+First \code{seq}, in four different invocations (yes, \code{:} counts as
+an invocation of \code{seq}):
+<<>>=
+seq(from = 1, to = 10)
+seq(from = 1, to = 10, by = 2)
+seq(from = 1, to = 10, length.out = 3)
+1:5
+@ 
+
+
+Now \code{rep} in a few common invocations. 
+<<>>=
+rep(2, 5)
+rep(1:3, 2)
+rep(1:3, 2:4)
+@ 
+
+
+\subsection{Creating vectors from other vectors}
+\label{sec:creat-vect-from}
+
+
+You can concatenate two vectors:
+<<>>=
+v1 <- 1:4
+v2 <- 7:12
+(v3 <- c(v1, v2))
+@ 
+
+
+
+If you use an arithmetic operation on a vector, you get another vector. E.g,
+<<>>=
+v1 <- 2:8
+(v2 <- 3 + v1)
+@ 
+
+And what about this?
+<<>>=
+v1 <- 1:5
+v2 <- 11:15
+(v3 <- v1 + v2)
+@ 
+
+But what if the two vectors are not the same length? The \textbf{recycling
+rule} applies:
+<<>>=
+v1 <- 1:3
+v2 <- 11:12
+v1 + v2
+@ 
+
+But beware! Look at this
+<<>>=
+v1 <- 1:3
+v2 <- 11:16
+v1 + v2
+@ 
+\noindent no warnings whatsoever. Which might, or might not, be what you
+would have expected.
+
+
+The recycling rule applies also with matrices, etc.
+
+\subsection{Logical operations}
+\label{logic}
+
+We can compare the elements of a vector with something, so as to obtain a
+vector of \code{TRUE, FALSE} elements. And we can combine vectors with
+value of \code{TRUE, FALSE} using the usual logical operations. Please,
+look at the help for \code{Comparison} and \code{Logic}.  These are common
+in many programming languages (but beware of differences between \code{||}
+and \code{|} and, likewise, \code{\&\&} and \code{\&}).
+
+<<eval=FALSE>>=
+?Comparison
+?Logic
+@ 
+
+A few examples:
+<<>>=
+v1 <- 1:5
+v1 < 3
+(v2 <- (v1 < 3))
+v11 <- c(1, 1, 3, 5, 4)
+v1 == v11
+v1 != v11
+!(v1 == v11)
+identical(v1, v11)
+v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
+!v3
+v2 & v3
+v2 | v3
+(v1 > 3) & (v11 >= 2)
+(v1 > 3) | (v11 >= 2)
+xor(v2, v3)
+@ 
+
+
+\subsubsection{Logical values as 0, 1\label{log01}}
+In \R\ (as in many other languages) we can use logical values as if they
+were numeric: we can treat \code{TRUE} as 1 and \code{FALSE} as 0. (Note
+that we can also treat anything larger than 0 as TRUE). This can be very
+handy to find out how many elements fulfill a condition.
+
+<<>>=
+vv <- c(1, 3, 10, 2, 9, 5, 4, 6:8)
+@ 
+
+How many elements are smaller than 5 in \code{vv}?
+<<>>=
+length(which(vv < 5))
+@ 
+
+\code{which} is operating on a logical vector, not on \code{vv} directly,
+and \code{length} is counting the length of the output from
+\code{which}. 
+
+<<>>=
+vv < 5
+vv.2 <- (vv < 5)
+vv.2
+which(vv.2)
+vv.3 <- which(vv.2)
+vv.3
+length(vv.3)
+@ 
+
+Do you know what the output from \code{which} is? 
+\vspace*{15pt}
+
+
+Alternatively, you can do:
+<<>>=
+length(vv[vv < 5])
+@ 
+Instead of going through \code{which}, we just directly extract the
+relevant elements of \code{vv}, and count how many there are. Implicitly,
+we are creating a new (temporary) vector, that holds only the elements in
+\code{vv} that are smaller than 5, and we are counting the length of that
+temporary vector.
+
+<<>>=
+vv[vv < 5]
+@ 
+
+
+But the following is often much easier to understand (or to use)
+<<>>=
+sum(vv < 5)
+@ 
+
+Why did that work? What is \code{vv < 5} returning?
+
+\subsection{Names of elements}
+\label{names-elements}
+
+The elements of a vector can have names (you should make them
+distinct). We will see soon why this is very helpful. For now, see this:
+
+<<>>=
+ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
+names(ages)
+ages
+@
+
+
+\subsection{Accessing (and modifying) vector elements: indexing and subsetting}\label{vindex}
+
+
+\subsubsection{Vector indexing}
+
+There are several ways of getting access to specific elements of a vector:
+
+\begin{itemize}
+\item By specifying the positions you want (or do not want): giving
+  indexes (or indices).
+  \item By giving the names of the elements.
+  \item By using  logical vector (which is really very similar to the third).
+  \item By using any expression that will generate any of the above.
+\end{itemize}
+Positions or names will be given in between \code{[]}.
+
+
+
+Specifying positions you want:
+<<>>=
+(w <- 9:18)
+w[1]
+w[2]
+w[c(4, 3, 2)]
+@ 
+
+<<>>=
+w[c(1, 3)] ## not the same as
+w[c(3, 1)]
+@ 
+
+<<>>=
+w[1:2]
+w[3:6]
+w[seq(1, 8, by = 3)]
+vv <- seq(1, 8, by = 3)
+w[vv]
+@ 
+
+
+Specifying positions you do not want (original vector is NOT modified)
+<<>>=
+w[-1]
+w[-c(1, 3)] ## of course, the same as following
+w[-c(3, 1)]
+@ 
+
+
+Using names
+<<>>=
+
+ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
+ages["Irene"]
+ages[c("Irene", "Juan", "Irene")]
+@ 
+
+
+Using a logical vector \ldots
+<<>>=
+ages[c(FALSE, TRUE, TRUE, FALSE)]
+ages[c(FALSE, TRUE)] ## what is this doing? Avoid these things
+@ 
+
+\ldots or something that implicitly is a logical vector
+<<>>=
+## All less than 12
+w[w < 12]
+## same, but more confusing (here, not always)
+w[!(w >= 12)]
+
+## All less than the median
+w[w < median(w)]
+@ 
+
+
+Of course, if you can access it, you can modify it
+<<>>=
+ages["Irene"] <- 19
+ages
+w[1] <- 9999
+w
+w[vv] <- 103
+w
+@ 
+
+
+But compare this:
+<<>>=
+w[] <- 77
+w[] <- 17:55
+w <- 17:55
+@ 
+
+
+
+
+\subsection{Interlude: comparing floats}
+
+Comparing very similar numeric values can be tricky: rounding can happen,
+and some numbers cannot be represented exactly in binary (computer)
+notation.  By default \R\ displays 7~significant digits
+(\code{options("digits")}).  For example:
+<<>>=
+x  <-  1.999999
+x
+x - 2
+x <- 1.9999999999999
+x
+x-2
+@ 
+
+All the digits are still there, in the second case, but they are not shown.
+Also note that \code{x-2} is not exactly $-1 \times 10^{-13}$; this is
+unavoidable.
+
+
+Why is the above unavoidable? Because of the way computers represent
+numbers. We cannot get into details, but see the following example, from
+the FAQ (question 7.31):
+
+\begin{quote}
+  7.31 Why doesn't R think these numbers are equal?  
+
+  The only numbers that can be represented exactly in R's numeric type are
+  integers and fractions whose denominator is a power of 2. Other numbers
+  have to be rounded to (typically) 53 binary digits accuracy. As a
+  result, two floating point numbers will not reliably be equal unless
+  they have been computed by the same algorithm, and not always even
+  then. For example
+\begin{verbatim}
+     R> a <- sqrt(2)
+     R> a * a == 2
+     [1] FALSE
+     R> a * a - 2
+     [1] 4.440892e-16
+\end{verbatim}
+\end{quote}
+
+
+This might be an even simpler example (taken from an example I saw from
+Ivo Balbaert in his book ``Julia 1.0 Programming'')
+
+<<>>=
+0.1 + 0.2 == 0.3
+(0.1 + 0.2) - 0.3
+@ 
+
+
+The take home message: be extremely suspicious whenever you see an
+equality comparison of two floating-point numbers; that is unlikely to do
+what you want. If you know what you are doing, take a look at
+\texttt{all.equal} for near equality comparisons of objects.
+
+
+
+
+\subsection{Factors}
+Factors are a special type of vectors. We need them to differentiate
+between a vector of characters and a vector that represents categorical
+variables. The vector \code{char.vec <- c(``abc'', ``de'', ``fghi'')} contains
+several character strings. Now, suppose we have a study where we record
+the sex of participants. When we analyze the data we want \R\  to know that
+this is a categorical variable, where each ``label'' represents a possible
+value of the category:
+<<tidy=FALSE>>=
+
+Sex.version1 <- factor(c("Female", "Female", "Female", 
+                         "Male", "Male"))
+Sex.version2 <- factor(c("XX", "XX", "XX", "XY", "XY"))
+Sex.version3 <- factor(c("Feminine", "Feminine", "Feminine", 
+                         "Masculine", "Masculine"))
+Sex.version4 <- factor(c("fe", "fe", "fe", "ma", "ma"))
+
+@ 
+
+We want all those codifications of the sex of five subjects to yield the
+same results of analysis, regardless of what, exactly, the labels
+say. Each set of labels might have its pros/cons (e.g., the third is
+probably coding gender, not sex; the last is too cryptic; the second works
+only for some species; etc). Regardless of the labels, the key thing to
+notice is that the first three subjects are of the same type, and the last
+two subjects are of a different type.
+
+Recognizing factors is essential when dealing with variables that look
+like legitimate numbers:
+<<>>=
+postal.code <- c(28001, 28001, 28016, 28430, 28460)
+somey <- c(10, 20, 30, 40, 50)
+summary(aov(somey ~ postal.code))
+@ 
+
+The above is doing something silly: it is fitting a linear regression,
+because it is taking postal.code as a legitimate numeric value. But we
+know that there is no sense in which 28009 and 28016 (two districts in
+Madrid) are 7 units apart whereas 28430 and 28410 are 20 units apart (two
+nearby villages north of Madrid), nor do we expect to find linear
+relationships with (the number of the) postal code itself.
+
+Sometimes, when reading data, a variable will be converted to a factor,
+but it is really a numeric variable. How to turn it into the original set
+of numbers?
+
+This does not work:
+<<eval=TRUE>>=
+x <- c(34, 89, 1000)
+y <- factor(x)
+y
+as.numeric(y)
+y
+@ 
+
+Note that values have been re-codified. An easy way to do this is (you
+should understand what is happening here):
+<<eval=TRUE>>=
+as.numeric(as.character(y))
+@
+
+<<>>=
+as.character(y)
+@ 
+
+
+\subsubsection{Factors and symbols, colors, etc, in plots}
+You often see code as follows:
+
+<<eval=FALSE>>=
+plot(y ~ x, col = c("red", "blue")[group])
+@ 
+
+where \texttt{group} is a factor. Why does that work? Oh, and then you
+might see code where we add a legend as
+
+<<eval=FALSE>>=
+legend(1, 2, legend = c("A", "B"), pch = c(1, 2),
+       col = c("red", "blue")[factor(levels(group))])
+@ 
+
+
+I won't give the solution here, but these are some hints. Try the following:
+
+
+<<>>=
+gr <- c("B", "A", "A", "B", "A")
+group <- factor(gr)
+c("red", "blue")[gr]
+c("red", "blue")[group]
+c("red", "blue")[levels(group)]
+c("red", "blue")[factor(levels(group))]
+@ 
+
+
+\subsection{Matrices}
+Vectors where one-dimensional. Matrices are two-dimensional, and arrays
+have arbitrary dimensions. We will stick here to matrices. But you have
+arrays at your disposal, of course. As with vectors, all the elements of a
+matrix or of an array are of the same type.
+
+\subsubsection{Creating matrices from a vector}
+
+(The vector, below, is that vector that we create on the fly with \code{1:10})
+<<>>=
+matrix(1:10, ncol = 2)
+matrix(1:10, nrow = 5)
+matrix(1:10, ncol = 2, byrow = TRUE)
+@ 
+
+
+\subsubsection{Combining vector to create a matrix: \code{cbind, rbind}}
+\label{sec:comb-vect-create}
+You can glue vectors horizontally or vertically to create a matrix. 
+
+<<>>=
+v1 <- 1:5
+v2 <- 11:15
+rbind(v1, v2)
+cbind(v1, v2)
+@ 
+
+And you can do the same with matrices (if they are of the appropriate
+dimensions, of course)
+<<>>=
+A <- matrix(1:10, nrow = 5)
+B <- matrix(11:20, nrow = 5)
+cbind(A, B)
+rbind(A, B)
+@ 
+
+
+
+\subsubsection{Matrix indexing and subsetting}
+\label{sec:matr-index-subs}
+
+A matrix has two dimensions, but otherwise things are very similar to what
+happened with vectors. The first dimension are rows, the second are
+columns. If you specify nothing for that dimension, it is returned completely.
+
+<<>>=
+A <- matrix(1:15, nrow = 5)
+A[1, ] ## first row
+A[, 2] ## second column
+A[4, 2] ## fourth row, second column
+A[3, 2] <- 999
+A[1, ] <- c(90, 91, 92)
+A < 4
+@ 
+
+Note that \code{which}, by default, might not do what you expect:
+<<>>=
+which(A == 999)
+@ 
+
+If you want the indices, ask for them
+<<>>=
+which(A == 999, arr.ind = TRUE)
+@ 
+
+
+Names work too:
+<<>>=
+B <- A
+colnames(B) <- c("A", "E", "I")
+rownames(B) <- letters[1:nrow(B)]
+B[, "E"]
+B["c", ]
+@ 
+
+
+
+Beware: you can use a matrix to index another matrix. This is slightly
+more advanced, but extremely handy:
+
+<<>>=
+(m1 <- cbind(c(1, 3), c(2, 1)))
+A[m1]
+## compare with
+A[c(1, 3), c(2, 1)]
+@ 
+
+
+\subsubsection{Operations with matrices}
+\label{sec:oper-with-matr}
+
+There are many matrix operations available from \R\ (open your matrix
+algebra book, and try to find them, if you want). And many functions
+operate directly, by default, on the whole matrix, or on rows/columns of
+the matrix:
+
+<<>>=
+sum(B)
+mean(B)
+colSums(B)
+rowMeans(B)
+@ 
+
+And, of course, we can subset/select rows and columns using those:
+<<>>=
+B[rowMeans(B) > 9, ]
+@ 
+
+
+\subsection{Lists}
+A list is a more general container, where we can mix pieces of different
+types. In fact, there need not be any rectangular like structure:
+
+<<>>=
+listA <- list(a = 1:5, b = letters[1:3])
+listA[[1]]
+listA[["a"]]
+listA$a
+@ 
+\noindent so those are three basic ways of getting access to list
+components. And of course
+<<>>=
+listA[[1]][2]
+@ 
+
+And compare with this
+<<>>=
+listA[1]
+@ 
+
+
+A more complex list, that includes another list inside:
+
+<<tidy=FALSE>>=
+
+(listB <- list(one.vector = 1:10,  hello = "Hola", 
+               one.matrix = matrix(rnorm(20), ncol = 5),
+               another.list = 
+               list(a = 5, 
+                    b = factor(c("male", 
+                      "female", "female")))))
+
+@ 
+
+Note that many functions in R  return lists.
+
+And what did we do here?
+<<>>=
+listB[[c(3, 4)]]
+@ 
+though I tend to find the last one confusing. I'd rather do
+<<>>=
+listB[[3]][4, 1]
+@ 
+
+which is very different from 
+
+<<eval=TRUE,echo=TRUE,results='hide'>>=
+listB[c(3, 4)]
+@ 
+
+\subsection{Data frames}
+
+
+Above, we ended up with a data frame when we read some data. Do you
+remember where? How did the object look? A data frame is, really, a list
+of vectors; all these vectors are of the same length, but different
+vectors can contain objects of different types.  So we have a rectangular
+structure, where different columns can have objects of different types
+
+
+<<>>=
+
+(AB <- read.table("AnotherDataSet.txt", 
+                  header = TRUE))
+
+@ 
+
+Data frames are extremely handy for data analysis, and you will see them
+used extensively there.
+
+
+We can access elements of data frames as if they were matrices and as
+if they were lists (where the list elements are the columns):
+
+<<>>=
+AB[2, 3]
+AB[1, ]
+AB["2", ] ## using the rownames
+AB[, "Age"]
+AB$Age
+AB[["Age"]]
+AB["Age"]
+AB[3, 4] <- 97
+@ 
+
+We can go from data frames from matrices, in two different ways (each of
+which does, therefore, a different thing):
+<<>>=
+data.matrix(AB)
+as.matrix(AB)
+@ 
+
+Many matrix operations, in particular \code{rbind} and \code{cbind} will
+also work with data frames.%%  (though care is needed with \code{rbind} when
+%% there are factors)
+
+
+<<>>=
+AB2 <- rbind(AB, AB)
+@ 
+\noindent (yes, the above is somewhat silly, but you get the point).
+
+Of course, creating a data frame is easy:
+<<>>=
+(AC <- data.frame(ID = "a9", Age = 14, Sex = "M", Y = 17))
+rbind(AB, AC)
+@ 
+
+Data frames make it particularly easy to add new variables to the data frame.
+
+<<>>=
+AB2$status <- rep(c("Z", "V"), 5)
+@ 
+
+
+
+\subsection{Odds and ends}
+
+Reshaping data: Sometimes you will need to go from a ``wide'' to a
+``long'' format in your data, or viceversa (e.g., repeated measures of the
+same individuals over time). Look at \code{?reshape}, although I find that
+the ``reshape2'' package (and possibly also the ``tidyr'' package with its
+function \texttt{dcast}) tends
+to make life much easier for this task.
+
+Data table: For dealing efficiently with large data sets, and other
+niceties, the ``datatable'' package (with its datatables) can really make
+a difference.
+
+
+\clearpage
+
+
+
+\section{Plots}\label{plotsplots}
+
+
+R can produce a variety of plots and they can be modified at will. In this
+course we will only scratch the surface. You will have a chance to get
+additional practice from the exercises.
+
+
+\subsection{The very basics}\label{plot-basics}
+
+The basic plot function is \code{plot}. It's help can be slightly
+misleading and many additional arguments are explained in \code{par}. A
+good analogy to begin with is that of a canvas where you go adding
+elements. Let's look at this simple example:
+
+
+<<>>=
+x <- 1:10
+y <- 2 * x + rnorm(length(x))
+plot(x, y, xlab = "This is the label for the x axis",
+     ylab = "Label for the y axis")
+## And now, we add a horizontal line:
+abline(h = 5, lty = 2)
+@ 
+
+
+There are many, many other types of plots. We will see some later. 
+
+
+
+\subsection{Plots: Can we change colors, line types, point types, etc?}
+
+Of course. Look at \code{?par} and then look for \code{pch}, \code{cex},
+\code{lty}, \code{col}. This code produces two figures (\ref{fig:pchcol}
+and \ref{fig:ltytype}) that might help (see also line types, \code{lty} in
+Figure \ref{fig:lty2}).
+
+<<pchcol,fig.width=7,fig.height=4, fig.cap='pch and col', fig.lp='fig:'>>=
+plot(c(1, 21), c(1, 2.3),
+     type = "n", axes = FALSE, ann = FALSE)
+## show pch
+points(1:20, rep(1, 20), pch = 1:20)
+text(1:20, 1.2, labels = 1:20)
+text(11, 1.5, "pch", cex = 1.3)
+
+## show colors for rainbow palette
+points(1:20, rep(2, 20), pch = 16, col = rainbow(20))
+text(11, 2.2, "col", cex = 1.3)
+@ 
+<<ltytype,fig.width=4,fig.height=4, fig.cap='lty for values 1 to 6', fig.lp='fig:'>>=
+plot(c(0.2, 5), c(0.2, 5), type = "n", ann = FALSE, axes = FALSE)
+for(i in 1:6) {
+    abline(0, i/3, lty = i, lwd = 2)
+    text(2, 2 * (i/3), labels = i, pos = 3)
+}
+
+@ 
+
+\subsection{Saving plots}
+Can you save the plots as PDF, png, \ldots? Definitely. From RStudio you
+have a menu entry in the plot window. For non-interactive work (as when
+using scripts, section \ref{scripts}), or to make sure you have fixed
+things such as size, it is better to directly use functions such as
+\code{?png}, \code{?pdf}, etc. Look at the help of those functions. The
+second approach (explicitly calling, say, \code{pdf} from my scripts) is
+what I use.
+
+
+
+\subsection{Plots, plots, plots. Many types of plots}
+
+We have used a variety of plots. But this is only scratching the
+surface. Plotting is a big thing in \R. We have used a few, but there are
+many more. In fact, there are several approaches or systems for plots in
+\R. We will use here the basic one (the one in base \R), but notice that
+\textbf{ggplot2} is a very popular one, that produces plots many people
+find nicer. If you are interested, google for ``ggplot2''. There are two
+books about it (``ggplot2: elegant graphics for data analysis'', by
+Wickham, its creator, and ``R graphics cookbook'', by Chang, who has been
+heavily involved in ggplot2). The second one has a web page with many
+recipes: \Burl{http://www.cookbook-r.com/Graphs/}. Another popular package
+is \textbf{lattice}, also with its own book. And there are comparison
+pages of lattice and ggplot2. Another issue we haven't touched is choice
+of colors, which is not a trivial thing (and there are a variety of color
+palettes in \R; search for \code{?palette}, for example). There are also
+ways to identify points, to use 3D plots, to have dynamic plots that allow
+rotation, etc, etc.
+
+
+The following could give you an idea of some of the options:
+
+<<eval=FALSE>>=
+demo(graphics)
+example(graphics)
+example(persp)
+demo(persp)
+@ 
+
+
+And, if you have installed package ``ggplot2'' you can also do (after
+loading the \texttt{ggplot2} package)
+
+<<eval=FALSE>>=
+example(qplot)
+@ 
+\noindent (though the above gives just a very, very limited view of the
+range of options with ggplot2).
+
+
+
+
+
+
+\clearpage
+
+\section{Three examples with data manipulation and plots}\label{crashex}
+
+
+\subsection{Example of reading data and plotting: Plotting the results from
+  BLAST}\label{blast}
+
+
+This is a quick example of something that is not really just a mere toy
+example.  We will use output from alignment statistics from BLAST.  Let's take a
+quick look at a couple of things:
+\begin{itemize}
+\item The relationship between percentage identity and score.
+\item The distribution of the alignment length. 
+\end{itemize}
+
+
+
+We will read the data and then do a couple of plots. Remember that the
+data are in ``hit-table-500-text.txt'' (we covered reading
+data in section \ref{readingr}).
+
+<<>>=
+hit <- read.table("hit-table-500-text.txt")
+## We know, from the header of the file, that
+## alignment length is the fifth column,
+## score is the 13th and percent identity the 3rd
+hist(hit[, 5]) ## the histogram
+plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
+@ 
+
+But that can be easily improved
+
+% \setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
+%\begin{figure}[h!]
+%\begin{center}
+<<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
+par(mfrow = c(1, 2)) ## two figures side by side
+hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
+plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity", 
+     ylab = "Bit score")
+@ 
+
+And, for symmetry, you might want to add a main title to the second
+plot. How? 
+
+% \end{center}
+%\label{fig-blast}
+%\caption{A quick look at the alignment results}
+%\end{figure}
+
+%\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
+
+These are five lines of code. We will now deal with a few things in a
+little more detail.
+
+And if you want to play around, you can find the best fitting plane of
+score on alignment length and identity\footnote{This is not a great, or
+  even a decent, model of the relationship, which we can see, for
+  instance, from the pattern of the deviations of the points from the
+  plane. But the key for now is the ease of plotting.} , and move it at
+will!. You will need to install two packages (section \ref{packages}):
+\code{car} and \code{rgl}.
+<<eval=FALSE>>=
+library(car)
+scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident", 
+          zlab = "Length", ylab = "Score")
+@ 
+
+By the way, some questions/answers arise from the figures. For instance:
+why does the distribution of alignment lengths seems to have three
+distinct modes? Or how can you explain the plot of score vs.\ percent
+identity? Or what does alignment length add to understanding the
+relationship? We could, in fact, fit (in one line) a linear regression to
+the relationship between Score and the other variables to formally explore
+what is going on\footnote{Not that this would be, in this case, all that
+  needed: from what we know about BLAST we can tell a lot about the
+  expected relationship between Score and the other variables}. Or
+\ldots. 
+
+\clearpage
+
+
+
+\subsection{More plots and a regression example: Metabolic rate and body mass}\label{metab}
+
+You are interested in the relationship between metabolic rate and body
+mass in birds.  We will use a subset of data from the AnAge data set
+(Animal Ageing and Longevity Database) (accessed on 2014-08-19) from
+\Burl{http://genomics.senescence.info/species/}. This file contains
+longevity, metabolic rate, body mass, and a variety of other life history
+variables. The data I provide you are a small subset that includes only
+some birds and reptiles. 
+
+What I provide you is that is already stored as an R object (so I already
+took care of the \code{read.table} business for you, but if you are
+curious and want the data, skip to \ref{readanage}).
+
+
+First, let us \textbf{load} the data set, the RData file:
+
+<<>>=
+load("anage.RData")
+ls() ## a new anage object is present
+@ 
+
+
+Now, look at the data
+<<>>=
+str(anage)
+head(anage)
+summary(anage)
+@ 
+
+
+You should be able to tell what is going on with the data. And notice
+those many ``NA''.
+
+
+\subsubsection{A plot with changed scale}
+I want to plot metabolic rate vs.\ body mass. But I know (from theory and
+previous experience) that I probably want to use the log. And I want to
+get a quick idea of the spread of the points, etc. So I will use a
+function from the package \code{car} (for this to work, thus, you need to
+install that package).
+
+
+
+<<fig.width=6, fig.height=6>>=
+library(car) ## make the car package available; this is NOT 
+             ## installing it. It is making it available
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+            data = anage)
+@ 
+
+Look at the axes, etc. 
+
+You could do something very similar with the basic plot function, but it
+would not add the extra lines, boxplots, etc.
+
+<<fig.width=6, fig.height=6>>=
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
+@ 
+
+Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
+us use different plotting colors for each, and let us add a legend. Notice
+how the different colors by Class is done in the call to plot:
+<<fig.width=4,fig.height=4>>=
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+     col = c("salmon", "darkgreen")[Class], data = anage)
+legend(5, 5, legend = levels(anage$Class), 
+       col = c("salmon", "darkgreen"),
+       pch = 1)
+@ 
+
+Would the above work with scatterplot? Nope. You need to use a slightly
+different argument for the call, and you get automatic legend, etc:
+
+<<fig.width=4,fig.height=4>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", 
+            data = anage)
+@ 
+
+And how did I know? Hummm \ldots: I tried, failed, and then looked at the
+help for \code{scatterplot}.
+
+
+
+\subsubsection{Transforming variables}
+
+It is actually simpler, for the regression later, to log-transform the
+variables and add them to the data set:
+
+<<>>=
+anage$logMetab <- log(anage$Metabolic.rate..W.)
+anage$logBodyMass <- log(anage$Body.mass..g.)
+@ 
+
+We just created two variables, and added them to \code{anage}.
+
+
+\subsubsection{Only the birds! Selecting specific cases}
+
+Eh, but I want only the birds. Let's select only the birds using function
+\code{subset}
+
+<<>>=
+birds <- subset(anage, Class == "Aves")
+@ 
+
+Alternatively, we could have done
+
+<<>>=
+birds <- anage[anage$Class == "Aves", ]
+@ 
+
+
+
+\subsubsection{The regression only for the birds}
+\label{sec:regression}
+
+<<>>=
+(lm1 <- lm(logMetab ~ logBodyMass, data = birds))
+@ 
+
+
+A little bit more detail:
+<<>>=
+summary(lm1)
+@ 
+We will explain what the output from that table is, if you do not remember
+your statistics classes.
+
+Note that, as with the t-test, we can access the elements of \code{lm1}:
+<<>>=
+names(lm1)
+lm1$coefficients
+@ 
+
+but, in general, it often makes more sense (when they are available) to
+use the specific accessor functions:
+<<>>=
+coef(lm1)
+@ 
+
+
+Now, do a plot and add the fitted line:
+
+<<>>=
+plot(logMetab ~ logBodyMass, data = birds)
+abline(lm1)
+@ 
+
+
+Note that the above is actually the same as doing (except the one below
+adds more stuff):
+<<>>=
+scatterplot(logMetab ~ logBodyMass, data = birds)
+@ 
+
+or, better yet,
+
+<<>>=
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = birds, 
+            log = "xy")
+
+@ 
+
+But the procedure above is a general one that will work even if John Fox
+had not written \code{scatterplot}.
+
+
+
+\subsubsection{How I read and saved the data?}\label{readanage}
+This is all I did: %% (the \code{save} thing will become clearer below
+%% ---section \ref{saveRData}):
+<<eval=FALSE>>=
+anage <-  read.table("AnAge_birds_reptiles.txt", 
+                     header=TRUE, na.strings="NA", 
+                     strip.white=TRUE)
+save(file = "anage.RData", anage)
+@ 
+The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downloaded.
+
+\clearpage
+
+
+
+\subsection{Simulations and plots. A simple hypothesis test: the \textit{t-}test}\label{ttest}
+
+Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
+have lung cancer. And we have expression data for one gen (say GenA). We
+would like to know whether the (mean) expression of GenA is the same or not
+between the two groups. A \textit{t-}test is well suited for this
+case. Here, we will use simulated data. 
+
+Simulated data? Generating simulated data is extremely useful for testing
+many procedures, emulating specific processes, etc. 
+
+
+\subsubsection{Generating random numbers}
+
+
+\R\  offers
+(pseudo)random number generators from which we can obtain random variates
+for many different distributions. For instance, do
+<<eval=FALSE,results='hide'>>=
+help(rnorm)
+help(runif)
+help(rpois)
+@ 
+
+(i.e., look at the help for those functions). 
+
+
+In fact, those numbers are generated using an algorithm. This comes from
+the Wikipedia (\Burl{http://en.wikipedia.org/wiki/Pseudorandom_number_generator}):
+
+\begin{quote}
+A pseudorandom number generator (PRNG) is an algorithm for generating a
+sequence of numbers that approximates the properties of random
+numbers. The sequence is not truly random in that it is completely
+determined by a relatively small set of initial values, called the PRNG's
+state.
+\end{quote}
+
+And 
+
+\begin{quote}
+  A PRNG can be started from an arbitrary starting state, using a seed
+  state. It will always produce the same sequence thereafter when
+  initialized with that state.
+\end{quote}
+
+
+
+Now, since we all have different machines, the actual outcome of doing, say
+<<>>=
+rnorm(5)
+@ 
+is likely to differ. 
+
+What can we do to get the exact same random numbers? The quote from the
+Wikipedia just told us: we will set the seed of the random number
+generator to force the generator to produce the same sequence of random
+numbers on all computers:
+
+<<>>=
+set.seed(2)
+@ 
+(seting the seed to 2 has no particular meaning; we could have used
+another integer; what matters is that we all use the same seed). So lets
+obtain 50 independent random samples from a normal distribution and create
+a vector for the identifiers (the ``labels'') of the subjects. 
+
+
+\subsubsection{The t-tests and some plots}
+<<>>=
+GeneA <- rnorm(50)
+round(GeneA, 3)
+(Type <- factor(c(rep("Colon", 30), rep("Lung", 20))))
+@ 
+
+Let's do a t-test:
+<<>>=
+t.test(GeneA ~ Type)
+@ 
+As should be the case (we know it, because we generated the data) the
+means of the two groups are very similar, and there are no significant
+differences between the groups.
+
+Let us now generate data where there really are differences between the
+groups, and repeat the test.
+<<>>=
+(GeneB <- c(rep(-1, 30), rep(2, 20)) + rnorm(50))
+t.test(GeneB ~ Type)
+@ 
+
+Now we find a large and significant difference between the two groups.
+
+
+
+How about some plots?
+<<fig.width=7,fig.height=7>>=
+par(mfrow = c(2, 2)) ## a 2-by-2 layout
+boxplot(GeneA ~ Type)
+stripchart(GeneA ~ Type, vertical = TRUE, pch = 1)
+boxplot(GeneB ~ Type)
+stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
+@ 
+
+
+\clearpage
+
+
+
+
+\section{Tables}\label{tables}
+
+Tabulating data is a very common operation. Let's use again the data frame
+we played with above:
+
+<<>>=
+table(AB2$Sex)
+with(AB2, table(Sex, status)) ## note "with"
+xtabs( ~ Sex + status, data = AB2)
+@ 
+
+Now, look at this:
+<<>>=
+(freqs <- as.data.frame(xtabs( ~ Sex + status, data = AB2)))
+
+as.data.frame(with(AB2, table(Sex, status)))
+
+@ 
+\noindent Did you see how easy it was?
+
+
+
+Can we tabulate AB2 completely? (I am not showing the output, but please
+do it) 
+<<results='hide'>>=
+table(AB)
+@ 
+\noindent here it does not make much sense, since some variables seem to
+be continuous. But lets create another data set:
+<<>>=
+AC <- AB2[, c("Sex", "status")]
+table(AC)
+@ 
+
+Of course, you could do
+<<>>=
+table(AB2[, c("Sex", "status")])
+@ 
+
+So if all you have are categorical variables, the above works. And all
+this applies to more than two variables, of course.
+
+<<>>=
+x <-  data.frame(a = c(1,2,2,1,2,2,1),
+                 b = c(1,2,2,1,1,2,1),
+                 c = c(1,1,2,1,2,2,1))
+
+## tabulate: so create a data frame with a "Freq" column
+dfx <- as.data.frame(table(x))
+
+## Recover the table (you will not do this often?)
+xtabs(Freq ~ a + b + c, data = dfx)
+## of course, this is the same
+xtabs(~ a + b + c, data = x)
+@ 
+
+
+\subsection{Tables, II}
+Tabulating data is a very common operation. The following are slightly
+more advanced exercises. Run them, and see if you understand them, but
+skip this is if you do not care for now.
+
+<<>>=
+y <- x
+y$d <- y$a + 1
+
+## table of b, c, d, counts are the a
+## (this is like example above with Freq on the left)
+xtabs(a ~ ., data = y)
+## table of c, d; counts are the a and the b 
+## (instead of just "a" or Freq)
+## "columns are intrepreted as the levels of a variable"
+## The first subtable, labeled , ,  = a
+## counts freq. of c,d, using a as the counts. See the 6
+## for c =2 and d = 3
+xtabs(cbind(a, b) ~ ., data = y)
+## the usual table of all
+xtabs(~ c + d + a + b, data = y)
+## maybe easier to see?
+ftable(y)
+
+## One more twist: 
+## "columns are intrepreted as the levels of a variable"
+y$e <- y$a + y$c + 9 
+xtabs(cbind(a, b, e) ~ ., data = y)
+@ 
+
+
+
+
+
+\section{The ``apply'' family.  And ``aggregate'', ``by'', etc}
+One of the great strengths of \R\ is operating over whole vectors, arrays,
+lists, etc. Some available functions are: \code{apply, lapply, sapply,
+  tapply, mapply}.  Please look at the help for these functions. Here we
+will show some examples, and you should understand what is happening. Some
+of these examples use functions (anonymous functions) that we define as we
+need them in the calls of apply or aggregate (we have used these before).
+
+<<>>=
+(Z <- matrix(c(1, 27, 23, 13), nrow = 2))
+apply(Z, 1, median)
+apply(Z, 2, median)
+apply(Z, 2, min)
+@ 
+
+For those of you who have programmed before: using the ``apply'' family is
+often much, much, much more efficient (and elegant, and easy to
+understand) than using explicit loops.
+
+
+With lists we will use \code{lapply}. For example, lets look at the
+first element of each of the components of the list (see how we define a
+function on the fly):
+<<tidy=FALSE>>=
+(listA <- list(one.vector = 1:10,  hello = "Hola", 
+               one.matrix = matrix(rnorm(20), ncol = 5),
+               another.list = list(a = 5, 
+                 b = factor(c("male", "female", "female")))))
+
+lapply(listA, function(x) x[[1]])
+@ 
+
+
+When we have data that can be used to stratify or select other data, we
+often use \code{tapply}:
+
+<<tidy=FALSE>>=
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
+                            sex = factor(c("male", "female", 
+                              "female", "male", "male"))))
+
+tapply(one.dataframe$age, one.dataframe$sex, mean)
+@ 
+
+However, \code{aggregate} often returns things in a more convenient form:
+
+<<tidy=FALSE>>=
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
+                            sex = factor(c("male", "female", 
+                              "female", "male", "male"))))
+
+aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
+## make the aggregating variable explicit, 
+## and give it another name
+aggregate(one.dataframe$age, 
+          list(Sexo = one.dataframe$sex), mean)
+
+## or use the name of the column/variable
+aggregate(one.dataframe$age, 
+          one.dataframe[2], mean)
+@ 
+
+The function \code{by} is related to \code{aggregate} and \code{tapply},
+but you can use functions that return several different things (e.g., the
+mean and standard deviation) and the return value is a list:
+
+<<>>=
+by(one.dataframe$age, list(one.dataframe$sex), 
+   function(x) c(mean(x), sd(x)))
+@ 
+
+You can do much of that with aggregate too, but the output is different:
+<<>>=
+aggregate(one.dataframe$age, one.dataframe[2], 
+          function(x) c(Mean = mean(x), SD = sd(x)))
+@ 
+
+%% FIXME: but with multiple summary stats, beware of the return!
+%% use cbind instead of c?
+%% http://r.789695.n4.nabble.com/aggregate-with-multiple-functions-td2290889.html
+%% or doBy and then summaryBy
+
+
+And you can use a formula interace which might be more intuitive:
+<<>>=
+aggregate(age ~ sex, data = one.dataframe,
+          function(x) c(Mean = mean(x), SD = sd(x)))
+@                              
+ 
+
+That will work when what you want to compute functions of has multiple
+columns:
+
+<<>>=
+
+one.dataframe$Y <- 1:5
+
+aggregate(cbind(age, Y) ~ sex, data = one.dataframe,
+          function(x) c(Mean = mean(x), SD = sd(x)))
+
+aggregate(one.dataframe[, c("age", "Y")],
+          list(Sex = one.dataframe$sex),
+          function(x) c(Mean = mean(x), SD = sd(x)))
+
+@ 
+
+Sometimes, using \texttt{with} can be handy, but watch out: we need to be
+explicit about \texttt{FUN} (what would happen if we did not?). Actually,
+there are a couple of things happening here at the same time:
+<<>>=
+with(one.dataframe, 
+     aggregate(age ~ sex, 
+               FUN = function(x) c(Mean = mean(x), SD = sd(x)))
+     )
+@
+
+
+
+Another very handy function is \texttt{split}. What we will do next is an
+overkill, but knowing about split can make life simpler in many cases:
+
+<<>>=
+
+lapply(with(one.dataframe, split(one.dataframe, sex)),
+       function(y) mean(y$age))
+
+@ 
+
+The above procedure is related to the split-apply-combine and the
+map-reduce approaches. And \texttt{by}, \texttt{aggregate}, and friends
+can be regarded as specially handy ways of doing the above combination of
+\texttt{split} with \texttt{*apply} and some particular summary function(s).
+
+
+Since the need for these operations is very common (getting summaries or
+applying functions to subsets of the data), there are a variety of ways of
+accomplishing them with the basic functions of R, as well as several
+additional packages that provide for different (easier? faster?)
+approaches/syntax. Here is a blog with some examples and links:
+\Burl{https://www.r-bloggers.com/say-it-in-r-with-by-apply-and-friends/}
+(the original entry, at
+\Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}, 
+is no longer available). 
+For instance, the \code{doBy} package is really nice.
+
+
+=======
+
+
+
+
+
+\subsection{Matrices: Dropping dimensions}
+
+Look at the different outputs of the selection operation:
+
+<<>>=
+(E <- matrix(1:9, nrow = 3))
+E[, 1]
+E[, 1, drop = FALSE]
+E[1, ]
+E[1, , drop = FALSE]
+
+@ 
+
+Unless we use \code{drop = FALSE}, if we select only one row or one
+column, the result is not a matrix, but a vector\footnote{row vector? column
+vector? that is a longer discussion than warranted here; nothing with two
+dimensions, anyway}. But sometimes we do we need them to remain as
+matrices. That is often the case in many matrix operations, and also when
+using \code{apply} and related.
+
+
+Suppose we select automatically (with some procedure) a set of rows that
+interest us in the matrix.
+
+<<>>=
+rows.of.interest <- c(1, 3)
+@ 
+
+We can do
+
+<<>>=
+apply(E[rows.of.interest, ], 1, median)
+
+@ 
+
+Now, imagine that in a particular case, \code{rows.of.interest} only has
+one element:
+<<>>=
+rows.of.interest <- c(3)
+@ 
+
+<<eval=FALSE>>=
+apply(E[rows.of.interest, ], 1, median)
+@ 
+
+What is the error message suggesting?
+
+But we can make sure our procedure does not crash by using \code{drop = FALSE}:
+<<>>=
+apply(E[rows.of.interest, , drop = FALSE], 1, median)
+@ 
+
+
+The situation above can be even more confusing with some matrix operations.
+
+
+% The following is actually worse, because you can get into a confusing
+% situation and have errors that are hard to catch (note: \verb=%*%= is
+% matrix multiplication). Suppose we want to multiply a matrix formed by
+% some columns of E with a matrix formed by those same rows of E. 
+
+% <<>>=
+% vector.indices <- c(1, 3)
+% E[, vector.indices] %*% E[vector.indices, ]
+% @ 
+
+
+%  the first column of E by the first row of E. We know that
+% should be a 3x3 matrix. Lets try it:
+
+% <<>>=
+% E[, 1] %*% E[1, ]
+% @ 
+
+% That is not what we wanted. We should have written:
+% <<>>=
+% E[, 1, drop = FALSE] %*% E[1, , drop = FALSE]
+% @ 
+
+% because if we drop dimensions, this is what we are doing (the following
+% are equivalent):
+
+% <<>>=
+% E[, 1] %*% E[1, ]
+% sum(E[, 1] * E[1, ])
+% sum(E[1, ] * E[, 1])
+% sum(c(1, 2, 3) * c(1, 4, 7))
+% E[1, , drop = FALSE] %*% E[, 1, drop = FALSE]
+% @ 
+
+
+To summarize: when you select only a single column or a single row of an
+array, think about whether the output should be a vector or a matrix
+
+
+\section{(Optional: two handy packages \texttt{readr} and \texttt{dplyr})}
+We won't get into details about this: Hadley Wickham has two packages,
+\texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
+data manipulation (dplyr) and reading large flat files (readr). Both are
+explained, in addition to the documentation of each of the packages, in
+Peng's  ``R programming for data   science'' book. 
+
+This link has a handy summary of \texttt{dplyr}:
+\Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
+
+As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}.
+
+\clearpage
+
+
+
+
+\section{\R\  programming}\label{rprog}
+
+\R\  is a programming language. Comprehensive coverage is given in the books
+by Chambers ``Software for Data Analysis: Programming with R'', %% Gentleman
+%% ``R Programming for Bioinformatics'', 
+Matloff's ``The art of R programming'', Wickham's ``Advanced R'', and
+Venables and Ripley ``S Programming'' (see details in
+\Burl{http://www.r-project.org/doc/bib/R-books.html}). Chapters 9 and 10
+of ``An Introduction to R''
+(\Burl{http://cran.r-project.org/doc/manuals/R-intro.html}) provide a fast
+but thorough introduction of the main concepts of programming in \R.
+
+It is important to emphasize that the ease of combining programming with
+``canned'' statistical procedures gives \R\  a definite advantage over other
+languages in Bioinformatics (and explains its fast adoption).
+
+
+
+\subsection{Flow control}
+\R\  has the usual constructions for flow control and conditional
+execution: \code{if, ifelse, for, while, repeat, switch, break}. Before
+continuing, please note that \code{for} loops are rarely the best
+solution: the \code{apply} family of functions ---see below--- is often a better
+approach.
+
+A few examples follow. Make sure you understand them.
+
+\code{for} iterates over sets. They need not be numbers:
+
+<<>>=
+names.of.friends <- c("Ana", "Rebeca", "Marta", 
+                      "Quique", "Virgilio")
+for(friend in names.of.friends) {
+  cat("\n I should call", friend, "\n")
+}
+@ 
+
+% How with sapply? Recall cat has NULL as return value
+
+% sapply(names.of.friends, function(x) cat("call ", x, "\n"))
+
+% so use print.
+
+
+but they can be numbers:
+
+<<lty2,fig.cap='Those line types (lty) again',fig.width=4, fig.height=4>>=
+
+plot(c(0, 10), c(0, 10), xlab ="", ylab ="", type = "n")
+
+for(i in 1:10) 
+  abline(h = i, lty = i, lwd = 2)
+
+@ 
+
+(note that in the example above I could get away without using braces
+---\code{``\{\}''}--- after the \code{for} because the complete expression
+is only one function call, \code{abline}). 
+
+\code{while} keeps repeating a set of instructions until a condition is
+fulfilled. In this example, the condition is actually two conditions. Make
+sure you understand what is happening.
+
+
+<<>>=
+
+x <- y <- 0
+iteration <- 1
+while( (x < 10) && (y < 2)) {
+  cat(" ... iteration", iteration, "\n")
+  x <- x + runif(1)
+  y <- y + rnorm(1)
+  iteration <- iteration + 1
+}
+
+x
+y
+
+@ 
+
+\code{while} is often combined with \code{break} to bail out of a loop as
+soon as something interesting happens (and that something is detected with
+an \code{if}). A common approach is to set the loop to continue forever (I
+won't show the output, but please do try it, and understand it).
+
+<<results='hide'>>=
+iteration <- 0
+while(TRUE) {
+  iteration <- iteration + 1
+  cat(" ... iteration", iteration, "\n")
+  x <- rnorm(1, mean = 5)
+  y <- rnorm(1, mean = 7)
+  z <- x * y
+  if (z < 15) break
+}
+
+@ 
+
+Did you notice that \code{iteration <- iteration + 1} is now in a
+different place, and we initialize it with a value of 0?
+
+%% FIXME, if, if and else, if and else if
+%% FIXME switch
+
+%% FIXME: add ifelse as in, e.g.,
+%% + . + > x <- 1:10
+%% > y <- x + runif(10, -1, 1)
+%% > ifelse(x > y, "larger", "smaller")
+
+
+You can do confusing things. It is better to avoid them, and to avoid
+using the loop index:
+
+<<>>=
+
+rm(i)
+
+for(i in 1:10) { x <- i}
+
+i
+
+@ 
+
+
+<<>>=
+
+rm(i)
+
+for(i in 1:10) { 
+    cat("\n before", i)
+    i <- (i - 3)
+    cat("  after ", i)
+}
+
+i
+
+@ 
+
+This is OK, though
+
+<<>>=
+
+rm(i)
+
+i <- 0
+
+repeat {
+    i <- runif(1, -1, 0.5)
+    cat(".")
+    if(i > 0.2) break
+}
+
+i
+
+@ 
+
+\subsection{Defining your own functions}
+
+As the ``Introduction to R'' manual says
+(\Burl{http://cran.r-project.org/doc/manuals/R-intro.html\#Writing-your-own-functions})
+\begin{quote}
+
+  (...) learning to write useful functions is one of the main ways to make
+  your use of R comfortable and productive.
+
+  It should be emphasized that most of the functions supplied as part of
+  the R system, such as mean(), var(), postscript() and so on, are
+  themselves written in R and thus do not differ materially from user
+  written functions.
+\end{quote}
+
+Here we only cover the very basics. See the ``Introduction to R'' for more
+details, and the books above for even more coverage.
+
+
+
+
+You can define a function doing
+\begin{verbatim}
+the.name.of.my.function <- function(arg1, arg2, arg3, ...) {
+#what my function does
+}
+\end{verbatim}
+
+In the above, you substitute ``the.name.of.my.function'' by, well, the
+name of your function, and ``arg1, arg2, arg3'', by the arguments of the
+function. Then, you write the \R\  code in the place where it says ``\#what
+my function does''. %% (By the way, \verb=#= is the sign that delimits the
+%% beginning of a comment). 
+The \ldots refer to other arguments passed on to
+functions called inside the main function.
+
+
+For example
+<<>>=
+
+multByTwo <- function(x) {
+  z <- 2 * x
+  return(z)
+}
+
+a <- 3
+multByTwo(a)
+multByTwo(45)
+@ 
+
+
+Another example
+<<>>=
+
+plotAndSummary <- function(x) {
+    plot(x)
+    print(summary(x))
+}
+x <- rnorm(50)
+
+@ 
+
+(I won't be showing the output of plotAndSummary: but make sure you do it,
+and understand what is going on).
+
+<<results="hide",fig.keep="none">>=
+plotAndSummary(x)
+plotAndSummary(runif(24))
+@ 
+
+
+Using more arguments, one of them default:
+<<>>=
+
+plotAndLm <- function(x, y, title = "A figure") {
+  lm1 <- lm(y ~ x)
+  cat("\n Printing the summary of x\n")
+  print(summary(x))
+  cat("\n Printing the summary of y\n")
+  print(summary(y))
+  cat("\n Printing the summary of the linear regression\n")
+  print(summary(lm1))
+  plot(y ~ x, main = title)
+  abline(lm1)
+  return(lm1)
+}
+
+x <- 1:20
+y <- 5 + 3 *x + rnorm(20, sd = 3)
+@ 
+
+(Again, I am not showing the output here. But make sure you understand
+what is happening!)
+<<results="hide",fig.keep="none",>>=
+plotAndLm(x, y)
+plotAndLm(x, y, title = "A user specified title")
+output1 <- plotAndLm(x, y, title = "A user specified title")
+@ 
+
+Make sure you understand the difference between 
+<<results="hide",fig.keep="none">>=
+plotAndLm(x, y)
+@ 
+
+and
+<<results="hide",fig.keep="none">>=
+out2 <- plotAndLm(x, y)
+@ 
+
+(hint: in the last call, you are assigning something to ``out2''. Look at
+the last line of the function ``plotAndLm''). Not all functions return
+something, and many functions do not plot or print anything either. You
+decide what and how your functions do, print, plot, etc, etc, etc.
+
+
+And, as we will see below, many functions are often ``defined on the fly''.
+
+\subsection{Order of arguments, named and unnamed arguments, etc}
+
+R is fairly flexible in how you can invoke a function and the order in
+which you pass arguments. But there are better and worse ways of doing
+it. In general, use positional matching only for the first (or first two)
+arguments, and avoid passing unnamed arguments after named ones. For instance:
+
+
+<<>>=
+f1 <- function(one, two, three) {
+    cat("one = ", one, 
+        " two = ", two, 
+        " three = ", three, "\n")}
+
+## We are OK
+f1(1, 2, 3) 
+## We are OK, but this is getting risky
+f1(two = 2, three = 3, 1) 
+## We are no longer OK. Nothing "strange" happened
+## but we would need to be very careful. So avoid it.
+f1(two = 2, 3, 1) 
+@ 
+
+The above rules are even more important when arguments with default
+arguments are considered.
+
+
+\subsection{Scoping, frames, environments, etc}\label{scoping}
+This is more advanced material. Read through it, and go deeper if you
+want. This is kind of jumping around on purpose; do this when you are awake.
+
+Suppose this:
+<<eval=FALSE>>=
+f1 <- function(x) {
+    x + z
+}
+@ 
+
+What will be the value of ``z'' used by f1? Play with it. Try to get that
+to work.
+
+And here?
+<<eval=FALSE>>=
+z <- -100
+
+f11 <- function(y) {
+    z <- 10
+    f1(y)
+}
+
+@ 
+
+Or what will happen here?
+
+<<eval=FALSE>>=
+v <- 1000
+f3 <- function(x, y) {
+    v <- 3 * x
+    f2 <- function(u) {
+        u + v
+    }
+    f2(y)
+}
+f3(2, 9)
+@ 
+\noindent (In R it is perfectly OK to define a function inside another
+function. In fact, it can make some code much easier to understand.)
+
+The above questions are, basically, about ``where is the value of free
+variables found''. R uses lexical (or static) scoping. It can be extremely
+handy and fun, but it can lead to surprises. Good explanations here:
+\Burl{http://adv-r.had.co.nz/Functions.html\#lexical-scoping} and
+\Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
+
+
+
+In fact in the examples above there are several issues we might want to
+think about and a few terms we would need to define. There are the issues
+of using global variables in ``f1'' (which is often regarded as poor
+style) and there are issues of lexical scoping in what f2 and f3 are doing
+(and I would regard f2 as a perfectly OK function, given how f3 is, even
+if there is a free variable in f2). And all these relate, and need to
+be answered, in the context of these concepts/terms (I take here the
+definitions from the extremely clear PDF by John Fox, linked above, with a
+few modifications following Chamber's ``Software for data analysis'', p.\
+119 and ff.\ and chapter 8 of Wickham's ``Advanced R''):
+
+\begin{description}
+\item[binding] In \code{y <- 9} y is bound to the value 9.
+\item[free variable] ``z'' is a free variable in function f1, above. It is
+  not bound to anything (at least in that frame).
+\item[frame] A set of bindings (y to 9, maybe x to 77, etc).
+\item[environment] You can think of it as a sequence of frames. When f2
+  (well, R) goes looking for the value of ``v'' it will do so looking
+  through a sequence of frames.  In fact, an environment has two
+  components: a frame and a reference to another environment, its parent
+  environment (or its enclosing environment); since each environment has a
+  reference to another environment, you can now easily understand the idea
+  of an environment as a sequence of frames.
+\end{description}
+
+
+And this should bring us to consider, too, why things such as this work at
+all in the way we expect:
+
+<<>>=
+c
+c <- 95
+c
+c(5, 6)
+c + 8
+@ 
+
+Which, of course, is asking questions about where (and how) R searches for
+things (even if we never write code such as that in f3, f2, or f1). Read,
+for instance, chapter 8 of ``Advanced R'', available for example here
+\Burl{http://adv-r.had.co.nz/Environments.html}. But maybe before that do
+this
+
+<<eval=FALSE>>=
+search()
+@ 
+and try to figure out what is happening.
+
+
+This is used, implicitly of explicitly, in a lot of code. We cannot pursue
+it here any further (though we might talk about it in class). But now,
+before we leave, we will remove our ``c'':
+<<>>=
+rm(c)
+@ 
+Oh, do you know what ``c'' we just removed?
+
+
+\subsection{Functions that return NULL and invisible}
+\label{sec:scop-fram-envir}
+
+Compare these
+<<>>=
+fa <- function(x) cat("\n ", x, "\n")
+fa(4)
+aa <- fa(4)
+aa
+class(aa)
+
+fb <- function(x) x
+fb(4)
+bb <- fb(4)
+bb
+class(bb)
+
+fc <- function(x) invisible(x)
+fc(4)
+cc <- fc(4)
+cc
+(fc(4))
+
+@ 
+
+
+\subsection{The \ldots}
+
+The $\ldots$ allows you to pass further arguments that some function
+inside your function will take care of:
+
+<<>>=
+f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
+
+f0(1:5, col = "red", type = "b")
+@ 
+
+
+Make sure you understand why only \texttt{fa} does what you
+want: 
+<<eval = FALSE, results='hide'>>=
+
+fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
+fa(1:5, "blue", pch = 8)
+
+fb <- function(x, col = "red", ...) {plot(x, col = col)}
+fb(1:5, "blue", pch = 8)
+
+fc <- function(x, col = "red") {plot(x, col = col, ...)}
+fc(1:5, "blue", pch = 8)
+
+@ 
+
+\subsection{local}
+\label{sec:local}
+
+Look at this
+<<>>=
+
+i <- 2
+local({cat("i ", i); i <- 99; cat(";  i = ", i)})
+i
+
+try(rm(vv))
+local({vv <- 99; cat("vv = ", vv)})
+try(vv)
+
+@ 
+\clearpage
+
+
+\section{Revisiting an example that brings a few things
+  together}\label{example-multtest}
+
+This should not be mysterious now (you might want to look at the help for
+\code{hist} and \code{order}). We want to reproduce a fairly common
+analysis that is done in genomics; here we will simulate the data. The
+steps are:
+
+\begin{enumerate}
+\item Generate a random data set (samples in columns, variables or genes
+  in rows); there are 50 subjects and 500 genes.
+\item Of the 50 subjects, the first 30 are patients with colon cancer, the
+  next 20 with lung cancer
+\item For each ``gene'' (variable, row) do a t-test
+\item Find out how many p-values are below 0.05, and order p-values. Plot p-values.
+\end{enumerate}
+
+<<eval=TRUE,results='hide'>>=
+randomdata <- matrix(rnorm(50 * 500), ncol = 50)
+class <- factor(c(rep("NC", 20), rep("cancer", 30)))
+@ 
+
+Do we know what the output from a \textit{t-test} looks like? What do we
+want to select? Lets play a little bit:
+
+<<>>=
+ 
+tmp <- t.test(randomdata[1, ] ~ class)
+tmp
+attributes(tmp)
+tmp$p.value
+@
+
+OK, so now we know what to select (note: I do NOT show the results of the
+computations here!):
+
+<<fig.keep="none",eval=TRUE,results='hide'>>=
+ 
+pvalues <- apply(randomdata, 1, 
+                 function(x) t.test(x ~ class)$p.value)
+hist(pvalues)
+order(pvalues)
+which(pvalues < 0.05)
+@ 
+<<results='hide'>>=
+sum(pvalues < 0.05)
+@
+
+
+Now, repeat all of this by running the script:
+<<fig.keep="none",results='hide'>>=
+source("lastExample.R")
+sum(pvalues < 0.05)
+@ 
+
+
+Please, look at ``lastExample.R'', and understand what happened. You need
+to repeat the \code{sum(pvalues < 0.05)}. You could modify ``lastExample.R'',
+to explicitly print results. Or you can use \code{source("lastExample.R",
+  echo = TRUE)}.
+
+
+Please, understand what is happening. 
+
+
+\section{Go back to the scenarios}\label{back-scenarios}
+You should now be able to go back to section \ref{scenarios} and solve all
+of them. If they ask you for data, you should know how to simulate data to
+pretend you have been given some data.
+
+
+\clearpage
+\section{Debugging and catching exceptions}\label{debug}
+Often, things do not work as expected, and we need to debug our
+code. Debugging is a big issue. As Matloff insists, debugging is basically
+about testing your assumptions about what a piece of code is doing. In
+what follows, I provide just a quick summary of really helpful things that
+I use often (there are some extra techniques and approaches, but really
+understanding the ones below will take you far).  
+
+Anyway, here are some additional places to look at:
+\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/},
+\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/debug.shtml},
+\Burl{http://www.biostat.jhsph.edu/\%7Erpeng/docs/R-debug-tools.pdf}, and
+chapter 9 in ``Advanced R'' (available here :
+\Burl{http://adv-r.had.co.nz/Exceptions-Debugging.html}) and chapter 13 in
+the ``The art of R programming''.
+
+
+
+(Oh, the examples below will show little output in these notes. Make sure
+you do type the code and play around: these are necessarily interactive
+things, and that does not play well with static notes).
+
+
+\subsection{What exactly broke?}
+
+\code{traceback} shows the call stack and helps you identify where things
+crashed, so you can tell which is the function where the problem shows up:
+
+
+<<>>=
+
+f1 <- function(x) 3 * x
+
+f2 <- function(x) 5 + f1(x)
+
+f3 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+f3(3, 7)
+
+
+@ 
+
+<<eval=FALSE,error=TRUE>>=
+
+f3(-5, 6)
+
+traceback()
+
+f3(5, "a")
+traceback()
+@ 
+
+
+%% using f2(v + u) above is confusing, because the error jumps in f1, when
+%% it tries to evaluate.
+
+That, however, is only part of the process. In the case above, we know
+sometimes it is the call to \code{runif} and some times is the call to
+\code{f1}. But we might want to look closer at what is happening.
+
+\subsection{\code{debug} and \code{browser}}
+
+If something breaks, you can go step by step over the execution of the
+code. For that, call \code{debug(theFunctionYouWantToDebug)}. Note that
+you can use \code{debug} with functions that you have not written. You do
+not need to edit or modify the source. Once you are done,
+\code{undebug(theFunctionYouWantToDebug)}.
+
+Try the following. When the evaluation stops, press ``c'' if you do not
+want to go into debugging mode. And you can exit from the whole debugging
+process by ``Q''
+
+<<eval=FALSE>>=
+debug(f3)
+f3(3, 5)
+undebug(f3) ## stop debugging
+f3(3, 5)
+@ 
+
+In addition to \texttt{debug} you can use \texttt{debugonce}, so you do
+not need to remember to do \texttt{undebug}.
+
+You can also use \code{browser}. It is very easy to add that to a function
+you wrote, wherever you want it to stop.  Make sure you try this, and when
+it stops, look around (e.g., type \code{ls()}, reassign values, etc).
+
+<<eval=FALSE>>=
+f3(3, 5)
+f3(3, 11)
+@ 
+
+Or you can set up conditional browsers. For example, call it only if
+\code{z > 5}:
+
+<<>>=
+## just browser
+f3 <- function(z, u) {
+    v <- runif(z)
+    a <- f2(u)
+    browser()
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+## with conditional browser
+f3 <- function(z, u) {
+    v <- runif(z)
+    if (z > 5) browser()
+    a <- f2(u)
+    b <- f2(3 * v)
+    return(a + b)
+}
+
+@ 
+
+
+It is bad practice to leave \code{browser}s around (for obvious
+reasons). Likewise, you should \code{undebug} when you are done, or source
+again your function (which will have the effect of undebugging it).
+
+
+When browsing or debugging, notice the difference between \texttt{c}  and
+\texttt{s} (continue and step into). Play with it with \texttt{f3}.
+
+\subsection{Browsing arbitrary functions at arbitrary places}
+Can you place \code{browser} at arbitrary places in arbitrary functions
+including, say, from a package or the base system you have not written?
+Yes. You just have to pass it the line number, using the function
+\code{trace}. And how do you find the line number? Use
+\code{as.list(body(theFunctionname)}.
+
+Let's start with our simple function:
+
+<<eval=FALSE>>=
+
+as.list(body(f3))
+
+trace(f3, tracer = browser, at = 3)
+
+f3 # notice the message 
+@ 
+
+<<eval=FALSE>>=
+f3(4, 5)
+untrace(f3) ## stop tracing
+@ 
+
+
+This uses \code{lm}, which we have not written. 
+<<eval=FALSE>>=
+
+
+as.list(body(lm))
+trace(lm, tracer = browser, at = 5)
+y <- runif(100)
+x <- 1:100
+lm(y ~ x)
+## stop tracing
+untrace(lm)
+
+@ 
+
+We can also use the \texttt{edit} option with trace:
+
+<<eval=FALSE>>=
+trace("lm", edit = "emacs")
+trace("lm", edit = TRUE)
+@ 
+
+%%% For me, I use
+% as default editor ecf
+% #!/bin/bash
+% emacsclient -s  /tmp/emacs1000/server -c $1
+% and have it as my default editor so I can do
+% trace("something", edit = TRUE)
+% or
+% trace("something", edit = "ecf")
+
+\subsection{Autopsies when things fail}
+But sometimes you only want to stop when/if things fail, and look
+inside. We can ask R to do that: stop when the error occurs, and allow us
+to look around:
+
+<<eval=FALSE>>=
+opt <- options(error = recover)
+## Notice the next show, as they should,
+## different frame numbers. The error is in different
+## places. You can enter in the relevant frames 
+## and look around
+f3(3, "a")
+f3(-5, 3)
+@ 
+
+
+You will be shown the possible frames, you can enter the one you want, and
+look around, etc. This is \textbf{extremely handy} in some situations, or
+when you only get errors from time to time, etc.
+
+
+Once you are done, set the option back to what it was:
+<<eval=FALSE>>=
+options(opt)
+@ 
+
+
+
+
+\subsection{And RStudio?}
+The above are general mechanisms that will work regardless of how you use
+R. If you use RStudio, there is additional functionality
+available. Suppose you have code like this:
+
+<<eval=FALSE>>=
+f1 <- function(x) 3 * x
+
+f2 <- function(x) 5 + f1(x)
+
+f3 <- function(z, u) {
+    v <- runif(z)
+    f2(v + u)
+}
+f3(3, "a")
+@ 
+
+
+If you submit all that code to be executed, you will get an error, and
+RStudio will offer you to run it again with debug (it will be fairly
+obvious, just do it).
+
+The chapter from ``Advanced R'' explains in detail RStudio's functionality
+in this area, which includes setting breakpoints and other additional
+features.
+
+Emacs + ESS has also its own way of doing these things.
+
+
+\subsection{And warnings?}
+If you get warnings in your own code, but you don't understand it, you can
+turn warnings into errors, and use the above debugging approaches. Just do
+
+<<eval=FALSE>>=
+opt <- options(warn = 2)
+@ 
+
+And then, a warning will behave as an error. Once you are done, return
+things back to what they were:
+
+<<eval=FALSE>>=
+options(opt)
+@ 
+
+
+\subsection{Confused about where you are?}
+Sometimes, while debugging, especially if you have turned debugging on
+several functions, some of which call some others, you might get lost, and
+not know where you are. In such a case, type \code{where}. Yes, like that,
+not \code{where()}. It will give you the call stack and you will see where
+you are. You can try it:
+
+<<eval=FALSE>>=
+debug(f1); debug(f2); debug(f3)
+f3(4, 5) ## now, keeping pressing enter or n
+         ## and you'll get deeper and deeper
+         ## while in browser mode, type where
+@ 
+Return things to normal
+<<eval=FALSE>>=
+undebug(f3)
+undebug(f2)
+undebug(f1)
+@ 
+
+
+\subsection{Protecting from possible failures}
+There is exception handling in R, of course, and there are several
+mechanisms. I often use \code{try}, which is simple. For instance:
+
+<<>>=
+
+ft <- function(x) {
+    tmp <- try(log(x), silent = TRUE)
+    if(inherits(tmp, "try-error")) {
+        warning(paste("It looks like something did not work:\n",
+                      "   ", tmp))
+    } else{
+        return(tmp)
+    }
+}
+
+
+ft(9)
+
+
+ft("a")
+
+@ 
+
+The above is a silly example, of course, but suppose taking the log is not
+a fundamental part of the code, and you want to be allowed to continue, or
+you want to be the one who decides what to do without breaking a long
+analysis. This prevents the code from just failing. I use try very, very
+often when I run long simulation analysis that can take weeks: I record
+fully when a case fails (keep track of data, random number seeds, etc),
+but I allow the rest of the process to continue.
+
+More sophisticated approaches are available. Look at the references above.
+
+
+\subsection{Debugging functions that are not exported}
+
+If we load a package, say \texttt{OncoSimulR} (from BioConductor) we can do
+
+<<>>=
+library(OncoSimulR)
+ls(pos = 2)
+@ 
+and we see the names of the exported functions.
+
+I know there is a function called \texttt{nr\_oncoSimul.internal}. You
+might not know it but maybe you got an error and when doing
+\texttt{traceback} you find out that function is where the error
+occurs. That function is not exported: that function is not supposed to be
+called directly by users (it is a function called by other functions in
+the package).
+
+In fact, notice this (results not shown)
+<<eval=TRUE, results='hide'>>=
+getAnywhere("nr_oncoSimul.internal")
+@ 
+
+so, yes, that function exists in the namespace of OncoSimulR.
+
+Can you debug it? Sure, you just have to do:
+
+<<eval=FALSE, results='hide'>>=
+debugonce(OncoSimulR:::nr_oncoSimul.internal)
+@ 
+(i.e., you use \texttt{:::}).
+
+
+You can also add browsers:
+
+<<eval=FALSE, results = 'hide'>>=
+as.list(body(OncoSimulR:::nr_oncoSimul.internal))
+trace(OncoSimulR:::nr_oncoSimul.internal, browser, at = 7)
+@ 
+(notice the message ``Tracing function blablabla (not-exported)'').
+
+
+
+
+% FIXME add this in the future?
+
+\section{Object-oriented programming and classes S3 and S4}\label{oop}
+Is object-oriented programming possible in R? Yes. In fact, there are
+three different systems for OOP. But we will not cover any in this course
+and, in fact, nothing in these notes (except for a possibly cryptic
+reference to \code{predict.randomForest}, in section \ref{selbias})
+requires you to understand any of this. But it can become
+important when you write code and it will become relevant when you read
+code from others. Look at section 10.9 in ``An introduction to R''
+(\Burl{http://cran.r-project.org/doc/manuals/r-release/R-intro.html\#Object-orientation}),
+included with your R, which only covers S3, and chapter 7 of Wickham's
+``Advanced R'', \Burl{http://adv-r.had.co.nz/OO-essentials.html}, which
+covers S3, S4, and reference classes, for more details. S3 is a relatively
+simple approach, and is the one used by most CRAN packages (and the one
+used in base and stats in R); S4 is very popular in BioConductor, but is
+much more complicated (and, I'd say, cumbersome).
+
+
+\clearpage
+\section{Additional programming practice}\label{more-ex}
+
+The following sections offer some additional programming practice. Please
+use what you have seen above, and especially take the following as
+opportunities to practice debugging.
+
+\clearpage
+
+%%% This is now an exercise
+%% \subsection{Is there a procaryote stop codon in here?}
+
+%% Someone in your lab has a set of many sequences (here, 5000) of DNA from a
+%% bunch of samples collected from permafrost areas.  There are some
+%% hypothesis about the types of organisms in those areas but, to make the
+%% story short, the idea is that as part of your research you want to
+%% separate those sequences between those that have the procaryote stop
+%% codons and those that don't and check:
+
+
+%% \begin{itemize}
+%% \item Are there differences in the length of the two types of sequences?
+
+%% \item Are there differences in the frequency of T between the two types of
+%%   sequences?
+  
+%% \end{itemize}
+
+%% All the files are in the directory \texttt{permafrost} (part of the
+%% compressed file \texttt{permafrost.zip}). You will need to uncompress them.
+
+%% %% \begin{itemize}
+%% %% \item generate many sequences
+%% %% \item get frequencies of nucleotides per sequence only in sequences with a
+%% %%   given codon
+%% %% \item more advanced: count how often that codon in each sequence
+%% %% \end{itemize}
+
+%% %% c1 <- la sequencia
+%% %% c2 <- strsplit(c1, "")[[1]]
+%% %% for(i in 1:(length(c2)-2)) print(paste0(c2[i:(i+2)]))
+
+
+%% %% Do not eval more than once
+%% <<echo=FALSE, eval = TRUE, results = 'hide'>>=
+%% set.seed(1234)
+%% nseqs <- 5000
+
+%% nt <- c("A", "C", "G", "T")
+
+%% generate <- function(l1 = 10, l2 = 500) {
+%%     ls <- round(runif(1, l1, l2))
+%%     return(paste0(sample(nt, ls, replace = TRUE), 
+%%                   collapse = ""))
+%% }
+
+%% generateAndWrite <- function() {
+%%     namef <- paste(sample(c(LETTERS, 0:9), 12), collapse = "")
+%%     seq <- generate()
+%%     writeLines(seq, con = paste0("./permafrost/", namef))
+%% }
+
+%% tmp <- replicate(nseqs, generateAndWrite())
+
+%% @ 
+
+
+
+%% What do we want to do?
+%% \begin{enumerate}
+%% \item Read all files. In fact, \textbf{any} number of files, where each
+%%   file is a sequence.
+%% \item Keep only those sequences that contain the stop codons.
+%% \item For those sequences that contain the stop codons, find:
+%%   \begin{itemize}
+%%   \item Frequency of T.
+%%   \item The length of the sequence.
+%%   \end{itemize}
+%% \end{enumerate}
+
+
+%% Let's do it:
+
+%% Read all the files. Note this: I can read \textbf{ANY} number of
+%% files. I assume you are above \texttt{permafrost} and then:
+%% <<reading-codons,results='hide'>>=
+%% files <- dir(path = "./permafrost", full.names = TRUE)
+%% sequences <- lapply(files, function(x) scan(x, what = "", quiet = TRUE))
+%% @ 
+%% \noindent (using \texttt{quiet} is so as to avoid 5000 lines of
+%% uninteresting output).
+
+
+%% How do we know if a sequence has a stop codon? The next will do, but note
+%% it is general enough to accommodate any set of codons:
+%% <<>>=
+%% stopCodons <- c("TAA", "TAG", "TGA")
+
+%% matchAnyCodon <- function(x, codons = stopCodons) {
+%%   any(sapply(codons, function(codon) grepl(codon, x)))
+%% }
+%% @ 
+
+%% Actually, for real, I'd use this different definition which is slightly
+%% faster and more strict (see also section \ref{venn}):
+
+%% <<>>=
+%% matchAnyCodon <- function(x, codons = stopCodons) {
+%%   any(vapply(codons, 
+%%              function(codon) grepl(codon, x),
+%%              logical(1)))
+%% }
+
+%% @ 
+
+%% What sequences have the stop codons? Easy:
+
+%% <<>>=
+%% seqs.stop.codon <- sapply(sequences, matchAnyCodon)
+%% @ 
+
+
+%% Make sure nothing strange (such as missing values, it is a vector of
+%% length 5000, etc):
+%% <<results='hide'>>=
+%% summary(seqs.stop.codon)
+%% str(seqs.stop.codon)
+%% @ 
+
+
+
+%% Split the sequences into two sets, those with and those without the stop codons:
+
+%% <<>>=
+%% seqsStop <- sequences[seqs.stop.codon]
+%% seqsNonStop <- sequences[!seqs.stop.codon]
+%% @ 
+
+%% Lengths?
+%% <<results='hide'>>=
+%% summary(sapply(seqsStop, nchar))
+%% summary(sapply(seqsNonStop, nchar))
+%% @ 
+
+%% Frequency of nucleotides? First, we need a function to break into
+%% characters and then tabulate; we just want the frequency of T. But the
+%% following code is not a good idea and can give (and gives here) incorrect
+%% results. Why?
+
+%% <<>>=
+%% fnucl0 <- function(x) {
+%%     indivc <- strsplit(x, "")[[1]]
+%%     table(indivc)[4]/length(indivc)
+%% }
+%% @ 
+
+%% This is better:
+%% <<>>=
+%% fnucl <- function(x) {
+%%     indivc <- strsplit(x, "")[[1]]
+%%     table(indivc)["T"]/length(indivc)
+%% }
+%% @ 
+
+%% Eh, instead of length(indivc) can use nchar.
+
+%% We are done %% this breaks if I give the output
+%% <<results='hide'>>=
+%% summary(sapply(seqsStop, fnucl))
+%% summary(sapply(seqsNonStop, fnucl))
+
+%% @ 
+
+%% Why do we get two NAs in the second call? What could we do ---maybe if
+%% there is no T we want a 0, not an NA?
+
+
+
+%% \subsubsection{How did I generate the data?}
+
+%% The data are all made up. Here is the code:
+
+%% %% no need for file.remove: we overwrite.
+%% <<eval=FALSE>>=
+%% setwd("permafrost")
+%% set.seed(1234)
+%% nseqs <- 5000
+
+%% nt <- c("A", "C", "G", "T")
+
+%% generate <- function(l1 = 10, l2 = 500) {
+%%     ls <- round(runif(1, l1, l2))
+%%     return(paste0(sample(nt, ls, replace = TRUE), 
+%%                   collapse = ""))
+%% }
+
+%% generateAndWrite <- function() {
+%%     namef <- paste(sample(c(LETTERS, 0:9), 12), collapse = "")
+%%     seq <- generate()
+%%     writeLines(seq, con = paste0("./permafrost/", namef))
+%% }
+
+%% tmp <- replicate(nseqs, generateAndWrite())
+
+%% @ 
+
+
+%% \subsubsection{A few comments}
+%% There is a certain degree of informality here. Note that in some functions
+%% I explicitly use a \texttt{return} (which is what I usually like to do),
+%% but in some I did not (it is not really necessary). I also used
+%% \texttt{sapply} a lot; in longer code or inside functions I'd have used
+%% something else, such as \texttt{unlist(lapply)} or \texttt{vapply}.
+
+%% Regardless of those details, please note how brief and expressive the R
+%% code can be and how easy it is to present a rather general solution.
+
+
+%% \clearpage
+
+
+
+
+\subsection{Those common genes and some Venn diagrams}\label{venn}
+Someone has examined what genes are over-expressed in three different
+conditions (three different drugs)\footnote{This data have been kindly
+  provided by Luis del Peso, at the Department of Biochemistry,
+  Universidad Aut\'onoma de
+  Madrid. \Burl{http://www.iib.uam.es/persona?id=lpeso}}. They are called
+``Condition\_A.txt'', ``Condition\_B.txt'', ``Condition\_C.txt''. You want
+to understand which are over-expressed under more than one drug. You might
+want to know which are overexpressed in three conditions, or which are
+overexpressed in exactly these two conditions, etc. Or find out how many
+are overexpressed under two of the drugs but not the third. Etc.
+
+We will walk over a case here, thinking about making the solution as
+general as possible (e.g., with other file names, and with different
+number of drugs), in case we face the same problem in the future.
+
+
+First, read the data. They are just three vectors:
+
+<<>>=
+
+A <- scan("Condition_A.txt", what = "")
+B <- scan("Condition_B.txt", what = "")
+C <- scan("Condition_C.txt", what = "")
+
+
+@ 
+
+
+Which are overexpressed in both A and B? And in A, B, C?
+<<>>=
+sort(intersect(A, B))
+sort(intersect(A, intersect(B, C)))
+## simpler
+sort(Reduce(intersect, list(A, B, C)))
+@ 
+
+
+
+
+But that is ugly because, what if we had 15 treatments? Or different
+names? Let's assume only ``Condition\_'' is fixed. And this thing of
+calling \code{intersect} many times \ldots ugly too (though we can use
+\texttt{Reduce}). And it is hard to see how many are common to A and B,
+and A and C, etc easily. So we would like a matrix that has, as columns,
+the conditions, and as rows the gene names. In each entry, a TRUE means
+overexpressed, and a FALSE not-overexpressed.
+
+
+Let's try something else, and try to be a little bit more general.
+
+
+First, try to make reading the genes a simple thing. Place all of them in
+a list, with as many elements as conditions.
+<<>>=
+####   Read all lists of genes that start with "Condition" 
+####    and store as a list
+gf <- dir(pattern = "^Condition_")
+ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
+
+@ 
+
+%% Using vapply here is very hard.
+%% <<>>=
+%% ovxpGenes_b <- vapply(gf, function(x) scan(x, what = ""),
+%%                       character(1))
+%% @ 
+
+
+There is nothing wrong with the call to \texttt{sapply}, but using
+\texttt{lapply} there might be preferable (but we'd need to do other
+things for dealing with the names of the files, such as use the names
+stored in the ``gf'' object).
+
+
+But ``Condition\_'' is repeated as a prefix. And txt as postfix.  Get rid
+of them in the names of the list:
+
+<<>>=
+names(ovxpGenes) <- 
+    sapply(names(ovxpGenes), 
+           function(x) strsplit(strsplit(x, 
+                                         "Condition_")[[1]][2], 
+                                "\\.txt")[[1]][1])
+
+@ 
+
+We could also do:
+<<eval=FALSE>>=
+names(ovxpGenes) <- sapply(strsplit(names(ovxpGenes), 
+                                    "Condition_"), 
+                           function(x) 
+                               strsplit(x[2], "\\.txt")[[1]][1])
+@ 
+
+(Note that using \texttt{x[2]} and \texttt{x[[2]]} works equally well in
+the last example).
+
+
+But maybe even simpler would be to use \texttt{gsub}: we do not split the
+string and then discard pieces, but directly replace the unwanted text by ``'':
+
+<<>>=
+
+ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
+
+gsub(".txt", "", gsub("Condition_", "", names(ovxpGenes)), 
+     fixed = TRUE)
+
+names(ovxpGenes) <- gsub(".txt", "", gsub("Condition_", "", 
+                                          names(ovxpGenes)), 
+                         fixed = TRUE)
+
+@ 
+
+
+
+Now, prepare an object that is very easy to use for any further analysis:
+a matrix that has, as columns, the conditions, and as rows the gene
+names. In each entry, a 1 means overexpressed, and a 0 not-overexpressed.
+
+
+First, find the union of all gene names and return a single entry of each
+name. We do not use \code{union}, but \code{unique}, which does what we
+want here.
+
+%% what is wrong with union? that it makes no sense, since this is a
+%% vector? Nope. That it is simpler to call unique than several union
+%% invocations or something like mapping union for iterative use.
+
+<<>>=
+all.the.genes <- sort(unique(unlist(ovxpGenes)))
+@ 
+
+
+Now, there are several ways of getting our matrix.
+
+First, using a lookup table kind of approach; that is one important virtue
+of this solution: lookup tables are extremely easy to use in R because we
+can use names for vectors, names for rows and columns of matrices, etc.
+
+<<results='hide'>>=
+
+f2 <- function(x, all.the.genes) {
+    vv <- rep(FALSE, length(all.the.genes))
+    names(vv) <- all.the.genes
+    vv[x] <- TRUE
+    return(vv)
+}
+
+f2(ovxpGenes[[1]], all.the.genes)
+
+@ 
+
+
+
+Alternatively, this very simple and elegant solution was suggested in
+class by Carlos Carretero:
+
+<<results='hide'>>=
+
+sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+
+@ 
+
+This is, definitely, much simpler and better than my solution above.
+
+
+
+
+
+We are almost done:
+
+<<>>=
+
+overexpressed <- sapply(ovxpGenes, 
+                        function(z) {all.the.genes %in% z})
+
+rownames(overexpressed) <- all.the.genes
+
+@ 
+
+STOP! We gave several possible ways of doing this: compare the
+output of those  (maybe using \texttt{identical} or, for programming,
+inside functions, \texttt{stopifnot}). Or, even better, use a formal
+testing framework (such as testthat or RUnit).
+
+
+That works. However, I think there is merit in following Hadley Wickham's
+advice of avoiding \code{sapply} inside functions (see section 9.4 of his
+``Advanced R''), and in a second we will be putting some of the above
+inside functions. So let's be more strict:
+
+<<>>=
+
+overexpressed <- vapply(ovxpGenes, 
+                        function(z) {all.the.genes %in% z},
+                        logical(length(all.the.genes)))
+
+rownames(overexpressed) <- all.the.genes
+
+@ 
+
+
+Now, a few checks:
+
+<<>>=
+## note the following two match
+colSums(overexpressed)
+lapply(ovxpGenes, length)
+# But if automatic, better to use stopifnot
+
+stopifnot(colSums(overexpressed) == 
+              unlist(lapply(ovxpGenes, length)))
+
+
+## And check names of genes
+h <- rownames(overexpressed)[which(overexpressed[, "A"] == 1)]
+stopifnot(identical(h, sort(ovxpGenes[["A"]])))
+
+@ 
+
+
+Now, a plot after all this work (you will need to install ``limma'' ---go
+to section \ref{packages})
+<<>>=
+library(limma)
+vennDiagram(overexpressed)
+@ 
+
+And it is now also trivial to find out which are overexpressed in
+arbitrary conditions. For instance (the number is the row number),
+overexpressed in both A and B:
+<<>>=
+
+which(overexpressed[, "A"] & overexpressed[, "B"])
+length(which(overexpressed[, "A"] & overexpressed[, "B"]))
+@ 
+
+or
+
+<<>>=
+sum(overexpressed[, "A"] * overexpressed[, "B"])
+@ 
+
+And which are induced in all?
+<<>>=
+which(rowSums(overexpressed) == 3)
+## or safer?
+which(rowSums(overexpressed) > 2.99)
+@ 
+
+And how many are overexpressed in 3, in 2, and in 1?
+<<>>=
+table(rowSums(overexpressed))
+@ 
+
+Etc, etc.
+
+
+By the way, once we have the list of genes, finding the intersection of
+all is simple (this might be considered more advanced, but is great
+because this will work with lists of arbitrary number of components):
+<<>>=
+sort(Reduce(intersect, ovxpGenes))
+@ 
+
+
+
+\subsubsection{A few functions to do the job automatically}
+Drawing the Venn diagram and the last operations of tables and finding
+out which are overexpressed is the fun thing. But we had to do some work
+that, if we are going to repeat, we might want to automate. Let's do that.
+Notice that all we need to do is just generalize slightly over what we
+did. That is all.
+
+Note, however, that inside the new functions I will often shorten the
+names of variables or at least make them slightly different from
+above. Why? Because inside the function I can afford to shorten it, and it
+leads to cleaner code, and because I avoid accidentally using objects
+previously created (this could happen because of R's scoping rules).
+
+
+
+First, the reading data part. We will assume that we will always find all
+files with the gene identity in a directory, and that all files will have
+a common prefix and end in a common postfix. We will use default values,
+though.  Oh, by the way, I use \texttt{sapply} below, when creating
+\texttt{ovG}; why? Would you change it to use \texttt{vapply}?
+%%% I want sapply, as I want lists of different length
+
+<<>>=
+
+## string, string (pre and post-fix file names) ->
+##                 list with contents of files
+## Files contain gene names
+## List has as many elements as files
+readListGenes <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    ## Read a bunch of files, named "prefixSOMETHING.postfix",
+    ## and place the gene names inside in a list
+    gg <- dir(pattern = paste0("^", prefix))
+    ovG <-  sapply(gg, function(x) scan(x, what = ""))
+    matchpost <- paste0("\\.", postfix)
+    names(ovG) <- 
+    sapply(names(ovG), 
+           function(x) strsplit(strsplit(x, 
+                                         prefix)[[1]][2], 
+                                matchpost)[[1]][1])
+    return(ovG)
+}
+
+
+@ 
+
+Now, place everything in a matrix.
+
+
+<<>>=
+## list of gene names -> logical matrix (nrow = unique genes,
+##                                       ncol = length of list)
+##                       for gene present/absent in each list component
+trueIfMatch <- function(lx) {
+    allgenes <- sort(unique(unlist(lx)))
+    ove <- vapply(lx, function(z) {allgenes  %in% z } ,
+           logical(length(allgenes)))
+    rownames(ove) <- allgenes
+    return(ove)
+}
+
+@ 
+
+So that we end up with:
+<<>>=
+## string, string (pre and post-fix file names) ->
+##                        logical matrix (nrow = unique genes,
+##                                       ncol = length of list)
+##                       for gene present/absent in each file
+
+geneFiles2Mat <- function(prefix = "Condition_", 
+                          postfix = "txt") {
+    l1 <- readListGenes(prefix = prefix, postfix = postfix)
+    return(trueIfMatch(l1))
+}
+
+
+@ 
+
+And now just call it:
+
+<<>>=
+ovxABC <- geneFiles2Mat()
+@ 
+
+
+Wait: two final checks:
+<<>>=
+
+stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
+                    sort(Reduce(intersect, readListGenes()))
+                    ))
+
+stopifnot(identical(ovxABC, overexpressed))
+
+@ 
+
+
+
+\subsubsection{And how do we know it works?}
+If we were more serious about this, probably formally adding tests would
+be warranted. See section \ref{test}. We've done some testing above, but
+this can be done much more seriously.
+
+\subsubsection{\texttt{dplyr?}}
+\label{sec:dplyr}
+
+We will not cover this here, but we should add that some of the operations
+above could have used \texttt{full\_join} and similar functions in the
+R package \texttt{dplyr}.
+
+This code could get you going (results not shown)
+<<results='hide'>>=
+
+library(dplyr)
+
+dfj <- dplyr::full_join(data.frame(g = A, A = 1), 
+                        data.frame(g = B, B = 1))
+
+sum(dfj[, "A"] * dfj[, "B"], na.rm = TRUE)
+
+@ 
+
+
+
+\subsubsection{Other solutions in lieu of f2}
+
+%% This is the simplest I came up with.
+
+%% FIXME: dplyr and full_join?
+
+%% Note this, via full join
+%% dplyr::full_join(data.frame(g = A, A = 1), data.frame(g = B, B = 1))
+
+
+%% FIXME: some forme of reshaping?
+
+First, find the union of all gene names and return a single entry of each
+name. We do not use \code{union}, but \code{unique}, which does what we
+want here.
+
+%% what is wrong with union? that it makes no sense, since this is a
+%% vector? Nope. That it is simpler to call unique than several union
+%% invocations or something like mapping union for iterative use.
+
+<<>>=
+all.the.genes <- sort(unique(unlist(ovxpGenes)))
+@ 
+
+
+Which of those genes are in the first condition?  Or which, among
+all.the.genes, are overexpressed in condition A? This works
+<<>>=
+head(match(ovxpGenes[[1]], all.the.genes))
+@ 
+\noindent (I used \code{head} to show only the first part of the output).
+
+
+Can we do that for all the lines, without having to explicitly do that for
+every single cell line? This kind of works \ldots but the output is not in
+an easily usable form: \code{sapply} cannot simplify as the return objects are of
+different length.
+<<>>=
+
+str(sapply(ovxpGenes, function(z) {match(z, all.the.genes)}))
+
+@ 
+\noindent(I used \code{str} to show only the first part of the output).
+
+We want to return a TRUE where the gene is overexpressed and a FALSE if
+not \footnote{I find it better to be as explicit as possible. An
+  alternative would be to return a 1 of type integer, using ``1L'', and a
+  0 of type integer (0L).}. In
+other words, we want a vector for each experiment with all the positions
+filled up. Lets do that directly as the return of a function:
+
+
+%%FIXME!! this is a lot simpler!!!
+%% uu <- sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+
+<<>>=
+
+f1 <- function(x, all.the.genes) {
+    ## Note: this could be done in fewer lines, or even
+    ## by an anonymous function used in sapply
+    vv <- rep(FALSE, length(all.the.genes))
+    pos.match <- match(x, all.the.genes)
+    vv[pos.match] <- TRUE
+    return(vv)
+}
+
+@ 
+
+
+
+
+See if it works
+<<>>=
+head(f1(ovxpGenes[[1]], all.the.genes))
+## and on the third?
+head(f1(ovxpGenes[[3]], all.the.genes))
+@ 
+
+
+But this is probably clearer? Using a lookup table kind of approach; that
+is one important virtue of this solution: lookup tables are extremely easy
+to use in R because we can use names for vectors, names for rows and
+columns of matrices, etc.
+
+<<>>=
+
+f2 <- function(x, all.the.genes) {
+    vv <- rep(FALSE, length(all.the.genes))
+    names(vv) <- all.the.genes
+    vv[x] <- TRUE
+    return(vv)
+}
+
+@ 
+
+I leave it as an exercise to show that both functions, \texttt{f1} and
+\texttt{f2}, are doing the same thing. 
+
+And you can try another solution, one that uses the following idea:
+<<eval=FALSE>>=
+which( all.the.genes %in% x )
+@ 
+
+So:
+<<>>=
+f3 <- function(x, all.the.genes) {
+    vv <- rep(FALSE, length(all.the.genes))
+    vv[which( all.the.genes %in% x ) ] <- TRUE
+    return(vv)
+}
+
+@ 
+
+
+This very simple and elegant solution was suggested in class by
+Carlos Carretero: 
+
+<<results='hide'>>=
+sapply(ovxpGenes, function(z) {all.the.genes %in% z})
+
+@ 
+
+This is, definitely, much simpler and better than my solutions above.
+
+
+
+
+
+%% First, give \code{f1} a better name
+%% (and you could even define \code{trueIfMatch} inside \code{geneListToMatrix}):
+
+%% %%% FIXME: why don't I use f2 here?
+%% %% and what about left_join, etc?
+
+%% <<>>=
+
+%% trueIfMatch <- function(x, allgenes) {
+%%     ## Note: this could be done in fewer lines, or even
+%%     ## by an anonymous function used in sapply
+%%     vv <- rep(FALSE, length(allgenes))
+%%     pos.match <- match(x, allgenes)
+%%     vv[pos.match] <- TRUE
+%%     return(vv)  
+%% }
+
+
+%% geneListToMatrix <- function(lgenes) {
+%%     ## For you: add a meaningful comment here!
+%%     allgenes <- sort(unique(unlist(lgenes)))
+%%     ox <- vapply(lgenes, 
+%%                  function(x) trueIfMatch(x, allgenes), 
+%%                  logical(length(allgenes)))
+%%     rownames(ox) <- allgenes  
+%%     return(ox)
+%% }
+
+%% @ 
+
+
+%% Now, create a function that will do everything:
+%% <<>>=
+
+%% geneFiles2Mat <- function(prefix = "Condition_", 
+%%                           postfix = "txt") {
+%%     l1 <- readListGenes(prefix = prefix, postfix = postfix)
+%%     return(geneListToMatrix(l1))
+%% }
+
+%% @ 
+
+
+%% If we use the simple, elegant solution above we can write:
+
+
+\clearpage
+\subsection{Permutation test}\label{permut}
+We will write a permutation test for comparing two means. Before we get
+carried away, the code below is not the most efficient. More importantly,
+we will not deal with important time saving ideas (such as using
+equivalent statistics, an idea Edgington stressed a lot in his books) nor
+with important statistical ideas (such as using sufficient
+statistics). This is just for the sake of writing a quick and dirty
+permutation test and gaining some programming practice. Note also that you
+have code readily available for this and similar tasks in several R
+packages.  Permutation tests are extremely powerful, but also misleadingly
+simple; using them correctly is often more subtle than some ``data
+scientists'' who've never taken a stats course would lead you to believe
+(e.g., are you really testing what you think you are testing?), and there
+are many scenarios/questions that might be hard to fit in them (i.e., they
+are not \textbf{the} solution to the world's problems); \textit{caveat
+  emptor}.
+
+
+If you do not remember or know what a permutation test is, look it
+up. I'll assume you have a general idea. Stop here about the main
+steps (remember that breaking the problem down into manageable and
+meaningful, smaller, self-contained, problems is a key part of programming). 
+
+
+Now, after thinking, this is what we need to do:
+\begin{enumerate}
+\item Compute our statistic (the difference in means here).
+\item Generate data distributions according to the null hypothesis.
+\item Compute the statistic for each new data configuration.
+\item Compare what we compute from our original data with what we obtain
+  under the null ($H_o$).
+\end{enumerate}
+
+
+
+To play around, let's create some extreme fake data:
+<<>>=
+# unlikely to differ
+d11 <- rnorm(15)
+d12 <- d11[1:7]
+
+# most likely very different
+d21 <- rnorm(13)
+d22 <- d21[1:9] + 3
+@ 
+
+You can check the data will do what you want
+<<results='hide'>>=
+t.test(d11, d12)
+t.test(d21, d22)
+@ 
+
+\subsubsection{First attempt}
+Now, the code:
+<<>>=
+# for steps 1 and 3
+mean.d <- function(x1, x2) 
+  mean(x1) - mean(x2)
+
+## seems to work
+mean.d(d11, d12)
+@ 
+
+For step 3 we will examine to ways of doing it. Make sure you understand
+the differences
+<<>>=
+sample.and.stat1 <- function(x1, x2) {
+    tmp <- sample(c(x1, x2))
+    g1 <- tmp[seq(x1)]
+    g2 <- tmp[seq(from = length(x1) + 1, 
+                  to = length(tmp))]
+    return(mean.d(g1, g2))
+}
+
+sample.and.stat2 <- function(x1, x2) {
+    indices <- seq(from = 1, 
+                   to = length(x1) + length(x2))
+    indices1 <- sample(indices, length(x1))
+    indices2 <- setdiff(indices, indices1) 
+    alldata <- c(x1, x2)
+    return(mean.d(alldata[indices1], 
+                  alldata[indices2]))
+}
+@ 
+
+Compare them:
+<<>>=
+set.seed(1) 
+sample.and.stat1(d11, d12)
+sample.and.stat1(d11, d12)
+
+set.seed(1) 
+sample.and.stat2(d11, d12)
+sample.and.stat2(d11, d12)
+@ 
+Make sure you understand what happened. (Hint: are both functions
+implicitly calling the random number generator the same number of times?)
+
+
+
+<<>>=
+
+set.seed(1) 
+null <- sample.and.stat1(d11, d12)
+runif(1)
+
+set.seed(1) 
+null <- sample.and.stat2(d11, d12)
+runif(1)
+
+set.seed(1)
+null <- runif(length(d11))
+runif(1)
+
+set.seed(1)
+null <- runif(length(c(d11, d12)))
+runif(1)
+
+
+## of course, this makes no difference
+
+set.seed(2) 
+null <- sample.and.stat1(d11, d12)
+runif(1)
+
+set.seed(2) 
+null <- sample.and.stat2(d11, d12)
+runif(1)
+
+set.seed(2)
+null <- runif(length(d11))
+runif(1)
+
+set.seed(2)
+null <- runif(length(c(d11, d12)))
+runif(1)
+@ 
+
+
+%% Now, jump to permut-test-2.R
+
+
+
+
+Now, wrap the above, and create a single function:
+<<>>=
+permut.testA <- function(data1, data2, 
+                         fsample = sample.and.stat1,
+                         num.permut = 100) {
+    obs.stat <- mean.d(data1, data2)
+    
+    permut.stat <- replicate(num.permut, 
+                             fsample(data1, data2))
+    pv <- (sum(abs(permut.stat) > 
+                   abs(obs.stat)) + 1)/(num.permut + 1)
+    
+    message("\n p-value is ", pv, "\n")
+    return(list(obs.stat = obs.stat,
+                permut.stat = permut.stat,
+                pv = pv))
+}
+@ 
+
+Make sure you understand what we've done. For instance, note that we are
+passing a function as an argument\footnote{As for the denominator and
+  numerator (the \code{+ 1}): that is a minor technical
+  detail, and it is true that it makes little difference as $n \rightarrow
+  \infty$. However, that is the correct way of doing it (even if many
+  implementations get it wrong and do not include it). Some of the popular
+  classics, such as Edgington, or Noreen, etc, already mention it very
+  clearly. Think about it: why should you add that 1?}
+
+
+Is it working?
+<<>>=
+tmp <- permut.testA(d11, d12)
+tmp <- permut.testA(d21, d22)
+@ 
+It looks like it is.
+
+
+Well, in fact it is \textbf{wrong}, but we might not have noticed it. What
+p-value would you expect?
+<<>>=
+tmp <- permut.testA(d11, d11)
+tmp <- permut.testA(d12, d12)
+@ 
+
+Moral: check, check, check. One should check against different
+scenarios. (In fact, the above might often look correct a lot of the time;
+try running the comparison of d11 with itself with 100000 permutations).
+
+
+\subsubsection{Test!!!}\label{test}
+
+If we had more time, we would \textbf{definitely} write a test suite, and
+add some of the above as test cases. We cannot get into details, but there
+is one thing called \textbf{test-driven development}
+(\Burl{http://en.wikipedia.org/wiki/Test-driven_development}).\\
+
+Maybe you do not need/want to follow it completely, but writing and using
+tests should be a must for any serious project. In R there are a couple of
+packages that help: ``RUnit'' is a popular one, though ``testthat'' might
+be a lot
+simpler(\Burl{http://4dpiecharts.com/2014/05/12/automatically-convert-runit-tests-to-testthat-tests/}).
+For using ``testthat'' see \Burl{http://r-pkgs.had.co.nz/tests.html} and
+\Burl{http://journal.r-project.org/archive/2011-1/RJournal\_2011-1\_Wickham.pdf}.
+
+
+
+\subsubsection{Second attempt}
+
+I will give the fixed code. You have to understand what changed:
+<<>>=
+permut.testB <- function(data1, data2, 
+                         fsample = sample.and.stat1,
+                         num.permut = 100) {
+    obs.stat <- mean.d(data1, data2)
+    
+    permut.stat <- replicate(num.permut, 
+                             fsample(data1, data2))
+    pv <- (sum(abs(permut.stat) >= 
+                   abs(obs.stat)) + 1)/(num.permut + 1)
+    
+    message("\n p-value is ", pv, "\n")
+    return(list(obs.stat = obs.stat,
+                permut.stat = permut.stat,
+                pv = pv))
+}
+@ 
+
+Quick check (you should do it more thoroughly)
+<<>>=
+
+tmp <- permut.testB(d11, d11)
+
+tmp <- permut.testB(d12, d12)
+@ 
+
+
+
+Better:
+<<>>=
+
+stopifnot(suppressMessages(permut.testB(d11, d11))$pv == 1)
+stopifnot(suppressMessages(permut.testB(d12, d12))$pv == 1)
+xr <- runif(10)
+stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1)
+
+@ 
+
+
+Much better:
+
+<<>>=
+library(testthat)
+@ 
+
+<<>>=
+
+test_that("p-value = 1 when the two vectors identical", {
+    n <- 10
+    for(i in 1:n) {
+       xr <- runif(15)
+       stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1) 
+    }
+})
+
+@ 
+
+<<eval=FALSE>>=
+
+test_that("p_v 1", {
+    ntests <- 100
+    for(i in 1:ntests) {
+        xr <- rnorm(10)
+        expect_identical(permut.testB(xr, xr)$pv, 1)
+    }
+})
+
+@ 
+
+In fact, it is easy to argue that the test should have been written
+first. 
+
+
+
+\subsubsection{Final thing}
+OK, that is good. But let's add a figure so things look more like in textbooks:
+
+<<>>=
+
+permut.test <- function(data1, data2, 
+                        fsample = sample.and.stat1, 
+                        num.permut = 100) {
+  obs.stat <- mean.d(data1, data2)
+  permut.stat <- replicate(num.permut, 
+                           fsample(data1, data2))
+  pv <- (sum(abs(permut.stat) >= abs(obs.stat)) + 
+         1) / (num.permut + 1)
+  message("\n p-value is ", pv, "\n")
+  title <- paste(deparse(substitute(data1)), "-",
+                 deparse(substitute(data2)))
+  subtitle <- paste0("Distribution of permuted statistic.",
+           " In red, observed one.") 
+  hist(permut.stat, xlim = c(min(obs.stat, 
+                      min(permut.stat)),
+                      max(obs.stat, 
+                          max(permut.stat))),
+       main = title, xlab = "", sub = subtitle)
+  abline(v = obs.stat, col = "red")
+  return(list(obs.stat = obs.stat,
+              permut.stat = permut.stat,
+              pv = pv))
+}
+
+@ 
+
+
+Run it
+<<fig.cap='Two examples of permutation tests', fig.width=5, fig.height=9>>=
+par(mfrow = c(2, 1))
+tmp <- permut.test(d11, d12, num.permut = 1000)
+tmp <- permut.test(d21, d22, num.permut = 1000, 
+                   fsample = sample.and.stat2)
+@ 
+
+
+You might want to compare with t-tests, etc. 
+\clearpage
+\subsection{Selection bias in classification}\label{selbias}
+
+% \bibliography{R-quick-intro}
+
+This is for you to work on your own. Show the effects of selection bias in
+classification problems. This is what we want:
+
+\begin{itemize}
+\item Simulate some data, without signal, for a number of subjects and a
+  two-class problem.
+  \item For simplicity use the randomForest algorithm. 
+  \item For simplicity, use cross-validation.
+  \item Filter genes using the p-value from a t-test.
+  \item Of course, the selection bias problem will arise when you filter
+    genes using all subjects.
+  \item You should also cross-validate including filtering within the
+    cross-validation (i.e., do not filter genes using all subjects). This
+    is, as we all know, the correct procedure.
+\end{itemize}
+
+
+
+A few hints:
+
+\begin{itemize}
+\item Install the ``randomForest'' package.
+\item Note that in randomForest you can fit a random forest to a set of
+  data, and predict on another.
+\item The simplest thing is to get just the class prediction. It would be
+  even better to also get the ``votes'' and assess classification accuracy
+  using something like Brier's score or coefficient of concordance.
+\item For cross-validation, the following lines of code show a very
+  compact way of doing it. The code is taken from Venables and Ripley, ``S
+  programming'', 2000, Springer, p.\ 175, and I have added a few notes and
+  an example:
+  
+<<results='hide'>>=
+## x2 is a data vector
+x2 <- rnorm(27)
+N <- length(x2)
+knumber <- 10  ## the k in k-fold
+## In the k-th time, we leave out as testing set those
+## subjects that have index.select = 
+## Thus, index.select is the vector of indices
+index.select <- sample(rep(1:knumber, 
+                           length = N), 
+                       N, replace = FALSE)
+
+rep(1:knumber, length = N)
+table(index.select)
+sum(index.select != 1)
+sum(index.select != 10)
+sum(index.select != 6)
+@   
+  
+Once you have that, you can do something like
+
+<<eval=FALSE>>=
+do.something.with.train.and.test <- function(train, test) {
+    ## As it says, it does something with the 
+    ## two sets of data
+}
+
+for(sample.number in 1:knumber) {
+    x2.train <- x2[index.select != sample.number]
+    x2.test <- x2[index.select == sample.number]
+    do.something.with.train.and.test(x2.train, x2.test)
+}
+@ 
+
+\item We will train a model with a set of data, and test it with those
+  left out. Again, with random forest, use \code{randomForest} and
+  \code{predict} (which is really \code{predict.randomForest}). Look at
+  the help.
+  
+\item For the simplest ``classification error'' we just compared observed
+  class with predicted class. How do you do it?
+  
+\item Beware: randomForest (as most other modeling functions) expects data
+  with subjects in rows and variables (genes) in columns.
+  
+\item For one simulated data set, you can get the effects of selection
+  bias. But you will want to repeat this several times.
+  
+  
+\item Oh, how do you compare? Is this like a paired design (for each
+  simulated data set, you get two numbers, one under selection bias and
+  one under non-selection bias)? Or is it something else? Make sure that
+  how you show your results reflects how you perform the simulations.
+  
+  
+\item The following should be function arguments (in parentheses,
+  suggested default arguments, not because they are realistic now, but
+  just to speed up the process): number of genes (1000), ``k'' in k-fold
+  cross-validation (10), number of genes that are selected to be used in
+  the classifier (10), number of times the whole process is repeated
+  (10). Number of subjects can be set to a number (50), or you can pass
+  the sizes of each of the two classes (e.g., 25 and 25); if number of
+  subjects, what would you do with odd numbers?
+  
+  
+\item The above are default arguments. But enlightenment will come easily
+  if you play around with those: is selection bias more severe the more
+  genes you select? The more genes you can select from?  What about number
+  of subjects? Etc, etc.
+
+\item You will want textual output and figures, of course.  
+  
+\end{itemize}
+
+
+A basic piece of code that does most of the above takes less than 70 lines. 
+
+
+
+%% \section{Document history}
+%% \begin{description}
+%% \item[1.0] November 2014.
+%%   \begin{itemize}
+%%   \item First version
+%%   \end{itemize}
+%% \end{description}
+
+\section{Session info}
+<<>>=
+sessionInfo()
+@ 
+
+
+
+
+%% \section{Test}
+%% <<>>=
+%% mytry(log("a"))
+%% @ 
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% ispell-local-dictionary: "en_US"
+%%% coding: utf-8
+%%% End:
+
+%% so if it is not utf-8, knitr complaints about character encoding when
+%% processing some chunks. And I guess that is because my locale is UTF-8.
+  
+%%%%%%%%%%%%%% For pdf, I use runKnitr.sh which has
+
+%% #!/bin/bash
+
+%% ## https://github.com/jan-glx/patchKnitrSynctex
+
+%% FILE=$1
+%% BASENAME=$(basename $FILE .Rnw)
+
+%% RSCRIPT="/usr/bin/Rscript"
+
+%% $RSCRIPT -e 'library(knitr); opts_knit$set("concordance" = TRUE); knit("'$1'")'
+%% ## pdflatex should have -synctex=1, which my alias already does
+%% pdflatex --file-line-error --shell-escape "${1%.*}"
+%% ## get bib to work
+%% texi2pdf $BASENAME.tex 
+%% $RSCRIPT -e "source('~/bin/patchKnitrSynctex-RDU.R'); patchKnitrSynctex('${1%.*}.tex')"
+%% rm $BASENAME.Rnw.synctex.gz
+%% rm $BASENAME.Rnw.pdf
+%% ln -s $BASENAME.synctex.gz $BASENAME.Rnw.synctex.gz
+%% ln -s $BASENAME.pdf $BASENAME.Rnw.pdf
+
+%% ## Without the links, you can go from the PDF to
+%% ## Emacs, but not the other way around because emacs complaints that it
+%% ## cannot find a *.Rnw.pdf. And not, I cannot get past that.
+%% ## If you create that, via symlink, then when you
+%% ## try to go from Emacs to the PDF, it opens a new viewer. And from that
+%% ## one you cannot move back to Emacs.
+%% ## I just need to link $.synctex.gz to $.Rnw.synctex.gz
+%% ## and .pdf to Rnw.pdf and C-c C-v from emacs. That's it.
+%% ## From PDF to emacs by shift-left click (always as "browse tool" with mouse)
+%% ## Of course, needs emacs to have the server started
+
+%% ## if run from shell, can jump to error, but goes to .tex, not .Rnw
+
+%% ## It would be great to have this work from Emacs with C-c C-c
+%% ## maybe with start-process or similar.
+  
+
+  
+  
+%%% For HTML, I use make-knitr-hmtl.sh which is
+  
+%% #!/bin/bash
+%% FILE=$1
+%% BASENAME=$(basename $FILE .Rnw)
+%% RSCRIPT="/usr/bin/Rscript"
+%% BASENAME2=$BASENAME-knitr-html
+%% FILE2=$BASENAME2.Rnw
+
+%% cp $FILE $FILE2
+%% sed -i 's/^%%listings-knitr-html%%//' $FILE2
+%% $RSCRIPT -e 'library(knitr); knit("'$FILE2'")'
+
+%% sweave2html $BASENAME2
+%% mv $BASENAME2.html $BASENAME.html
+
+%% mkdir $BASENAME-html-dir
+%% cp $BASENAME.html ./$BASENAME-html-dir/.
+%% cp -a figure ./$BASENAME-html-dir/.
+%% zip -r $BASENAME-html-dir.zip $BASENAME-html-dir
+  
+  
+%% And uses sweave2html from http://biostat.mc.vanderbilt.edu/wiki/Main/SweaveConvert#Converting_from_LaTeX_to_html  
