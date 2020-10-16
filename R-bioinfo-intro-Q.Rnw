@@ -939,7 +939,7 @@ rm(z2)
 @
 
 \subsubsection{Activities}
-\label{sec:activities-3}
+\label{sec:activities-3a}
 
 \begin{enumerate}
 \item Make sure you type every single one of the expressions above and
@@ -1021,7 +1021,7 @@ Oh, by the way, RStudio includes an integrated help browser. Use it if you
 use RStudio.
 
 \subsubsection{Activities}
-\label{sec:activities-4}
+\label{sec:activities-4a}
 
 \begin{enumerate}
 \item Make sure you type every single one of the expressions above and
@@ -1064,7 +1064,7 @@ t.test(x ~ z)
 @ 
 
 \subsubsection{Activities}
-\label{sec:activities-5}
+\label{sec:activities-5a}
 
 \begin{enumerate}
 \item Make sure you try to understand the error messages from the above
