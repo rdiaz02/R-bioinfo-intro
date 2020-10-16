@@ -743,9 +743,52 @@ hist(c(1, 2, 7, 7, 7, 8, 8))
 @
 
 
+\item And what about that \texttt{apply}?
+
+  From your experience with other programming languages, this might make
+  sense:
+
+<<activ1_b, eval=TRUE, echo=TRUE, results=FALSE>>=
+
+## For ease
+rd2 <- randomdata[1:10, ]
+
+## Where we will store results
+pv2 <- vector(length = 10)
+
+for(i in 1:10) {
+    pv2[i] <- t.test(rd2[i, ] ~ class)$p.value
+}
+
+pv2
+
+## Compare with
+pvalues[1:10]
+
+@ 
+
+Now, use apply
+<<activ1_c, eval=TRUE, echo=TRUE, results=FALSE>>=
+apply(rd2, 1, function(z) t.test(z ~ class)$p.value)
+@ 
+
+Or very verbose (this is unnecessarily verbose):
+
+<<activ1_d, eval=TRUE, echo=TRUE, results=FALSE>>=
+
+myfunction <- function(y, classfactor = class) {
+    t.test(y ~ classfactor)$p.value
+}
+
+apply(rd2, 1, myfunction)
+
+@ 
+
+
 
 \end{enumerate}
 
+\clearpage
 
 \section{The R console for interactive calculations}\label{console}
 In what follows, I will assume that you are either running \R\ from
@@ -1159,6 +1202,28 @@ located. (You can assume that I have, sometime in the past, issued a
 \code{setwd} command.) This is just convenient.
 
 
+
+\subsubsection{Activities}
+\label{sec:activities-3}
+
+\begin{enumerate}
+  
+\item Use \texttt{read.table} with \texttt{AnotherDataSet}. Make sure R is
+  running in the same directory where the file is. And do it in two different
+  ways:
+  \begin{enumerate}
+  \item Using \texttt{header = TRUE}
+  \item Using \texttt{header = FALSE}
+  \end{enumerate}
+
+\item Repeat the above but starting R from a different directory or changing the
+  working directory of R. (You can use \texttt{setwd} or use the pull down
+  menus of RStudio: Session -> Set Working Directory). You will then use
+  \texttt{read.table} passing the path of the file.
+  
+\end{enumerate}
+
+
 \subsection{Missing values}
 And what happens with missing values? Try running the examples above after
 doing this:
@@ -1177,6 +1242,35 @@ above, in the data that is read you should see a ``NA''. The best is, as
 usual, to be explicit: use an ``NA'' in your original data, or use some
 other special character string to identify them.
 
+
+\subsubsection{Activities}
+\label{sec:activities-4}
+
+\begin{enumerate}
+\item Copy the file ``AnotherDataSet'' and create a bunch of different
+  files (say \texttt{f1.txt}, \texttt{f2.txt}, $\ldots$). You can actually
+  do this using your operating system facilities or, else, and much
+  simpler for this exercise, by opening \texttt{AnotherDataSet} in
+  RStudio, then doing the changes explained below, and saving it with the
+  name you want.
+\item You want to use the following types of changes:
+  \begin{enumerate}
+  \item Replace one or more values by ``NA''
+  \item Replace one or more values by a `` '' (a white space)
+  \item Replace several values by nothing.
+    \begin{enumerate}
+    \item Make sure you have at least two ``nothings'' one after the other.
+    \end{enumerate}
+  \end{enumerate}
+\item In each case above, make sure you can read the data set and check if
+  things make sense.
+
+  You might need to specify the separator between columns in some cases
+  above.
+  
+\end{enumerate}
+
+
 \subsection{Very large data sets}
 Yes, \R\ can deal with huge data sets. You just don't want to read them
 with \code{read.table}, or at least you do not want to use
@@ -1188,7 +1282,9 @@ things, of specialized uses, there are packages such as \code{ff} or
 \code{bigmemory}.
 
 
-\subsection{Saving tables, data, and results}
+
+
+\subsection{Saving tables, data, and results}\label{savetables}
 
 How can you save data, results, etc? Saving data in matrix or tabular form
 is easily done with \code{write.table}. 
@@ -1279,6 +1375,35 @@ and \code{save}.
 %% FIXME: somethig about dput
 %% FIXME: something about saveRDS?
 %% FIXME: something about readLines?
+
+
+
+\subsubsection{Activities}
+\label{sec:activities-5}
+
+\begin{enumerate}
+\item Make sure that you type and replicate what section \ref{saveRData} and
+\ref{savetables} explain.
+\item Use \texttt{save} to save:
+  \begin{enumerate}
+  \item A single object.
+  \item Two or three objects
+  \end{enumerate}
+  Then, open another R session (you can do this from RStudio or use
+  whatever editor or operating system facilities you use) and read
+  them.
+  
+\item Read the documentation for \texttt{readRDS} (and \texttt{saveRDS}). Then:
+  \begin{enumerate}
+  \item Save one object using \texttt{saveRDS}
+  \item Open another R session and read
+    that object using \texttt{readRDS}
+  \end{enumerate}
+\item Bring usage questions of \texttt{save.image}, \texttt{save},
+  \texttt{read/saveRDS} to class.
+\end{enumerate}
+
+\clearpage
 
 \section{Scripts and non-interactive runs}\label{scripts}
 
@@ -1383,10 +1508,60 @@ source("script1.R", echo = TRUE,
 In section \ref{example-multtest} you will have a chance to use and play
 with a script that reproduces what we did in section \ref{mistery}.
 
+\subsection{Activities}
+\label{sec:activities-6}
 
+\begin{enumerate}
+\item Create a script that will do this:
+  \begin{enumerate}
+  \item Create a variable, called ``x'' that will take the value 4.
+  \item Create another variable, called ``y'', that will take the value of
+    \texttt{x * 2}
+  \item Compute the mean of ``y'' (yes, yes, I know it is 8)
+  \end{enumerate}
+\item From RStudio, use \texttt{source} to execute the complete script.
+\item Open R from your operating system, and repeat the last step.
+\item Do an internet search for how to run R scripts non-interactively
+  for your operating system, say from a shell/command window.
 
+  I'll show it in Linux. If you use Windows, take a look at this two
+  links, for example:
+  \Burl{http://datacornering.com/how-to-run-r-scripts-from-the-windows-command-line-cmd/},
+  \Burl{https://support.rstudio.com/hc/en-us/articles/218012917-How-to-run-R-scripts-from-the-command-line}.
 
+  How did I find them? The first two hits in a Google search for ``r cmd
+  batch windows''. \texttt{I am not necessarily recommending the above
+    articles!!!}.
+  
+
+  You might want to try using the examples in those, or other links, to
+  run scripts from the command window.
+
+  Note that you can simplify them if you have R in the path. (Google for
+  this: how to add a program to the path in your operating system. In
+  Linux things ought to work out-of-the-box).
+  
+\end{enumerate}
+
+\clearpage
 \section{Basic R data structures}
+
+\subsection{Activities for this part}
+\label{sec:activities-this-part}
+In this part of the course, we will not add an ``Activities'' subsection
+after each successive subsection. I expect you to type every single one of
+the expressions below, make sure you get them to work, understand what
+they are doing, and ask questions when things do not make sense.
+
+
+Yes, every expression. You want to practice:
+\begin{itemize}
+\item Getting the syntax right.
+\item See error messages and rewriting things correctly.
+\end{itemize}
+
+
+
 \subsection{Vectors} 
 
 Vectors are one of the simplest data structures in \R. They store a set of
