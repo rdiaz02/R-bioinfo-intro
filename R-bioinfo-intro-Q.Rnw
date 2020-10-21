@@ -522,7 +522,7 @@ dependencies).
 If you want to install more than one package you can do (don't execute the
 code below as we will not use those packages)
 <<eval=FALSE>>=
-install.packages(c("RJaCGH", "varSelRF"))
+install.packages(c("gamm4", "varSelRF"))
 @ 
 
 
