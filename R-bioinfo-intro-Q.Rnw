@@ -30,6 +30,9 @@
 \newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
 \newcommand{\Rnl}{\ +\qquad\ }
 \newcommand{\Emph}[1]{\emph{\mg{#1}}}
+
+\newcommand{\activities}{{\textcolor {red} {Activities}}}
+
 % \newcommand{\R}{{something or other R}} but this gets to be a mess. And
 % ugly. 
 \newcommand{\R}{R}
@@ -619,7 +622,7 @@ What if things hang? Try \code{Control-C} and/or
 \code{Esc}.
 
 
-\subsection{Activities}
+\subsection{\activities}
 \label{sec:activities}
 
 \begin{enumerate}
@@ -696,7 +699,7 @@ Let's try to understand what we did. % But first, we need to install \R, and
 % maybe some additional packages.
 
 
-\subsection{Activities}
+\subsection{\activities}
 \label{sec:activities-1}
 
 \begin{enumerate}
@@ -897,7 +900,7 @@ v2, plus several functions that start with ``v'').
 
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-2}
 
 \begin{enumerate}
@@ -938,7 +941,7 @@ You can delete a variable
 rm(z2)
 @
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-3a}
 
 \begin{enumerate}
@@ -1020,7 +1023,7 @@ Patrick Burns has a interesting blog entry about R navigation tools:
 Oh, by the way, RStudio includes an integrated help browser. Use it if you
 use RStudio.
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-4a}
 
 \begin{enumerate}
@@ -1063,7 +1066,7 @@ z <- 1:10
 t.test(x ~ z)
 @ 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-5a}
 
 \begin{enumerate}
@@ -1203,7 +1206,7 @@ located. (You can assume that I have, sometime in the past, issued a
 
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-3}
 
 \begin{enumerate}
@@ -1243,7 +1246,7 @@ usual, to be explicit: use an ``NA'' in your original data, or use some
 other special character string to identify them.
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-4}
 
 \begin{enumerate}
@@ -1378,7 +1381,7 @@ and \code{save}.
 
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-5}
 
 \begin{enumerate}
@@ -1508,7 +1511,7 @@ source("script1.R", echo = TRUE,
 In section \ref{example-multtest} you will have a chance to use and play
 with a script that reproduces what we did in section \ref{mistery}.
 
-\subsection{Activities}
+\subsection{\activities}
 \label{sec:activities-6}
 
 \begin{enumerate}
@@ -1546,7 +1549,7 @@ with a script that reproduces what we did in section \ref{mistery}.
 \clearpage
 \section{Basic R data structures}
 
-\subsection{Activities for this part}
+\subsection{\activities \ for this part}
 \label{sec:activities-this-part}
 In this part of the course, we will not add an ``Activities'' subsection
 after each successive subsection. I expect you to type every single one of
@@ -2261,7 +2264,7 @@ niceties, the ``datatable'' package (with its datatables) can really make
 a difference.
 
 
-\subsection{Activities: matrices indexing matrices}
+\subsection{\activities: matrices indexing matrices}
 
 Play with the following and make sure you understand (at least
 the first part)
@@ -2351,7 +2354,7 @@ abline(h = 5, lty = 2)
 
 There are many, many other types of plots. We will see some later. 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activp1}
 
 Look at the help for \texttt{abline} and redo the above plot adding a blue
@@ -2390,7 +2393,7 @@ for(i in 1:6) {
 @ 
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-7}
 
 Type all of the code above and make sure you can execute it without
@@ -2407,7 +2410,7 @@ things such as size, it is better to directly use functions such as
 second approach (explicitly calling, say, \code{pdf} from my scripts) is
 what I use.
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-8}
 
 \begin{enumerate}
@@ -2416,9 +2419,9 @@ what I use.
   is normally distributed with mean 0 and standard deviation of 0.4.
 \item Plot y1 as a function of x1. Use points and a line to connect
   consecutive points.
-\item Save that plot as a png; call it ``my_pl.png''. Height and width
+\item Save that plot as a png; call it ``my-pl.png''. Height and width
   should be 340.
-\item Save that plot as a pdf; call it ``my_pl.pdf''. height and width
+\item Save that plot as a pdf; call it ``my-pl.pdf''. height and width
   should be 3 and 6 inches, respectively.
 
 \item Now create the following three variables, z1, z2, z3. They all
@@ -2556,7 +2559,7 @@ what is going on\footnote{Not that this would be, in this case, all that
 \ldots. 
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-9}
 
 
@@ -2622,7 +2625,7 @@ install that package).
 
 
 
-<<fig.width=6, fig.height=6>>=
+<<mrateplotx1,fig.width=6, fig.height=6>>=
 library(car) ## make the car package available; this is NOT 
              ## installing it. It is making it available
 scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
@@ -2632,7 +2635,8 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
 Look at the axes, etc. 
 
 \vspace*{20pt}
-\paragraph \textbf{Activities} Redo the previous plot but remove the
+
+\paragraph{\activities} Redo the previous plot but remove the
 smooth lines (the smoothed line and associated conditional variance). Now
 repeat, and make sure you only show a boxplot for metabolic rate (not body
 mass).
@@ -2662,14 +2666,16 @@ legend(5, 5, legend = levels(anage$Class),
 
 
 
-\vpsace*{20pt}
-\paragraph \textbf{Activities} Could you add the regression line of
+\vspace*{20pt}
+
+\paragraph{\activities} Could you add the regression line of
 Metabolic rate on body mass? Suppose you wanted to add three regression
 lines, one for birds (in salmon color), one for reptiles (green) and one
 for all together, regardless of taxonomic group (thick black). Think how
 you would do it. No need to do it if you don't want to but you might want
 to play with it.
 
+\vspace*{20pt}
 
 
 Would the above work with scatterplot? Nope. You need to use a slightly
@@ -2889,7 +2895,7 @@ stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
 @ 
 
 
-\subsubsection{Activities}
+\subsubsection{\activities}
 \label{sec:activities-10}
 
 Repeat the t-test examples but the data now will come from a uniform
@@ -2920,7 +2926,7 @@ stripchart(xo ~ class, method = "jitter", vertical = TRUE)
 
 
 
-
+%% FIXME: stopped about here, though I add the new section on xtabs and latex
 \section{Tables}\label{tables}
 
 Tabulating data is a very common operation. Let's use again the data frame
@@ -2999,9 +3005,8 @@ toLatex(ftable(xtabs(Vx ~ ., data = dfx3)))
 @
 
 
-\subsection{Activities}
+\subsection{\activities}
 \label{sec:activities-11}
-
 Make sure you type all of the examples above. Also, if LaTeX is anything
 that interests you, do the last example using \texttt{toLatex}.
 
