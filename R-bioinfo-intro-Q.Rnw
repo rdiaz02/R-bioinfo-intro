@@ -2287,10 +2287,11 @@ A[c(3, 1, 5, 5), c(3, 2, 1, 2)]
 A[m2]
 
 
-## The above should be cristal clear. Now for something not intuitive (for
-## me) ......
+## The above should be cristal clear. Now for something not
+## intuitive (for me) ......
 
-## What if we index a matrix with a matrix with more than 2 columns?
+## What if we index a matrix with a matrix with
+## more than 2 columns?
 
 (m11 <- cbind(1, 2, 3))
 A[m11]
@@ -2298,8 +2299,9 @@ A[m11]
 (m22 <- rbind(1:5, 11:15))
 A[m22]
 
-## Humm... it seems R uses the entries in m22 as just the position
-## in the matrix (as if it were a vector). Let's check
+## Humm... it seems R uses the entries in m22 as just the
+## position in the matrix (as if it were a vector).
+## Let's check
 
 ## Two ways to turn a matrix into a vector
 avv <- A
@@ -2337,6 +2339,7 @@ elements. Let's look at this simple example:
 
 
 <<>>=
+set.seed(2) ## for reproducibility
 x <- 1:10
 y <- 2 * x + rnorm(length(x))
 plot(x, y, xlab = "This is the label for the x axis",
@@ -2347,6 +2350,14 @@ abline(h = 5, lty = 2)
 
 
 There are many, many other types of plots. We will see some later. 
+
+\subsubsection{Activities}
+\label{sec:activp1}
+
+Look at the help for \texttt{abline} and redo the above plot adding a blue
+vertical line at x = 4; then add a green diagonal line of slope 1,
+intercept 2. Now, add an orange vertical line at x = 30; what would you
+need to show it?
 
 
 
@@ -2378,6 +2389,15 @@ for(i in 1:6) {
 
 @ 
 
+
+\subsubsection{Activities}
+\label{sec:activities-7}
+
+Type all of the code above and make sure you can execute it without
+problems (by sending to the interpreter the lines of code you want) and
+that you really understand what is happening in each line. You might want
+to look at the help for \texttt{text} and \texttt{points}.
+
 \subsection{Saving plots}
 Can you save the plots as PDF, png, \ldots? Definitely. From RStudio you
 have a menu entry in the plot window. For non-interactive work (as when
@@ -2387,7 +2407,27 @@ things such as size, it is better to directly use functions such as
 second approach (explicitly calling, say, \code{pdf} from my scripts) is
 what I use.
 
+\subsubsection{Activities}
+\label{sec:activities-8}
 
+\begin{enumerate}
+\item Create a variable, x1, that takes 37 values between 2 and 4.
+\item Create a variable, y1 that is equal to 3 times x1 + a random noise term that
+  is normally distributed with mean 0 and standard deviation of 0.4.
+\item Plot y1 as a function of x1. Use points and a line to connect
+  consecutive points.
+\item Save that plot as a png; call it ``my_pl.png''. Height and width
+  should be 340.
+\item Save that plot as a pdf; call it ``my_pl.pdf''. height and width
+  should be 3 and 6 inches, respectively.
+
+\item Now create the following three variables, z1, z2, z3. They all
+  contain random deviates from a normal distribution of mean 3 and
+  standard deviation 2; z1 has 10 values, z2 50 values, z3 1000 values.
+\item Plot a histogram of each.
+\item Produce png and pdf files with the plots. Yes, the pdf is a single
+  pdf, with multiple pages. What about the png? 
+\end{enumerate}
 
 \subsection{Plots, plots, plots. Many types of plots}
 
@@ -2396,14 +2436,15 @@ surface. Plotting is a big thing in \R. We have used a few, but there are
 many more. In fact, there are several approaches or systems for plots in
 \R. We will use here the basic one (the one in base \R), but notice that
 \textbf{ggplot2} is a very popular one, that produces plots many people
-find nicer. If you are interested, google for ``ggplot2''. There are two
-books about it (``ggplot2: elegant graphics for data analysis'', by
-Wickham, its creator, and ``R graphics cookbook'', by Chang, who has been
-heavily involved in ggplot2). The second one has a web page with many
-recipes: \Burl{http://www.cookbook-r.com/Graphs/}. Another popular package
-is \textbf{lattice}, also with its own book. And there are comparison
-pages of lattice and ggplot2. Another issue we haven't touched is choice
-of colors, which is not a trivial thing (and there are a variety of color
+find nicer. If you are interested, google for ``ggplot2''. There are
+several books about it, including the next two ``ggplot2: elegant graphics
+for data analysis'', by Wickham, its creator, and ``R graphics cookbook'',
+by Chang, who has been heavily involved in ggplot2. The second one has a
+web page with many recipes:
+\Burl{http://www.cookbook-r.com/Graphs/}. Another popular package is
+\textbf{lattice}, also with its own book. And there are comparison pages
+of lattice and ggplot2. Another issue we haven't touched is choice of
+colors, which is not a trivial thing (and there are a variety of color
 palettes in \R; search for \code{?palette}, for example). There are also
 ways to identify points, to use 3D plots, to have dynamic plots that allow
 rotation, etc, etc.
@@ -2428,7 +2469,7 @@ example(qplot)
 \noindent (though the above gives just a very, very limited view of the
 range of options with ggplot2).
 
-
+An example where we use ggplot is provided in section \nameref{sec:metab-rate-long}.
 
 
 
@@ -2514,6 +2555,25 @@ what is going on\footnote{Not that this would be, in this case, all that
   expected relationship between Score and the other variables}. Or
 \ldots. 
 
+
+\subsubsection{Activities}
+\label{sec:activities-9}
+
+
+\begin{enumerate}
+\item Make sure you type all of the commands above. That includes playing with
+\texttt{scatter3d} (and you might need to install some packages; do it).
+
+\item The figures we showed side by side: place them not side by side, but
+  one above the other (i.e., in a configuration of one-column and
+  two-rows).
+
+  \item Change the histogram: make sure it goes to 1200 on the x axis, and
+    the bars are of salmon color (the color is called ``salmon''). Add a
+    big (say, size 9) blue solid point at coordinates x = 300, y = 100.
+\end{enumerate}
+
+
 \clearpage
 
 
@@ -2571,6 +2631,17 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
 
 Look at the axes, etc. 
 
+\vspace*{20pt}
+\paragraph \textbf{Activities} Redo the previous plot but remove the
+smooth lines (the smoothed line and associated conditional variance). Now
+repeat, and make sure you only show a boxplot for metabolic rate (not body
+mass).
+
+\vspace*{20pt}
+
+
+
+
 You could do something very similar with the basic plot function, but it
 would not add the extra lines, boxplots, etc.
 
@@ -2588,6 +2659,18 @@ legend(5, 5, legend = levels(anage$Class),
        col = c("salmon", "darkgreen"),
        pch = 1)
 @ 
+
+
+
+\vpsace*{20pt}
+\paragraph \textbf{Activities} Could you add the regression line of
+Metabolic rate on body mass? Suppose you wanted to add three regression
+lines, one for birds (in salmon color), one for reptiles (green) and one
+for all together, regardless of taxonomic group (thick black). Think how
+you would do it. No need to do it if you don't want to but you might want
+to play with it.
+
+
 
 Would the above work with scatterplot? Nope. You need to use a slightly
 different argument for the call, and you get automatic legend, etc:
@@ -2806,6 +2889,33 @@ stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
 @ 
 
 
+\subsubsection{Activities}
+\label{sec:activities-10}
+
+Repeat the t-test examples but the data now will come from a uniform
+distribution. Is this problem well specified? %% what uniform
+%% distribution? Also, when Gene B ... what do we mean?
+Where do you need to change things in the code above? Do change it.
+
+
+Use stripchart but make sure you use jittering so that points do not
+overlap.
+
+Get a better feeling for what jitter is doing by using the variables
+\texttt{xo} and \texttt{class} below, and plotting them with and without
+jittering (make sure you use a vertical plot, so that you have ``class''
+in the x axis)
+
+<<>>=
+xo <- c(rep(1, 5), rep(2, 3), 3)
+xo <- c(xo, 2 * xo, xo + rnorm(length(xo)))
+class <- factor(rep(c("A", "B", "C"), rep(length(xo)/3, 3)))
+@ 
+
+<<eval=TRUE,echo=FALSE,results=FALSE>>=
+stripchart(xo ~ class, method = "jitter", vertical = TRUE)
+@ 
+
 \clearpage
 
 
@@ -2867,6 +2977,33 @@ xtabs(Freq ~ a + b + c, data = dfx)
 xtabs(~ a + b + c, data = x)
 @ 
 
+
+
+\subsection{xtabs, ftable: summarizing arbitrary stuff}
+
+<<xtabs_ftable>>=
+
+dfx3 <- expand.grid(F1 = c("A", "B"), Age = c(10, 20, 30),
+                    Loc = c("k1", "m3"))
+
+dfx3$Vx <- c(0, rnorm(nrow(dfx3)-1))
+dfx3
+ftable(xtabs(Vx ~ ., data = dfx3))
+@ 
+
+And you could then produce a nice LaTeX table using \texttt{toLatex} after
+loading (and installing, if needed) package \texttt{memisc}:
+
+<<xtabs_ftable_lat, eval=FALSE>>=
+toLatex(ftable(xtabs(Vx ~ ., data = dfx3)))
+@
+
+
+\subsection{Activities}
+\label{sec:activities-11}
+
+Make sure you type all of the examples above. Also, if LaTeX is anything
+that interests you, do the last example using \texttt{toLatex}.
 
 \subsection{Tables, II}
 Tabulating data is a very common operation. The following are slightly
@@ -3713,7 +3850,7 @@ Please, understand what is happening.
 \clearpage
 
 \section{Metabolic rate: a longer example with split-apply-combine}
-\label{sec:metab-rate:-long}
+\label{sec:metab-rate-long}
 
 If time permits, we will go over the code in
 \texttt{Metabolic-rate-example.R}, to illustrate the split-apply-combine
