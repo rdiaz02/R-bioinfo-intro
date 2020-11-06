@@ -1,3 +1,11 @@
+## matrices, terminamos ahí
+
+## recall to add to the notes "drop = FALSE"!!
+
+2020-11-5: p. 59
+
+
+
 - debugging
 - classes S3: minimal thing
 - testthat
