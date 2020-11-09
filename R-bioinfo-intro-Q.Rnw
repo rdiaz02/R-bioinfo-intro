@@ -1236,14 +1236,17 @@ doing this:
 \item Substitute a value by nothing; in other words, just delete a value
   (but not the character for separating columns). (Beware that in this
   case you often will want to be explicit about the separator in
-  \code{read.table}.)
+  \code{read.table}.) Notice things will differ between character columns
+  and numeric columns.
 \end{itemize}
 
 You can specify the character that R should interpret as a missing value,
 but the above two procedures are standard. And when you do either of the
 above, in the data that is read you should see a ``NA''. The best is, as
 usual, to be explicit: use an ``NA'' in your original data, or use some
-other special character string to identify them.
+other special character string to identify them. \textbf{You will most
+  likely want to use NA (or use some other character combination and be
+  explicit), specially for character variables.}
 
 
 \subsubsection{\activities}
@@ -1256,20 +1259,44 @@ other special character string to identify them.
   simpler for this exercise, by opening \texttt{AnotherDataSet} in
   RStudio, then doing the changes explained below, and saving it with the
   name you want.
-\item You want to use the following types of changes:
+\item You want to use the following types of changes in a numeric column,
+  like Age:
   \begin{enumerate}
   \item Replace one or more values by ``NA''
   \item Replace one or more values by a `` '' (a white space)
-  \item Replace several values by nothing.
-    \begin{enumerate}
-    \item Make sure you have at least two ``nothings'' one after the other.
-    \end{enumerate}
   \end{enumerate}
 \item In each case above, make sure you can read the data set and check if
   things make sense.
-
+  
   You might need to specify the separator between columns in some cases
   above.
+  
+  
+\item In ``AnotherDataSet.txt'' substitute the second entry for Sex by
+  ``NA'' (without the quotes), save it (say ``ana1.txt'') and read the
+  file (as, say, ``ana1''). Now, do a \texttt{summary} of that file. Is it obvious there is an
+  ``NA'' (nope, it is not).  However, the NAs are properly taken into
+  account as NAs. For example, if you do: \verb@ table(ana1$Sex,useNA="ifany") @.%
+  If you ask for the object itself, you will see``<NA>''.
+  And you can also check it by doing: \verb@which(is.na(ana1$Sex))@.%
+  
+\item Repeat the above, but substitute not by NA without quotes but by NA
+  with quotes. Is that value of Sex considered an NA? %% Yes
+
+\item Now, replace several consecutive values by nothing, for example, in
+  the same row, replace by nothing in the same row Age and Sex (i.e., make
+  sure you have at least two ``nothings'' one after the other.)
+
+\item If things are confusing, look at this from the help of
+  \texttt{read.table}: `` Blank fields are also considered to be
+  missing values in logical, integer, numeric and complex
+  fields.''
+  
+\item Now, in the same row, for Age and Sex, replace the values by a space
+  (not a ``nothing'', a space), while keeping columns separated by a
+  tab.  And, when reading, use the option \texttt{na.strings = `` ''}
+  (i.e., tell R that the character for NA is a space).
+
   
 \end{enumerate}
 
@@ -1405,6 +1432,11 @@ and \code{save}.
 \item Bring usage questions of \texttt{save.image}, \texttt{save},
   \texttt{read/saveRDS} to class.
 \end{enumerate}
+
+
+
+
+
 
 \clearpage
 
