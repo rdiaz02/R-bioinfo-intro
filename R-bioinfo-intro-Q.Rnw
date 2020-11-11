@@ -108,7 +108,7 @@ options(width = 60)
 @ 
 
 \section{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014, 2015, 2016, 2017, Ramon Diaz-Uriarte,
+This work is Copyright, \copyright, 2014 to 2020, Ramon Diaz-Uriarte,
 and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -253,7 +253,6 @@ since those are derived from the Rnw file).
 would just provide boring and space-filling output). However, make sure
 you type and understand it. You can copy and paste, of course, but I
 strongly suggest you type the code and change it, modify it, etc.
-
 
 
 \subsection{Other files you need in addition to this one}
@@ -2131,7 +2130,6 @@ B["c", ]
 @ 
 
 
-
 Beware: you can use a matrix to index another matrix. This is slightly
 more advanced, but extremely handy:
 
@@ -2163,6 +2161,23 @@ And, of course, we can subset/select rows and columns using those:
 B[rowMeans(B) > 9, ]
 @ 
 
+
+\subsubsection{Matrices: dropping dimensions (or not)}
+\label{sec:matr-dropp-dimens}
+
+Carefully look at this. What is happening? 
+
+<<>>=
+A[2,  ]
+A[2,  , drop = FALSE]
+
+is.vector(A[2, ])
+is.vector(A[2, , drop = FALSE])
+is.matrix(A[2, ])
+is.matrix(A[2, , drop = FALSE])
+@ 
+
+What is going on? When could this matter? What is the default behavior?
 
 \subsection{Lists}
 A list is a more general container, where we can mix pieces of different
@@ -2962,7 +2977,8 @@ stripchart(xo ~ class, method = "jitter", vertical = TRUE)
 \section{Tables}\label{tables}
 
 Tabulating data is a very common operation. Let's use again the data frame
-we played with above:
+we played with above (and remember to type the code; this is one implicit
+\activities )
 
 <<>>=
 table(AB2$Sex)
@@ -2998,26 +3014,52 @@ Of course, you could do
 table(AB2[, c("Sex", "status")])
 @ 
 
-So if all you have are categorical variables, the above works. And all
-this applies to more than two variables, of course.
 
-<<>>=
-x <-  data.frame(a = c(1,2,2,1,2,2,1),
+\subsection{More than two dimensions and \texttt{ftable}}
+
+<<ftable0>>=
+(x <-  data.frame(a = c(1,2,2,1,2,2,1),
                  b = c(1,2,2,1,1,2,1),
-                 c = c(1,1,2,1,2,2,1))
-
-## tabulate: so create a data frame with a "Freq" column
-dfx <- as.data.frame(table(x))
-
-## Recover the table (you will not do this often?)
-xtabs(Freq ~ a + b + c, data = dfx)
-## of course, this is the same
+                 c = c(1,1,2,1,2,2,1)))
+## Equivalent
+table(x)
 xtabs(~ a + b + c, data = x)
+@
+
+But with more than two variables, sometimes we want ``flat tables'':
+<<ftable1>>=
+ftable(xtabs(~ a + b + c, data = x))
+## same as ftable(table(x))
+@ 
+
+Eh, wait, I want variable ``c'' in the left-most border! Change order of variables
+<<ftable2>>=
+ftable(xtabs(~ c + a + b, data = x))
+@ 
+
+
+\subsection{Recovering a table from a data frame}
+<<>>=
+## create a data frame with a "Freq" column:
+## put the table in a data frame
+(dfx <- as.data.frame(table(x)))
+
+## We can recover the table
+xtabs(Freq ~ a + b + c, data = dfx)
+## of course, this is the same as
+## xtabs(~ a + b + c, data = x)
+## or table(x)
+
 @ 
 
 
 
-\subsection{xtabs, ftable: summarizing arbitrary stuff}
+
+\subsection{xtabs and ftable: summarizing arbitrary stuff}\label{xtabs-arbitrary}
+
+Suppose we have a data frame some arbitrary variable for (some of) the
+levels of some categorical variable. But we want a table (pay attention:
+what is \texttt{expand.grid} doing?):
 
 <<xtabs_ftable>>=
 
@@ -3029,12 +3071,112 @@ dfx3
 ftable(xtabs(Vx ~ ., data = dfx3))
 @ 
 
+What if some combinations are missing?
+<<xtabs_ftable_na1>>=
+dfx4 <- dfx3[-c(3, 12), ]
+ftable(xtabs(Vx ~ ., data = dfx4))
+@ 
+
+And what if they are missing values (in Vx, not in the categorical variables)?
+
+<<xtabs_ftable_na2>>=
+dfx5 <- dfx3
+dfx5[c(3, 12), "Vx"] <- NA
+ftable(xtabs(Vx ~ ., data = dfx5))
+@ 
+
+Think this carefully: is that always the behavior you want?
+
+Change that:
+
+<<xtabs_ftable_na3>>=
+xtabs(Vx ~ ., data = dfx5, addNA = TRUE)
+ftable(xtabs(Vx ~ ., data = dfx5, addNA = TRUE))
+@
+
+And here? (Look for F1==A, Age == 20, Loc == k1)
+<<xtabs_ftable_na4>>=
+xtabs(Vx ~ ., data = dfx4, addNA = TRUE)
+ftable(xtabs(Vx ~ ., data = dfx4, addNA = TRUE))
+@ 
+
+
+So: one thing is having no observations (cero counts, if these were
+contingency tables) and another is having missing values for those
+combinations.  We will see some of this again in section
+\ref{sec:activ-aggr-xtabs}.
+
+
+I would argue that the last table, with \texttt{dfx4}, is probably not
+doing what we want (the 0 have different meanings, as there was actually
+an entry, a set of value that actually had 0, whereas some other 0 are
+coming from combinations that are not present). As we will see in section
+\ref{sec:activ-aggr-xtabs}, this is probably something that ought to have
+been considered when we created \texttt{dfx4}.
+
+
+(There is another option for \texttt{xtabs}: \texttt{na.action}; look at
+the examples for \texttt{xtabs})
+
+
+
 And you could then produce a nice LaTeX table using \texttt{toLatex} after
 loading (and installing, if needed) package \texttt{memisc}:
 
 <<xtabs_ftable_lat, eval=FALSE>>=
 toLatex(ftable(xtabs(Vx ~ ., data = dfx3)))
 @
+
+
+
+\subsection{Tables and missing values}
+\label{tablena}
+
+Let us go back to tables and missing values
+
+<<tabna>>=
+x1 <- c(1, 1, 2, 2, 2, NA)
+x2 <- c(1, 1, 2, 2, 2, 3)
+which(is.na(x1))
+table(x1)
+table(x1, useNA = "ifany")
+table(x2, useNA = "always")
+table(x2, useNA = "ifany")
+
+## with xtabs
+xtabs(data = data.frame(x1), addNA = TRUE)
+@ 
+
+Now in two dimensions
+
+<<tabna2>>=
+(x3 <-  data.frame(a = c(1,2,2,1,2,2,1),
+                  b = c(1,2,2,1,1,2,1)))
+table(x)
+
+(x4 <-  data.frame(a = c(1,2,2,1,2,2,NA),
+                  b = c(1,2,2,1,1,2,1)))
+table(x4)
+table(x4, useNA = "ifany")
+table(x4, useNA = "always")
+xtabs(data = x4, addNA = TRUE)
+
+table(x3, useNA = "always")
+xtabs(data = x3, addNA = TRUE)
+@ 
+
+Note, by the way, that the behavior of \texttt{xtabs(data = x3, addNA =
+  TRUE)} is similar to what we saw with \texttt{xtabs(Vx ~ ., data = dfx4,
+  addNA = TRUE)}: we get 0 in the cells with no combinations. 
+
+
+
+(Finally: when there are NAs, some extra care might need to be taken,
+specially if the NAs are present both in the response and the grouping
+variables. See this recent thread, for instance, with a possible bug
+report:
+\Burl{https://stackoverflow.com/questions/61240049/inconsistency-of-na-action-between-xtabs-and-aggregate-in-r} and
+\Burl{https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17770}).
 
 
 \subsection{\activities}
@@ -3045,7 +3187,7 @@ that interests you, do the last example using \texttt{toLatex}.
 \subsection{Tables, II}
 Tabulating data is a very common operation. The following are slightly
 more advanced exercises. Run them, and see if you understand them, but
-skip this is if you do not care for now.
+skip this is if you do not care for now. (We will skip this in class)
 
 <<>>=
 y <- x
@@ -3084,7 +3226,12 @@ will show some examples, and you should understand what is happening. Some
 of these examples use functions (anonymous functions) that we define as we
 need them in the calls of apply or aggregate (we have used these before).
 
-<<>>=
+
+\subsection{apply}
+\label{sec:apply}
+
+
+<<apply1>>=
 (Z <- matrix(c(1, 27, 23, 13), nrow = 2))
 apply(Z, 1, median)
 apply(Z, 2, median)
@@ -3094,6 +3241,20 @@ apply(Z, 2, min)
 For those of you who have programmed before: using the ``apply'' family is
 often much, much, much more efficient (and elegant, and easy to
 understand) than using explicit loops.
+
+
+\subsection{\activities}
+\label{sec:activities-12}
+
+Define a function that, when given a collection of numbers, will return
+the ratio of the mean divided by the median. Using \texttt{apply} and
+\texttt{for} (yes, we have already seen examples of \texttt{for}) compute
+that function for the rows of Z and the columns of Z.
+
+
+\subsection{lapply}
+\label{sec:lapply}
+
 
 
 With lists we will use \code{lapply}. For example, lets look at the
@@ -3108,6 +3269,7 @@ function on the fly):
 lapply(listA, function(x) x[[1]])
 @ 
 
+\subsection{tapply}
 
 When we have data that can be used to stratify or select other data, we
 often use \code{tapply}:
@@ -3119,6 +3281,10 @@ often use \code{tapply}:
 
 tapply(one.dataframe$age, one.dataframe$sex, mean)
 @ 
+
+\subsection{aggregate and by}
+\label{sec:aggregate}
+
 
 However, \code{aggregate} often returns things in a more convenient form:
 
@@ -3166,7 +3332,7 @@ aggregate(age ~ sex, data = one.dataframe,
 @                              
  
 
-That will work when what you want to compute functions of has multiple
+That will work also if what you want to compute functions of has multiple
 columns:
 
 <<>>=
@@ -3192,10 +3358,112 @@ with(one.dataframe,
      )
 @
 
+\activities \ Repeat the above not being explicit about \texttt{FUN}
+(i.e., passing the function but not explicitly passing it as explicit
+argument to \texttt{FUN}). What
+happens and why?
+
+<<nofunaggregate,eval=FALSE>>=
+with(one.dataframe, 
+     aggregate(age ~ sex, 
+               function(x) c(Mean = mean(x), SD = sd(x)))
+     )
+@
+
+
+
+\subsubsection{\activities: \  aggregate, multiple columns, and xtabs}
+\label{sec:activ-aggr-xtabs}
+
+\begin{enumerate}
+\item Create a data frame as follows:
+<<agxtabs>>=
+dfx2b <- data.frame(age = c(13, 13, 16, 25, 28), 
+                     sex = factor(c("male", "female", 
+                                    "female", "male", "male")))
+dfx2b <- rbind(dfx2b, dfx2b)
+dfx2b$Y <- runif(nrow(dfx2b))
+dfx2b$Y[c(5, 10)] <- 0 ## we want to show a specific issue below
+
+@ 
+
+\item Obtain a data frame with the average of Y for all combinations of
+  age and sex.
+<<eval=TRUE,echo=FALSE,results='hide'>>=
+aggregate(Y ~ age + sex, data = dfx2b, FUN = mean)
+@ 
+
+\item Using the data frame you just created, present the results as a
+  table, using \texttt{xtabs} (maybe \texttt{xtabs} and
+  \texttt{ftable}). It is even better (as you will reuse the code) if you
+  do it without creating an explicit data frame. Please, try it before
+  looking at the code!!!
+
+
+  \vspace*{30pt}
+
+<<xtabsagg6,eval=TRUE,echo=TRUE,results='show'>>=
+xtabs(Y ~ age + sex,
+      data = aggregate(Y ~ age + sex, data = dfx2b, FUN = mean))
+@ 
+
+What are those cells with 0? Do we really have 0 in all those cases?
+
+\item Now, use argument \texttt{drop} to \texttt{aggregate} to make sure
+  you do not get 0's where you should have NAs. Please, try it before
+  looking at the code!!!
+
+ \vspace*{30pt}  
+<<xtabsagg7,eval=TRUE,echo=TRUE,results='show'>>=
+
+ftable(xtabs(Y ~ age + sex,
+             data = aggregate(Y ~ age + sex, data = dfx2b,
+                              FUN = mean, drop = FALSE),
+      addNA = TRUE))
+
+@  
+
+Where is the 0? Where are the NAs?
+
+
+Notice how the problems we saw in section \ref{xtabs-arbitrary} when using
+\texttt{xtabs} with missing combinations of some levels and data frame
+\texttt{dfx4} are now dealt with explicitly: our data frame contains NAs
+for missing combinations. 
+
+
+\item Turn the first value of Y into an NA. You now want the behavior of
+  mean to be such that if there is an NA in a set of values, you get the
+  mean to be NA (not the mean of the values with the NA removed). Look at
+  \texttt{na.action} in \texttt{aggregate}. Again, try before looking at
+  the code.
+
+  
+<<xtabsagg8,eval=TRUE,echo=TRUE,results='show'>>=
+dfx2b$Y[1] <- NA
+
+ftable(xtabs(Y ~ age + sex,
+             data = aggregate(Y ~ age + sex, data = dfx2b,
+                              FUN = mean,
+                              na.action = na.pass,
+                              drop = FALSE),
+      addNA = TRUE))
+
+@
+\end{enumerate}
+
+
+(Note: some people are surprised by the use of \texttt{xtabs} on the
+output from \texttt{aggregate}. But combining \texttt{xtabs} and
+\texttt{aggregate} is an orthodox procedure: it is mentioned in the help
+page for \texttt{aggregate}.)
+
+\subsection{split }
+\label{sec:split-}
 
 
 Another very handy function is \texttt{split}. What we will do next is an
-overkill, but knowing about split can make life simpler in many cases:
+overkill, but knowing about split can make life much simpler in many cases:
 
 <<>>=
 
@@ -3207,8 +3475,11 @@ lapply(with(one.dataframe, split(one.dataframe, sex)),
 The above procedure is related to the split-apply-combine and the
 map-reduce approaches. And \texttt{by}, \texttt{aggregate}, and friends
 can be regarded as specially handy ways of doing the above combination of
-\texttt{split} with \texttt{*apply} and some particular summary function(s).
+\texttt{split} with \texttt{*apply} and some particular summary
+function(s).  A long example of ``split-apply-combine'' is provided in
+section \nameref{sec:metab-rate-long}.
 
+=======
 
 Since the need for these operations is very common (getting summaries or
 applying functions to subsets of the data), there are a variety of ways of
@@ -3222,13 +3493,8 @@ is no longer available).
 For instance, the \code{doBy} package is really nice.
 
 
-=======
 
-
-
-
-
-\subsection{Matrices: Dropping dimensions}
+\subsection{apply and dropping dimensions from matrices}
 
 Look at the different outputs of the selection operation:
 
@@ -3637,37 +3903,55 @@ f1(two = 2, 3, 1)
 @ 
 
 The above rules are even more important when arguments with default
-arguments are considered.
+arguments are considered. Really: type the above code. Those are
+\activities !
 
 
 \subsection{Scoping, frames, environments, etc}\label{scoping}
-This is more advanced material. Read through it, and go deeper if you
-want. This is kind of jumping around on purpose; do this when you are awake.
+This is more advanced material. Do this when you are awake. For now, we
+will only scratch the surface. 
 
 Suppose this:
-<<eval=FALSE>>=
+<<eval=TRUE>>=
 f1 <- function(x) {
     x + z
 }
 @ 
 
-What will be the value of ``z'' used by f1? Play with it. Try to get that
-to work.
 
-And here?
-<<eval=FALSE>>=
+By the way, what do you think is more legible, the above function or one
+that explicitly has \texttt{return(x + z)}?  (Yes, that is an \activities
+).
+
+\subsubsection{\activities }
+\begin{itemize}
+\item What will be the value of ``z'' used by f1? Think this before typing
+  anything!
+  
+\item Make sure there are no objects named \texttt{z} in the workspace and
+  do \texttt{f1(3)}
+
+\item Now assign \texttt{-100} to ``z'' and do \texttt{f1(3)}.
+
+
+\item Now, do this:
+<<f11z1,eval=TRUE,results='hide'>>=
 z <- -100
 
 f11 <- function(y) {
     z <- 10
     f1(y)
 }
-
+@
+\item Now, type this but \textbf{think about what you expect before
+    pressing return!}:
+<<f11z1ret>>=
+f11(4)
 @ 
 
-Or what will happen here?
+\item And now type this. What is changing?
 
-<<eval=FALSE>>=
+<<f3v1000,eval=TRUE,results='hide'>>=
 v <- 1000
 f3 <- function(x, y) {
     v <- 3 * x
@@ -3676,10 +3960,19 @@ f3 <- function(x, y) {
     }
     f2(y)
 }
+@
+
+\item Now, type this but \textbf{think about what you expect before
+    pressing return!}:
+<<f3v1000b>>=
 f3(2, 9)
 @ 
+
 \noindent (In R it is perfectly OK to define a function inside another
 function. In fact, it can make some code much easier to understand.)
+
+\end{itemize}
+
 
 The above questions are, basically, about ``where is the value of free
 variables found''. R uses lexical (or static) scoping. It can be extremely
@@ -3691,14 +3984,17 @@ handy and fun, but it can lead to surprises. Good explanations here:
 
 In fact in the examples above there are several issues we might want to
 think about and a few terms we would need to define. There are the issues
-of using global variables in ``f1'' (which is often regarded as poor
-style) and there are issues of lexical scoping in what f2 and f3 are doing
-(and I would regard f2 as a perfectly OK function, given how f3 is, even
-if there is a free variable in f2). And all these relate, and need to
-be answered, in the context of these concepts/terms (I take here the
-definitions from the extremely clear PDF by John Fox, linked above, with a
-few modifications following Chamber's ``Software for data analysis'', p.\
-119 and ff.\ and chapter 8 of Wickham's ``Advanced R''):
+of using global variables in ``f1''. Using global variables is often regarded as poor
+style so avoid that. It makes for bug-prone code.
+
+There are issues of lexical scoping in what f2 and f3 are doing
+(and I would regard f2 as a perfectly OK function, given how f3 is
+defined, even if there is a free variable in f2). And all these relate,
+and need to be answered, in the context of these concepts/terms (I take
+here the definitions from the extremely clear PDF by John Fox, linked
+above, with a few modifications following Chamber's ``Software for data
+analysis'', p.\ 119 and ff.\ and chapter 8 of Wickham's ``Advanced R''):
+
 
 \begin{description}
 \item[binding] In \code{y <- 9} y is bound to the value 9.
@@ -3744,11 +4040,29 @@ before we leave, we will remove our ``c'':
 <<>>=
 rm(c)
 @ 
-Oh, do you know what ``c'' we just removed?
+Oh, do you know what ``c'' we just removed? (Yes that was an \activities
+).
+
+\subsection{\activities : not using global variables}
+\label{sec:activities-13}
+
+\begin{enumerate}
+\item Rewrite our former \texttt{f1} without using global variables.
+  (Yes, that is the very first \texttt{f1} we defined in \ref{scoping}).
+\item Try to run the previous activities: which ones are affected and how?
+  Why?
+\item What type of code do you think is better: clearer, simpler to
+  understand, and less likely to lead to bugs or surprises? (Search for
+  ``principle of least surprise'').
+\item Do these considerations apply to \texttt{f2} (the one defined inside
+  f3)? Why or why not.
+\end{enumerate}
 
 
-\subsection{Functions that return NULL and invisible}
-\label{sec:scop-fram-envir}
+
+
+\subsection{\activities \ Functions that return NULL and invisible}
+\label{sec:null}
 
 Compare these
 <<>>=
@@ -3773,6 +4087,96 @@ cc
 @ 
 
 
+
+\begin{enumerate}
+\item What are the differences between the three functions? 
+\item When could you want to use \textbf{fa}?
+\item What is the difference between \texttt{cat} and \texttt{message}?
+  Why one or the other?
+\end{enumerate}
+
+
+
+\subsection{\activities \ Using return explicitly and invisible}
+\label{sec:invisible_ret}
+Type the following code carefully (based upon \Burl{https://stackoverflow.com/a/38905341})
+
+<<>>=
+f1x <- function(x){
+  if( x > 0 ){
+      invisible("bigger than 0")
+  } else{
+     return("less than 0")
+  }
+  "something went wrong"
+}
+
+f1y <- function(x){
+  if( x > 0 ){
+     invisible("bigger than 0")
+  } else{
+     return("less than 0")
+  }
+}
+
+
+f1z <- function(x){
+  if( x > 0 ){
+      invisible("bigger than 0")
+  } else{
+     return("less than 0")
+  }
+  return("something went wrong")
+}
+
+
+f1w <- function(x){
+  if( x > 0 ){
+      return(invisible("bigger than 0"))
+  } else{
+     return("less than 0")
+  }
+  return("something went wrong")
+}
+@
+
+Now, run it
+<<>>=
+
+(xx <- f1x(1))
+(yy <- f1y(1))
+(zz <- f1z(1))
+(ww <- f1w(1))
+
+@
+
+
+Compare the three versions. Is \texttt{f1w} blatantly redundant in some
+parts? Does it help you spot the possible problem with \texttt{f1x} and
+\texttt{f1z}? Where is the help in spotting the issues coming from?
+
+(By the way, the key here is not \texttt{invisible} in itself, but rather
+how we use \texttt{return})
+
+
+This is my preferred version:
+
+<<>>=
+
+f1A <- function(x){
+  if( x > 0 ){
+      return(invisible("bigger than 0"))
+  } else{
+     return("less than 0")
+  }
+}
+
+(AA <- f1A(1))
+
+@
+
+
+
 \subsection{The \ldots}
 
 The $\ldots$ allows you to pass further arguments that some function
@@ -3785,9 +4189,11 @@ f0(1:5, col = "red", type = "b")
 @ 
 
 
-Make sure you understand why only \texttt{fa} does what you
-want: 
-<<eval = FALSE, results='hide'>>=
+\subsubsection{\activities}
+\label{sec:activities-14}
+
+Make sure you understand why only \texttt{fa} does what you want:
+<<eval =FALSE, results='hide'>>=
 
 fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
 fa(1:5, "blue", pch = 8)
@@ -3814,7 +4220,13 @@ try(rm(vv))
 local({vv <- 99; cat("vv = ", vv)})
 try(vv)
 
-@ 
+@
+
+
+\subsubsection{\activities \ local}
+\label{sec:activities--local}
+When could you think of using \texttt{local}?
+
 \clearpage
 
 
@@ -3893,6 +4305,15 @@ If time permits, we will go over the code in
 \texttt{Metabolic-rate-example.R}, to illustrate the split-apply-combine
 strategy, filtering, function definitions, etc.
 
+\subsection{activities \ split-apply and plots example}
+\label{sec:activities--split}
+
+Grab the file \texttt{Metabolic-rate-example.R}  from the repository
+(either clone the repo, if you use or would like to use git, or open
+the file as ``Raw'' and then copy and download it \textbf{Do not just
+  right-click on the file and download it} ---try it to see what I mean:
+you will download an HTML file).
+
 \section{Go back to the scenarios}\label{back-scenarios}
 You should now be able to go back to section \ref{scenarios} and solve all
 of them. If they ask you for data, you should know how to simulate data to
@@ -3925,6 +4346,8 @@ the ``The art of R programming''.
 you do type the code and play around: these are necessarily interactive
 things, and that does not play well with static notes).
 
+\activities: Really, do type the code!! The activities consist on typing
+the code and seeing what is happening. 
 
 \subsection{What exactly broke?}
 
@@ -4265,7 +4688,8 @@ trace(OncoSimulR:::nr_oncoSimul.internal, browser, at = 7)
 \section{Merging: merge, join}
 \label{sec:merging:-merge-join}
 
-(In development. For now, just the code. From file \texttt{merge-join.R})
+(In development. We will cover this if time permits. For now, I just show
+the code. This is from file \texttt{merge-join.R})
 
 <<>>=
 ## Combining data. merge and dplyr:join_*
@@ -5644,7 +6068,7 @@ A basic piece of code that does most of the above takes less than 70 lines.
 \section{If time permits}
 
 \subsection{More scoping and lexical scope}
-\label{sec:scoping}
+\label{sec:scoping-more}
 See \texttt{some-env-scoping-examples.R}
 
 
