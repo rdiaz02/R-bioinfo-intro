@@ -2973,7 +2973,8 @@ stripchart(xo ~ class, method = "jitter", vertical = TRUE)
 
 
 
-%% FIXME: stopped about here, though I add the new section on xtabs and latex
+%% FIXME: in many/most tables, change the 1, 2, 3, by letters or
+%% something. Can be confusing if the levels are counts
 \section{Tables}\label{tables}
 
 Tabulating data is a very common operation. Let's use again the data frame
