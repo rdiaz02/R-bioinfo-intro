@@ -1031,7 +1031,7 @@ use RStudio.
   not make sense, ask in class.
 \end{enumerate}
 
-%% FIXME: about here
+
 
 \subsection{Error messages}
 The best way to learn to use \R\  is to use it. As explained before,
@@ -3058,7 +3058,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 
 
 %% FIXME: what I we do not use all variables for indexing?
-
+%% Dealt with in the activities of aggregate + xtabs
 \subsection{xtabs and ftable: summarizing arbitrary stuff}\label{xtabs-arbitrary}
 
 Suppose we have a data frame some arbitrary variable for (some of) the
