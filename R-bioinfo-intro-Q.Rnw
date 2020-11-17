@@ -3465,23 +3465,26 @@ ftable(xtabs(Y ~ age + sex,
 
 
 
-\item Use only height as the grouping variable in the following
-  summaries. Compare carefully what is happening here
+\item Using only one variable for aggregate or xtabs. What is the
+  difference? Compare carefully what is happening here
 
 <<>>=
-df7 <- expand.grid(location = c("A", "B"), height = c("low", "med", "high"))
+df7 <- expand.grid(location = c("A", "B"),
+                   height = c("low", "med", "high"))
 df7$radon <- runif(6, 1, 1000)
 df7
 
 xtabs(radon ~ height,
-             data = aggregate(radon ~ height, data = df7,
-                              FUN = mean,
-                              drop = FALSE))
+      data = aggregate(radon ~ height,
+                       data = df7,
+                       FUN = mean,
+                       drop = FALSE))
 
 xtabs(radon ~ height,
-             data = aggregate(radon ~ height + location, data = df7,
-                              FUN = mean,
-                              drop = FALSE))
+      data = aggregate(radon ~ height + location,
+                       data = df7,
+                       FUN = mean,
+                       drop = FALSE))
 @ 
 
 (We did not use ftable in the previous example: it gives ugly output since
