@@ -2448,6 +2448,9 @@ problems (by sending to the interpreter the lines of code you want) and
 that you really understand what is happening in each line. You might want
 to look at the help for \texttt{text} and \texttt{points}.
 
+Plot a few points, with coordinates (1, 3), (2, 7), (8, 9) and use
+\texttt{type = ``b''}.
+
 \subsection{Saving plots}
 Can you save the plots as PDF, png, \ldots? Definitely. From RStudio you
 have a menu entry in the plot window. For non-interactive work (as when
@@ -3054,7 +3057,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 @ 
 
 
-
+%% FIXME: what I we do not use all variables for indexing?
 
 \subsection{xtabs and ftable: summarizing arbitrary stuff}\label{xtabs-arbitrary}
 
@@ -3119,6 +3122,14 @@ been considered when we created \texttt{dfx4}.
 (There is another option for \texttt{xtabs}: \texttt{na.action}; look at
 the examples for \texttt{xtabs})
 
+
+
+
+\activities And what happens if you do
+
+<<xtabs_arbitr_5>>=
+ftable(xtabs(Vx ~ Age + Loc, data = dfx3))
+@ 
 
 
 And you could then produce a nice LaTeX table using \texttt{toLatex} after
@@ -3451,6 +3462,32 @@ ftable(xtabs(Y ~ age + sex,
       addNA = TRUE))
 
 @
+
+
+
+\item Use only height as the grouping variable in the following
+  summaries. Compare carefully what is happening here
+
+<<>>=
+df7 <- expand.grid(location = c("A", "B"), height = c("low", "med", "high"))
+df7$radon <- runif(6, 1, 1000)
+df7
+
+xtabs(radon ~ height,
+             data = aggregate(radon ~ height, data = df7,
+                              FUN = mean,
+                              drop = FALSE))
+
+xtabs(radon ~ height,
+             data = aggregate(radon ~ height + location, data = df7,
+                              FUN = mean,
+                              drop = FALSE))
+@ 
+
+(We did not use ftable in the previous example: it gives ugly output since
+there is no table to flatten there)
+
+
 \end{enumerate}
 
 
