@@ -2831,8 +2831,7 @@ This is all I did: %% (the \code{save} thing will become clearer below
 %% ---section \ref{saveRData}):
 <<eval=FALSE>>=
 anage <-  read.table("AnAge_birds_reptiles.txt", 
-                     header=TRUE, na.strings="NA", 
-                     strip.white=TRUE)
+                     header=TRUE, na.strings="NA")
 save(file = "anage.RData", anage)
 @ 
 The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downloaded.
@@ -4346,7 +4345,7 @@ If time permits, we will go over the code in
 \texttt{Metabolic-rate-example.R}, to illustrate the split-apply-combine
 strategy, filtering, function definitions, etc.
 
-\subsection{activities \ split-apply and plots example}
+\subsection{\activities \ split-apply and plots example}
 \label{sec:activities--split}
 
 Grab the file \texttt{Metabolic-rate-example.R}  from the repository
