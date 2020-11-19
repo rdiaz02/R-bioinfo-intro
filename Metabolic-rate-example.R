@@ -1,27 +1,23 @@
-## A couple of things from last session
 
-m1 <- lm(runif(5) ~ rnorm(5))
-m1
-print(m1)
-apropos("anywhere")
-getAnywhere("print.lm")
-
+## PURPOSE of this:
+## Use different types of plot for same data
+## Illustrate split-apply-combine
+## Illustrate dealing with errors and incremental building of code
+## Illustrate reading of help
 
 ######
 ## What is in the workspace? I want it clean
 rm(list = ls())
 
 anage <-  read.table("AnAge_birds_reptiles.txt", 
-                     header=TRUE, na.strings="NA", 
-                     strip.white=TRUE)
-
-## Stopped here, 24-10
+                     header=TRUE, na.strings="NA")
 
 
 str(anage)
 head(anage)
 tail(anage)
 summary(anage)
+
 ## Did you notice the naming of columns?
 
 
@@ -30,10 +26,6 @@ anage$logmet <- log(anage$Metabolic.rate..W.)
 anage$logbm <- log(anage$Body.mass..g)
 
 
-## Use different types of plot for same data
-## Illustrate split-apply-combine
-## Illustrate dealing with errors and incremental building of code
-## Illustrate reading of help
 
 library(car)
 
@@ -110,11 +102,20 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
 
 
 ## continue with plot
+
+## Eh???!!!
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
-     col = c("red", "blue")[Class],
+     col = c("red", "blue")[anage$Class],
      log = "xy")
 
+## What is going on?
+plot(Metabolic.rate..W. ~ Body.mass..g.,
+     data = anage,
+     col = c("red", "blue")[factor(anage$Class)],
+     log = "xy")
+
+anage$Class <- factor(anage$Class)
 
 ## legend?
 plot(Metabolic.rate..W. ~ Body.mass..g.,
