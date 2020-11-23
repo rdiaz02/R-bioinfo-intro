@@ -4499,18 +4499,20 @@ When browsing or debugging, notice the difference between \texttt{c}  and
 \texttt{s} (continue and step into). Play with it with \texttt{f3}.
 
 
-\subsubsection{\activities browser and debug main commands}
+\subsubsection{\activities \ browser and debug main commands}
 \label{sec:browser-debug-main}
 
 Make sure you understand the difference between typing each of these while
-under \texttt{browser()} or \texttt{debug()}
+under \texttt{browser()} or \texttt{debug()}. Write a function with a loop
+and that calls another function and use \texttt{c} and \texttt{f} and
+\texttt{s}
 
 \begin{itemize}
-\item \texttt{c}
 \item \texttt{n} (and Enter, at least under Emacs/ESS)
+\item \texttt{c}
 \item \texttt{s}
-\item \texttt{f} %% finishes execution of the current loop or function
 \item \texttt{Q}
+\item \texttt{f} (I don't use it; I use \texttt{c})%% finishes execution of the current loop or function
 \end{itemize}
 
 
@@ -4753,7 +4755,7 @@ trace(OncoSimulR:::nr_oncoSimul.internal, browser, at = 7)
 
 % FIXME add this in the future?
 
-
+\clearpage
 \section{Merging: merge, join}
 \label{sec:merging:-merge-join}
 
