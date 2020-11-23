@@ -9,10 +9,11 @@ getAnywhere(plot.TukeyHSD)
 
 
 ## What is available changes depending on what packages we have loaded.
-methods("plot")
-
 library(OncoSimulR)
+methods("plot")
 ## lots more now. Why? For now, see plot.fitnessEffects
+## Oh, and notice the "*"
+
 ## or plot.genotype_fitness_matrix
 getAnywhere(plot.fitnessEffects)
 plot.fitnessEffects
@@ -20,8 +21,9 @@ OncoSimulR::plot.fitnessEffects
 OncoSimulR:::plot.fitnessEffects
 
 ## all generics for a class
-methods(class = "genotype_fitness_matrix")
 methods(class = "lm")
+methods(class = "fitnessEffects")
+methods(class = "genotype_fitness_matrix")
 
 ?methods
 ## print(methods(class = "lm"), byclass = TRUE)
@@ -47,13 +49,31 @@ getS3method("add1", "lm")
 ## This is exported. No problem here
 kappa.lm
 
+getAnywhere("plot.fitnessEffects")
+getS3method("plot", "fitnessEffects")
 
-## Create new types of objects
 
-library(testthat)
+
+########################################
+
+####  Some practice creating classes and methods
+
+## Let's pretend we want to deal with some very specific kinds of
+## structures that have info about cholesterol, the expression of one
+## gene, and the kind of experiment this was measured
+
+## We want to convert data frames to that class, and produce some special
+## plots and output when shown
+
+library(testthat) ## for testing
+
+
+## Oh, notice the signature. See "How to design programs". https://htdp.org/
+##  An Edx sequence of courses: https://www.edx.org/course/how-to-code-simple-data
+
 
 ## object -> Cholest_Gene object
-## Generic converter to Cholest_Gene object.
+## General converter to Cholest_Gene object.
 to_CG <- function(x, ...) {
     UseMethod("to_CG")
 }
@@ -62,7 +82,7 @@ to_CG <- function(x, ...) {
 ## data.frame -> Cholest_Gene object
 ## Take a data frame and return (if possible) a Cholest_Gene object.
 to_CG.data.frame <- function(x) {
-    cns <- c("Cholesterol", "Gene", "Class")
+    cns <- c("Cholesterol", "Gene", "Kind")
     if (!(all(colnames(x) %in% cns)))
         stop(paste("Column names are not ", cns))
     tmp <- x[, cns]
@@ -73,7 +93,7 @@ to_CG.data.frame <- function(x) {
 
 
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                 Class = "Cl1"))
+                 Kind = "Cl1"))
 
 ## Oooops!!! Ugly!!
 uu
@@ -84,17 +104,18 @@ attributes(uu)
 
 ## Second attempt.
 to_CG.data.frame <- function(x) {
-    cns <- c("Cholesterol", "Gene", "Class")
+    cns <- c("Cholesterol", "Gene", "Kind")
     if (!(all(colnames(x) %in% cns)))
         stop(paste("Column names are not ", cns))
     tmp <- x[, cns]
+    tmp$Kind <- factor(tmp$Kind)
     ## Do you know why do I preserve the data.frame class? ...
     class(tmp) <- c("Cholest_Gene", class(tmp)) ## "data.frame")
     return(tmp)
 }
 
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                 Class = "Cl1"))
+                 Kind = "Cl1"))
 ## Using existing functionality for free
 summary(uu)
 print(uu)
@@ -142,7 +163,7 @@ library(testthat)
 test_that("minimal conversions and failures", {
 
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                     Class = "Cl1")), "Cholest_Gene")
+                                     Kind = "Cl1")), "Cholest_Gene")
 
 
     expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
@@ -150,34 +171,35 @@ test_that("minimal conversions and failures", {
                  fixed = TRUE)
 
     expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
-                                     Class = "Cl1")),
-                 "Column names are not",
+                                     Kind = "Cl1")),
+                 "Column names are not ",
                  fixed = TRUE)
 })
 
 ## eh? This fails! And the output is ugly!!
 expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                 Class = "Cl1",
+                                 Kind = "Cl1",
                                  whatever = "abcd")), "Cholest_Gene")
 ## why??
 
 dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                 Class = "Cl1",
+                                 Kind = "Cl1",
                                  whatever = "abcd"))
 ## OK, it failed. But why?
 debugonce(to_CG.data.frame)
 
 dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                 Class = "Cl1",
+                                 Kind = "Cl1",
                                  whatever = "abcd"))
 
 ## Fix the code: we reverted the %in%
 
 to_CG.data.frame <- function(x) {
-    cns <- c("Cholesterol", "Gene", "Class")
+    cns <- c("Cholesterol", "Gene", "Kind")
     if (!(all(cns %in% colnames(x))))
         stop(paste("Column names are not ", paste(cns, collapse = " ")))
     tmp <- x[, cns]
+    tmp$Kind <- factor(tmp$Kind)
     class(tmp) <- c("Cholest_Gene", class(x))
     return(tmp)
 }
@@ -186,16 +208,16 @@ to_CG.data.frame <- function(x) {
 
 test_that("minimal conversions and failures", {
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                     Class = "Cl1")), "Cholest_Gene")
+                                     Kind = "Cl1")), "Cholest_Gene")
     expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
                  "For now, only methods for data.frame are available",
                  fixed = TRUE)
     expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
-                                     Class = "Cl1")),
+                                     Kind = "Cl1")),
                  "Column names are not",
                  fixed = TRUE)
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                     Class = "Cl1",
+                                     Kind = "Cl1",
                                      whatever = "abcd")), "Cholest_Gene")
 })
 
@@ -205,9 +227,9 @@ plot.Cholest_Gene <- function(x, ...) {
     class(x) <- "data.frame"
     require(ggplot2)
     ## FIXME: should I explicitly print? Hummm.. return, as orthodox?
-    if (nlevels(x$Class) >= 2 )
-        p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Class), data = x) +
-            facet_grid(~ Class)
+    if (nlevels(x$Kind) >= 2 )
+        p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Kind), data = x) +
+            facet_grid(~ Kind)
     else
         p1 <- ggplot(aes(y = Cholesterol, x = Gene), data = x)
     p1 <- p1 + geom_point()
@@ -217,11 +239,11 @@ plot.Cholest_Gene <- function(x, ...) {
 plot(uu)
 
 uu2 <- uu
-uu2[1:3, "Class"] <- "Cl2"
+uu2[1:3, "Kind"] <- "Cl2"
 ## notice the NA, but that ain't related to our class
-uu2$Class <- as.character(uu2[, "Class"])
-uu2[1:3, "Class"] <- "Cl2"
-uu2[, "Class"] <- factor(uu2[, "Class"])
+uu2$Kind <- as.character(uu2[, "Kind"])
+uu2[1:3, "Kind"] <- "Cl2"
+uu2[, "Kind"] <- factor(uu2[, "Kind"])
 
 plot(uu2)
 
