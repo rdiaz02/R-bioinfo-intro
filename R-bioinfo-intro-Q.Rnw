@@ -4373,10 +4373,13 @@ I use often (there are some extra techniques and approaches, but really
 understanding the ones below will take you far).  
 
 Anyway, here are some additional places to look at:
-\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/},
-\Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/debug.shtml},
-\Burl{http://www.biostat.jhsph.edu/\%7Erpeng/docs/R-debug-tools.pdf}, and
-chapter 9 in ``Advanced R'' (available here :
+\Burl{https://web.archive.org/web/20170706215053/http://www.stats.uwo.ca:80/faculty/murdoch/software/debuggingR/}
+% \Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/},
+% \Burl{http://www.stats.uwo.ca/faculty/murdoch/software/debuggingR/debug.shtml},
+\Burl{http://www.biostat.jhsph.edu/\%7Erpeng/docs/R-debug-tools.pdf},
+chapter 22 in ``Advanced R, 2nd ed''
+(\Burl{https://adv-r.hadley.nz/debugging.html} --- and this is from
+chapter 9 in ``Advanced R, 1st ed'':
 \Burl{http://adv-r.had.co.nz/Exceptions-Debugging.html}) and chapter 13 in
 the ``The art of R programming''.
 
@@ -4495,11 +4498,52 @@ again your function (which will have the effect of undebugging it).
 When browsing or debugging, notice the difference between \texttt{c}  and
 \texttt{s} (continue and step into). Play with it with \texttt{f3}.
 
+
+\subsubsection{\activities browser and debug main commands}
+\label{sec:browser-debug-main}
+
+Make sure you understand the difference between typing each of these while
+under \texttt{browser()} or \texttt{debug()}
+
+\begin{itemize}
+\item \texttt{c}
+\item \texttt{n} (and Enter, at least under Emacs/ESS)
+\item \texttt{s}
+\item \texttt{f} %% finishes execution of the current loop or function
+\item \texttt{Q}
+\end{itemize}
+
+
+
+
 \subsection{Browsing arbitrary functions at arbitrary places}
 Can you place \code{browser} at arbitrary places in arbitrary functions
 including, say, from a package or the base system you have not written?
 Yes. You just have to pass it the line number, using the function
-\code{trace}. And how do you find the line number? Use
+\code{trace} (see below).
+
+It is actually even simpler (at least for me) to just edit the code and do
+whatever I need. This just means using the \texttt{edit} option with trace:
+
+<<eval=FALSE>>=
+trace("lm", edit = "emacs")
+trace("lm", edit = TRUE)
+@ 
+
+
+%%% For me, I use
+% as default editor ecf
+% #!/bin/bash
+% emacsclient -s  /tmp/emacs1000/server -c $1    
+% and have it as my default editor so I can do
+% trace("something", edit = TRUE)
+% or
+% trace("something", edit = "ecf")
+% stop the shitty font locking of the $$
+
+
+You can, though, place code, such as \texttt{browser} at specific lines.
+And how do you find the line number? Use
 \code{as.list(body(theFunctionname)}.
 
 Let's start with our simple function:
@@ -4533,21 +4577,6 @@ untrace(lm)
 
 @ 
 
-We can also use the \texttt{edit} option with trace:
-
-<<eval=FALSE>>=
-trace("lm", edit = "emacs")
-trace("lm", edit = TRUE)
-@ 
-
-%%% For me, I use
-% as default editor ecf
-% #!/bin/bash
-% emacsclient -s  /tmp/emacs1000/server -c $1
-% and have it as my default editor so I can do
-% trace("something", edit = TRUE)
-% or
-% trace("something", edit = "ecf")
 
 \subsection{Autopsies when things fail}
 But sometimes you only want to stop when/if things fail, and look
