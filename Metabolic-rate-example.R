@@ -282,6 +282,11 @@ summary(anage3)
 summary(anage4)
 identical(anage3, anage4)
 
+## Quick and dirty version of expect_true, etc
+## ALWAYS add testing code as you go along
+stopifnot(identical(anage3, anage4))
+
+
 ## Hummm... What gives here?
 identical(anage.clean, anage3)
 
@@ -386,6 +391,44 @@ lapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd)))
 ## OK, looks doable. A few minor tweaks and we are done
 
+############### A tangent
+## What about sapply?
+## Not a natural thing to do here
+sapply(split(anage, anage$Class),
+       function(dd) lm(logmet ~ logbm, data = dd))
+
+sapply(split(anage, anage$Class),
+       function(dd) lm(logmet ~ logbm, data = dd),
+       simplify = FALSE)
+
+## And vapply; too much of a mess here
+## and not a natural application
+vapply(split(anage, anage$Class),
+       function(dd) lm(logmet ~ logbm, data = dd),
+       FUN.VALUE = lm(logmet ~ logbm, data = anage))
+
+## However, use vapply whenever you can instead of sapply!
+## Lets continue on the tangent here. From the help of sapply
+
+i39 <- sapply(3:9, seq) # list of vectors
+
+sapply(i39, summary)
+
+vapply(i39, summary,
+       c(Min. = 0, "1st Qu." = 0, Median = 0, "3rd Qu." = 0, Max. = 0))
+
+i39b <- i39
+i39b[[2]] <- factor(letters[1:5])
+
+sapply(i39b, summary)
+
+vapply(i39, summary,
+       c(Min. = 0, "1st Qu." = 0, Median = 0, "3rd Qu." = 0, Max. = 0))
+
+## And replicate?
+replicate(10, mean(rnorm(100)))
+
+####### End tangent
 
 
 colores <- c("salmon", "turquoise")
