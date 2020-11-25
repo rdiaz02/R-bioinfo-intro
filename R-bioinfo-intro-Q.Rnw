@@ -3227,7 +3227,7 @@ xtabs(cbind(a, b, e) ~ ., data = y)
 
 
 
-
+%% FIXME: explicit examples and comments about mapply, sapply, vapply
 
 \section{The ``apply'' family.  And ``aggregate'', ``by'', etc}
 One of the great strengths of \R\ is operating over whole vectors, arrays,
@@ -4517,7 +4517,7 @@ and that calls another function and use \texttt{c} and \texttt{f} and
 
 
 
-
+%% FIXME: untrace?
 \subsection{Browsing arbitrary functions at arbitrary places}
 Can you place \code{browser} at arbitrary places in arbitrary functions
 including, say, from a package or the base system you have not written?
