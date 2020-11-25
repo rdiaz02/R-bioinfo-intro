@@ -116,6 +116,7 @@ to_CG.data.frame <- function(x) {
 
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                  Kind = "Cl1"))
+
 ## Using existing functionality for free
 summary(uu)
 print(uu)
@@ -179,7 +180,8 @@ test_that("minimal conversions and failures", {
 ## eh? This fails! And the output is ugly!!
 expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                                  Kind = "Cl1",
-                                 whatever = "abcd")), "Cholest_Gene")
+                                 whatever = "abcd")),
+                "Cholest_Gene")
 ## why??
 
 dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
@@ -197,7 +199,8 @@ dummy <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
 to_CG.data.frame <- function(x) {
     cns <- c("Cholesterol", "Gene", "Kind")
     if (!(all(cns %in% colnames(x))))
-        stop(paste("Column names are not ", paste(cns, collapse = " ")))
+        stop(paste("Column names are not ",
+                   paste(cns, collapse = " ")))
     tmp <- x[, cns]
     tmp$Kind <- factor(tmp$Kind)
     class(tmp) <- c("Cholest_Gene", class(x))
@@ -207,11 +210,14 @@ to_CG.data.frame <- function(x) {
 ## Add the test the failed to the set of tests
 
 test_that("minimal conversions and failures", {
-    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
-                                     Kind = "Cl1")), "Cholest_Gene")
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10,
+                                     Gene = 11:20,
+                                     Kind = "Cl1")),
+                    "Cholest_Gene")
     expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
                  "For now, only methods for data.frame are available",
                  fixed = TRUE)
+    
     expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
                                      Kind = "Cl1")),
                  "Column names are not",
@@ -228,7 +234,8 @@ plot.Cholest_Gene <- function(x, ...) {
     require(ggplot2)
     ## FIXME: should I explicitly print? Hummm.. return, as orthodox?
     if (nlevels(x$Kind) >= 2 )
-        p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Kind), data = x) +
+        p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Kind),
+                     data = x) +
             facet_grid(~ Kind)
     else
         p1 <- ggplot(aes(y = Cholesterol, x = Gene), data = x)
