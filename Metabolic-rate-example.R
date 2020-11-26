@@ -29,85 +29,124 @@ anage$logbm <- log(anage$Body.mass..g)
 
 library(car)
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
-     log = "xy")
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
+            data = anage,
+            log = "xy")
 
 ## too many lines; what are we getting rid of?
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = anage,
-     log = "xy", smooth = FALSE)
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
+            data = anage,
+            log = "xy",
+            smooth = FALSE)
 
 ## But I have birds and reptiles. What is smooth doing?
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
-            log = "xy", smooth = FALSE)
+            log = "xy",
+            smooth = FALSE)
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
             log = "xy", smooth = TRUE)
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
-            log = "xy", smooth = list(smoother = loessLine,
+            log = "xy",
+            smooth = list(smoother = loessLine,
                                       var = TRUE))
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
-            log = "xy", smooth = list(smoother = loessLine,
-                                      var = FALSE))
+            log = "xy",
+            smooth = list(smoother = loessLine,
+                          var = FALSE))
 
 ## Notice col
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
             log = "xy",
             col = c("orange", "green"))
 ## but nope, not everything is changeable that way: e.g., cex
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
             log = "xy",
             cex = c(1, 8))
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+## Oooops
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
             log = "xy",
             cex = c(1, 8)[Class])
 
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+## Hummmm... no points
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
             log = "xy",
             cex = c(1, 8)[anage$Class])
 
-## does plot work?
+## Hummmm... no points
 plot(Metabolic.rate..W. ~ Body.mass..g.,
+     data = anage,
+     log = "xy",
+     cex = c(1, 3)[anage$Class])
+
+## What is happening here
+anage$Class
+
+## Aha!
+anage$Class <- factor(anage$Class)
+
+## Now
+plot(Metabolic.rate..W. ~ Body.mass..g.,
+     data = anage,
+     log = "xy",
+     cex = c(1, 3)[anage$Class])
+
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = anage,
             log = "xy",
             cex = c(1, 8)[anage$Class])
+
+
 
 ## let's try again. 
-dx <- na.omit(anage[, c("Metabolic.rate..W.", "Body.mass..g.", "Class")])
+dx <- na.omit(anage[, c("Metabolic.rate..W.",
+                        "Body.mass..g.",
+                        "Class")])
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = dx,
             log = "xy",
             cex = c(1, 8))
 
 cexo <- c(1,8)[dx$Class]
 
-scatterplot(Metabolic.rate..W. ~ Body.mass..g. | Class,
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
             data = dx,
             log = "xy",
             cex = cexo) ## OK, I give up
 
 
-
 ## continue with plot
 
-## Eh???!!!
-plot(Metabolic.rate..W. ~ Body.mass..g.,
-     data = anage,
-     col = c("red", "blue")[anage$Class],
-     log = "xy")
+## ## Eh???!!!
+## plot(Metabolic.rate..W. ~ Body.mass..g.,
+##      data = anage,
+##      col = c("red", "blue")[anage$Class],
+##      log = "xy")
 
 ## What is going on?
 plot(Metabolic.rate..W. ~ Body.mass..g.,
@@ -136,9 +175,9 @@ legend(10, 2, legend = levels(anage$Class),
 
 library(ggplot2)
 
-p1 <- ggplot(aes(x = Body.mass..g., y = Metabolic.rate..W.),
+p1 <- ggplot(aes(x = Body.mass..g.,
+                 y = Metabolic.rate..W.),
              data = anage) + geom_point()
-
 p1
 
 ## how can I use log?
@@ -148,10 +187,12 @@ p1 + scale_x_log10() + scale_y_log10()
 ## conditioning
 p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class)
 
-p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
+p1 + scale_x_log10() + scale_y_log10() +
+    facet_wrap( ~ Class) +
     geom_smooth(method = "lm")
 
-p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
+p1 + scale_x_log10() + scale_y_log10() +
+    facet_wrap( ~ Class) +
     geom_smooth(method = "lm", se = FALSE )
 
 ## using color per class
@@ -162,7 +203,8 @@ p2 <- ggplot(aes(x = Body.mass..g.,
     geom_point() 
 p2
 
-p2 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class) +
+p2 + scale_x_log10() + scale_y_log10() +
+    facet_wrap( ~ Class) +
     geom_smooth(method = "lm", se = FALSE )
 
 ## single panel
@@ -230,14 +272,18 @@ axis(side = 2, at = log(yv), labels = yv)
 par(las = 1)
 
 plot(logmet ~ logbm, data = anage,
-     xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
+     xlab = "Body mass (g)",
+     ylab = "Metabolic rate (W)",
      axes = FALSE,
-     ylim = c(log(0.01), max(anage$logmet)))  ## what happened?
+     ylim = c(log(0.01),
+              max(anage$logmet)))  ## what happened?
 
 plot(logmet ~ logbm, data = anage,
-     xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
+     xlab = "body mass (g)",
+     ylab = " metabolic rate (W)",
      axes = FALSE,
-     ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
+     ylim = c(log(0.01),
+              max(anage$logmet, na.rm = TRUE)))
 
 box()
 axis(side = 2, at = log(yv), labels = yv)
@@ -257,11 +303,13 @@ par(op)
 
 
 anage.clean <- anage[
-    complete.cases(anage[, c("Class",
-                             "Metabolic.rate..W.",
-                             "Body.mass..g.")])
+    complete.cases(
+        anage[, c("Class",
+                  "Metabolic.rate..W.",
+                  "Body.mass..g.")])
   , ]
 summary(anage.clean)
+
 
 anage.clean2 <- na.omit(
     anage[, c("Class", "Metabolic.rate..W.", "Body.mass..g.")])
@@ -269,6 +317,8 @@ summary(anage.clean2)
 
 nrow(anage.clean)
 nrow(anage.clean2)
+
+stopifnot(nrow(anage.clean) == nrow(anage.clean2))
 
 anage3 <- dplyr::filter(anage,
                         !is.na(Metabolic.rate..W.) &
@@ -290,6 +340,7 @@ stopifnot(identical(anage3, anage4))
 ## Hummm... What gives here?
 identical(anage.clean, anage3)
 
+
 mapply(identical, anage.clean, anage3)
 ## or
 Map(identical, anage.clean, anage3)
@@ -305,8 +356,11 @@ length(attributes(anage3))
 
 ## misleading
 Map(identical, attributes(anage.clean), attributes(anage3))
+
 names(attributes(anage3))
 names(attributes(anage.clean))
+
+stopifnot(all(names(attributes(anage.clean)) == names(attributes(anage3))))
 
 for(att in names(attributes(anage3))) {
     cat("\n attribute ", att, "\n")
@@ -360,7 +414,12 @@ mbirds <- lm(logmet ~ logbm,
 
 ## similar to
 mbirds0 <- lm(logmet ~ logbm,
-              data = anage, subset = (Class == "Aves"))
+              data = anage,
+              subset = (Class == "Aves"))
+
+stopifnot(
+    identical(
+        coefficients(mbirds0), coefficients(mbirds)))
 
 mrept <- lm(logmet ~ logbm,
             data = dplyr::filter(anage, Class != "Aves"))
@@ -388,7 +447,8 @@ plot(logmet ~ logbm, anage,
      col = c("salmon", "turquoise")[Class])
 
 lapply(split(anage, anage$Class),
-       function(dd) abline(lm(logmet ~ logbm, data = dd)))
+       function(dd)
+           abline(lm(logmet ~ logbm, data = dd)))
 ## OK, looks doable. A few minor tweaks and we are done
 
 ############### A tangent
@@ -415,18 +475,20 @@ i39 <- sapply(3:9, seq) # list of vectors
 sapply(i39, summary)
 
 vapply(i39, summary,
-       c(Min. = 0, "1st Qu." = 0, Median = 0, "3rd Qu." = 0, Max. = 0))
+       c(Min. = 0, "1st Qu." = 0, Median = 0,
+         mean = 0, "3rd Qu." = 0, Max. = 0))
 
 i39b <- i39
 i39b[[2]] <- factor(letters[1:5])
 
 sapply(i39b, summary)
 
-vapply(i39, summary,
-       c(Min. = 0, "1st Qu." = 0, Median = 0, "3rd Qu." = 0, Max. = 0))
+vapply(i39b, summary,
+       c(Min. = 0, "1st Qu." = 0, Median = 0,
+         mean = 0, "3rd Qu." = 0, Max. = 0))
 
 ## And replicate?
-replicate(10, mean(rnorm(100)))
+replicate(1000, mean(rnorm(100)))
 
 ####### End tangent
 
@@ -438,13 +500,19 @@ plot(logmet ~ logbm, anage, col = colores[Class])
 
 ## ;-(
 lapply(split(anage, anage$Class),
-       function(dd) abline(lm(logmet ~ logbm, data = dd),
-                              col = colores[Class]))
+       function(dd)
+           abline(lm(logmet ~ logbm, data = dd),
+                  col = colores[Class]))
 
 ## yes (and get rid of the NULLs)
-junk <- lapply(split(anage, anage$Class),
-       function(dd) abline(lm(logmet ~ logbm, data = dd),
-                              col = colores[dd$Class]))
+
+junk <- lapply(
+    split(anage, anage$Class),
+    function(dd)
+        abline(lm(logmet ~ logbm,
+                  data = dd),
+               col = colores[dd$Class]))
+
 
 ## What did we do? If we get side tracked
 dddd <- split(anage, anage$Class)
