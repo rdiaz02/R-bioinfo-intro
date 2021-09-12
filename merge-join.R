@@ -20,7 +20,7 @@
 
 ## state.x77 is part of datasets, so immediately available
 all.states <- as.data.frame(state.x77)
-all.states$Name <- rownames(state.x77)
+all.states$Name <- rownames(state.x77) 
 rownames(all.states) <- NULL
 
 

@@ -1,0 +1,19 @@
+* Mention radian
+  - https://github.com/randy3k/radian
+  - https://fromthebottomoftheheap.net/2019/06/18/radian-console-for-r/
+* VScode
+  - https://github.com/REditorSupport/vscode-R
+  - https://github.com/ManuelHentschel/VSCode-R-Debugger
+  - 
+** probably want vscodium
+   - https://github.com/VSCodium/vscodium
+     - Installers: https://vscodium.com/
+** extra details
+   - https://www.milesmcbain.com/posts/adding-addins-to-vscode/
+** changing settings:
+   - https://code.visualstudio.com/docs/getstarted/settings
+   - C-,
+   - C-p for installing extensions
+** can use emacs keybindings
+   - https://marketplace.visualstudio.com/items?itemName=tuttieee.emacs-mcx
+
