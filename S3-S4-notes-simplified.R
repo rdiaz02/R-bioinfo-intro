@@ -258,6 +258,7 @@ plot(uu2)
 ## Of course, this works
 methods("to_CG")
 methods(class = "data.frame")
+methods(class = "Cholest_Gene")
 
 ## Now create summary and print for our new type of object and add tests.
 

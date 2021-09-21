@@ -1,0 +1,12 @@
+* Something about VScodium
+  - probably want vscodium
+  - R
+    - https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r
+* Sparapani's quote
+  
+My students are unconvinced
+and use RStudio but I am not allowed to fail them
+for their merely youthful indiscretions ;o)
+
+- https://stat.ethz.ch/pipermail/ess-help/2021-September/012970.html
+
