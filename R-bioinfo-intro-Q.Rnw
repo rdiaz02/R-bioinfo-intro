@@ -86,7 +86,7 @@ opts_knit$set(stop_on_error = 2L)
 \date{\gitAuthorDate\ {\footnotesize (Release\gitRels: Rev: \gitAbbrevHash)}}
 
 \author{Ramon Diaz-Uriarte\thanks{Dept.\ of Biochemistry, Universidad
-    Aut\'onoma de Madrid, Spain, \Burl{http://ligarto.org/rdiaz},
+    Aut\'onoma de Madrid, Spain, \Burl{https://ligarto.org/rdiaz},
     \texttt{r.diaz@uam.es}}}
 
 
@@ -108,7 +108,7 @@ options(width = 60)
 @ 
 
 \section{License and copyright}\label{license}
-This work is Copyright, \copyright, 2014 to 2020, Ramon Diaz-Uriarte,
+This work is Copyright, \copyright, 2014 to present, Ramon Diaz-Uriarte,
 and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
 4.0 International License:
 \Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
@@ -357,7 +357,7 @@ This is a partial list a books I like and use when preparing classes:
 \item[Linear models et al.] Linear models are fundamental in
   statistics. And fascinating.
   \begin{itemize}
-  \item \textit{An R companion to applied regression}. Cox and
+  \item \textit{An R companion to applied regression, 3rd edition}. Cox and
     Weisberg. John Fox is also the author of an excellent textbook (now in
     its second edition) about linear models. This companion is absolutely
     fantastic (and can be used even if you don't have the other
@@ -447,14 +447,14 @@ introduce RStudio). Some Mac users are very happy just the default, plain,
 interface provided by R under Mac OS X.  If you love vim, there is Vim-R-plugin
 (\Burl{http://www.vim.org/scripts/script.php?script_id=2628};
 \Burl{https://hpcc.ucr.edu/manuals/hpc_cluster/terminalide/}). If you use VSCode
-(or, probably better, VScodium), there are several extensions  for working with
+(or, probably better, VScodium \Burl{https://vscodium.com/}), there are several extensions  for working with
 R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}. 
 For those used to Eclipse, there is a plug-in designed to
 work with R: StatET
 (\Burl{https://projects.eclipse.org/projects/science.statet}).   And some Windows users like Tinn-R (\Burl{https://github.com/jcfaria/Tinn-R});
 I used to use Tinn-R in R courses I taught 12 to 15 years ago, but I think it has
 lost ground to RStudio.   And then, if you
-look around, there are many other options.
+look around, there are other options for other editors.
 
 
 % Another popular
@@ -473,19 +473,17 @@ look around, there are many other options.
 If you plan to spend a fair amount of time doing Bioinformatics, then you'll
 spend a fair amount of time programming, probably using a variety of languages
 (R, Python, C, JS, etc). Becoming used to a programmer-friendly editor that
-``understands'' all of the languages you use is thus worth it. Choosing an editor
-is a highly personal issue. Emacs is an editor and then a lot of other things
-(that is what I use, for programming, editing text, email, etc); if you use Emacs
-then Emacs + ESS is the perfect combination for you. For vim users, there is the
-vim-R-plugin. Those who come from the Java world might be familiar with Eclipse
-(and, thus, you'll want to give StatET a try). VSCode (or, better yet, VSCodium)
-has been gaining a lot of users in the last few years, and we gave the URL to an
-extension for R. Kate is another great editor that understands many editors and
-it easy to submit code to an R process running in the terminal, but it lacks some
-nice features that RStudio and Emacs+ESS have (but RKward might then be a nice
-option). Some people (myself) like to use a single editor for most/all editing
-tasks. Some other people jump around (they use RStudio for R, Eclipse for Java,
-and maybe Spider for Python). You get to choose.
+``understands'' all of the languages you use is thus worth it, and these skills
+transfer to any of your other text-editing needs (emails, writing papers, writing
+the yearly letter to the three wise men, etc). This is why some people like to
+use a single editor for most/all editing tasks. But then, some other people jump
+around (they use RStudio for R, Eclipse for Java, and maybe Spider for
+Python). Emacs is an editor and then a lot of other things (that is what I use,
+for programming, writing, calendar, email, etc); if you use Emacs then Emacs +
+ESS is the perfect combination (if you use Vim or Eclipse or VSCodium, see links
+above).  % Kate is another great editor that understands many languages and it easy
+% to submit code to an R process running in the terminal, but it lacks some nice
+% features that RStudio and Emacs+ESS have.  You get to choose.
 
 
 Note, though, that one thing is syntax highlighting (and syntax highlighting for
@@ -505,11 +503,11 @@ might not be able to help you.
 
 
 Note that all of the above have a different purpose from R Commander
-(\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/}) which, as it says, is
-a basic statistics GUI for R. In this course we will rarely (if at all)
-use R Commander, since these notes are focused on programming and using R
-from the command line. However, I do recommend that you play around with R
-Commander.%  Another GUI for statistics with R (that I have not used but
+(\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/}) which is a basic statistics
+GUI for R. In this course we will rarely (if at all) use R Commander, since these
+notes are focused on programming and using R from the command line. However, I do
+recommend that you play around with R
+Commander.% Another GUI for statistics with R (that I have not used but
 % know is liked by some people) is Deducer:
 % \Burl{http://www.deducer.org}.
 
