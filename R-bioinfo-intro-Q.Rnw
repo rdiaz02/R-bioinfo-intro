@@ -440,6 +440,7 @@ want to use the "Dektop", that you can download from here:
 
 \subsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
 
+\subsubsection{Editors for R}\label{editors}
 Ah, this is a nice topic for a long, passionate, conversation. In this course, by
 default, I'll introduce RStudio. I will, however, use Emacs + ESS
 (\Burl{http://ess.r-project.org/}) except for a few minutes (those when I
@@ -544,8 +545,14 @@ RKWard. Why? These are the reasons:
   about
   JASP. \Burl{https://paulspector.com/i-like-teaching-statistics-with-jasp/}.
 \item[jamovi] Does not produce ``standard'' R code, but uses its own, jamovi
-  style syntax (as in package \texttt{jmv}). Sharing just the R code seems not
-  easy.
+  style syntax (as in package \texttt{jmv}). Sharing just the R code for data
+  manipulations, though, seems not easy. JASP and jamovi share many things, and a
+  common history. See discussion here
+  \Burl{https://www.researchgate.net/post/Has_anyone_used_JASP_and_Jamovi} and
+  \Burl{https://forum.jamovi.org/viewtopic.php?f=2&t=669}. % Between
+  % the two, I'd probably choose jamovi simply because it can give you R code (and
+  % Mac OS users would probably also find it easier because it does not require to
+  % install X11). This is an interview with one of its lead developers: \Burl{http://blog.efpsa.org/2017/03/23/introducing-jamovi-free-and-open-statistical-software-combining-ease-of-use-with-the-power-of-r/}.
 \item[BlueSky] Does not produce ``standard'' R code (rather, it heavily relies on
   the ``tidyverse'').
 \item[Deducer] Very complex installation (and depends on Java). Its development
