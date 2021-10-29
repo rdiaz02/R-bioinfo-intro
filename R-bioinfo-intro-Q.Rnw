@@ -1,6 +1,6 @@
 %% ;;; -*- mode: Rnw; -*-
 \synctex=1
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,11pt]{artite}
 \usepackage{graphics}
 %\usepackage[dvips]{graphicx}
 \usepackage{amssymb,amsfonts,amsmath,amsbsy}
@@ -502,15 +502,85 @@ if you like VSCodium, use it. If you prefer Eclipse, then use Eclipse. Etc. But 
 might not be able to help you.
 
 
-Note that all of the above have a different purpose from R Commander
-(\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/}) which is a basic statistics
-GUI for R. In this course we will rarely (if at all) use R Commander, since these
-notes are focused on programming and using R from the command line. However, I do
-recommend that you play around with R
+\subsubsection{GUIs for analyses}
+\label{sec:guis-analyses}
+
+
+Note that all of the above have a different purpose from tools such as R
+Commander (\Burl{http://socserv.mcmaster.ca/jfox/Misc/Rcmdr/}) which is a basic
+statistics GUI for R. In this course we will rarely (if at all) use R Commander,
+since these notes are focused on programming and using R from the command
+line. However, you might want to play around with R
 Commander.% Another GUI for statistics with R (that I have not used but
 % know is liked by some people) is Deducer:
 % \Burl{http://www.deducer.org}.
 
+To complete this section, a great and recent comparison of available R GUIs is
+available from \Burl{http://r4stats.com/articles/software-reviews/} and an
+overview of all the reviews is available here
+\Burl{http://r4stats.com/articles/software-reviews/r-gui-comparison/}. (Some of
+the links in some of the reviews, say to RKWard might not work; google
+for them).
+
+What would I use if I had to use a GUI for R? R Commander, followed by
+RKWard. Why? These are the reasons:
+
+\begin{description}
+\item[R Commander] Produces ``standard'' R code, which helps to make the
+  transition to using R without a GUI. It offers exceptional support
+  for building linear models (not surprising, given J.\ Fox is the main author of
+  R Commander). Uses the R you have installed (so it requires installing R and a
+  bunch of packages).
+\item[RKWard] Using Kate can offer something approaching Emacs+ESS or RStudio.
+  Produces ``standard'' R code of the analyses (but it seems it can also save the
+  dialog box entries). But compared to R Commander, it offers fewer analyses via
+  menus in the GUI.
+  
+\item[Rattle] Main focus is data mining, and does not offer as much support for
+  classical and intro stats.
+\item[JASP] Does not produce (at least as of now) R code. Cannot run R code
+  directly. Installs its own R version and set of packages. It makes it easy to
+  use Bayesian methods (maybe too easy?). Here, though, is an enthusiastic comment
+  about
+  JASP. \Burl{https://paulspector.com/i-like-teaching-statistics-with-jasp/}.
+\item[jamovi] Does not produce ``standard'' R code, but uses its own, jamovi
+  style syntax (as in package \texttt{jmv}). Sharing just the R code seems not
+  easy.
+\item[BlueSky] Does not produce ``standard'' R code (rather, it heavily relies on
+  the ``tidyverse'').
+\item[Deducer] Very complex installation (and depends on Java). Its development
+  has stalled and it is no longer actively maintained, and there are some things
+  that no longer work, specially with newer Java versions (see thread in
+  \Burl{https://groups.google.com/g/deducer/c/va5YnHNEw_0}).
+  
+\end{description}
+
+
+And a few details about the criteria above, and why they matter (at least to me):
+\begin{description}
+\item[Capability of producing R output] I value that a tool produces R code so
+  that students, or myself, can, if they want, modify the code directly. This can
+  help when learning R. And this makes it possible to share analyses with
+  colleagues who use R (regardless of the GUI). And this is a crucial element of
+  reproducible research.
+\item[Having a way to interact with R (run R code directly)] Related to the
+  former, if we want to modify an analysis, even if we are using a GUI, it might
+  be simpler to just change a minor piece of the code. For this, you need the
+  system to provide you a way to interact with the R process directly.
+\item["Standard" R] This is in contrast to producing ``tidyverse'' code or code
+  that is specific to a GUI (as jamovi's jmv). There are many reasons why I think
+  the tidyverse is not a good idea for teaching (see
+  \Burl{https://github.com/matloff/TidyverseSkeptic}); I also tend to use the
+  tidyverse sparingly outside of a teaching context.
+\item[Not reinstalling R] I already have one or more versions of R
+  installed. Installing software that installs yet another version of R with a
+  large set of packages is not ideal.
+\end{description}
+
+
+
+\subsubsection{radian}
+\label{sec:radian}
 
 Finally, and although this is not a complete editor, for quick and dirty console
 use of R you might want to use radian (\Burl{https://github.com/randy3k/radian});
