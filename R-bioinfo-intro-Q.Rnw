@@ -1,6 +1,6 @@
 %% ;;; -*- mode: Rnw; -*-
 \synctex=1
-\documentclass[a4paper,11pt]{artite}
+\documentclass[a4paper,11pt]{article}
 \usepackage{graphics}
 %\usepackage[dvips]{graphicx}
 \usepackage{amssymb,amsfonts,amsmath,amsbsy}
@@ -726,11 +726,11 @@ What if things hang? Try \code{Control-C} and/or
 \item Can you see how you are offered suggestions as you type?
 \item Install a package. Do it using \texttt{install.packages}. You can
   also try using RStudio. The package to install is called ``varSelRF''.
-
-  \item Install the \texttt{limma} package from Bioconductor.
-
-  \item Open this file (this ``R-bioinfo-intro-Q.Rnw'') in Rstudio. It is
-    a 
+  
+\item Install the \texttt{limma} package from Bioconductor.
+  
+\item Open this file (this file is ``R-bioinfo-intro-Q.Rnw'') in Rstudio. What
+  kind of file is this? Can you run code from it? Could you generate the pdf?
 
 \end{enumerate}
 
