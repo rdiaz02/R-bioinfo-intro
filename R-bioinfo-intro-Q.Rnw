@@ -578,7 +578,7 @@ And a few details about the criteria above, and why they matter (at least to me)
   that is specific to a GUI (as jamovi's jmv). There are many reasons why I think
   the tidyverse is not a good idea for teaching (see
   \Burl{https://github.com/matloff/TidyverseSkeptic}); I also tend to use the
-  tidyverse sparingly outside of a teaching context.
+  tidyverse sparingly outside of a teaching context. See below.
 \item[Not reinstalling R] I already have one or more versions of R
   installed. Installing software that installs yet another version of R with a
   large set of packages is not ideal.
@@ -593,6 +593,40 @@ Finally, and although this is not a complete editor, for quick and dirty console
 use of R you might want to use radian (\Burl{https://github.com/randy3k/radian});
 this is what I use in my scratchpads.
 
+\subsubsection{tidyverse}\label{sec:tidyverse}
+
+This was mentioned above, and some students ask. So I'll anticipate. We have
+referred to \Burl{https://github.com/matloff/TidyverseSkeptic} (and the longer
+version:
+\Burl{https://github.com/matloff/TidyverseSkeptic/blob/master/READMEFull.md}).
+Another short summary of the problems, which I very much share, is in
+\Burl{https://stackoverflow.com/a/61393520}: basically, lack of flexibility,
+unnecessary complexity even for simple operations, and lack stability.  You can
+read a longer debate in \Burl{https://news.ycombinator.com/item?id=20362626},
+where you'll see arguments against and in favor of. I'll cherry-pick on that
+thread to mention some of my other arguments. They are mostly along the lines, of
+for example, the comments in \Burl{https://news.ycombinator.com/item?id=20364056}
+(interestingly, I also was introduced to R, after having used S-Plus for two
+years, by one of R core developers in a class he taught) and those below by the
+same person and others (e.g.,
+\Burl{https://news.ycombinator.com/item?id=20369518} and
+\Burl{https://news.ycombinator.com/item?id=20363863}): I find the tidyverse
+limiting and complicating and it hides details in base R --details that are not
+that complicated, and details that you will appreciate understanding for, say,
+manipulating R's statistical functions output-- plus it created other problems
+with nonstandard evaluation.  With regards to the famous pipe, I first liked it
+when I saw it (I use in the shell a lot) but then found it hard to debug programs
+that use it, and to comment/uncomment code, and I have an opinion similar to the
+one in \Burl{https://news.ycombinator.com/item?id=20369115} and earlier and later
+comments by the same person (this could be a personal bias: I tend to
+conceptualize code around nested operations and function composition, and don't
+dislike lisp's parentheses). And yes, I prefer \texttt{data.table} (for both
+speed, but also for syntax and semantics), though we won't be covering it in this
+course.
+
+Of course, there are other very different opinions:
+\Burl{http://varianceexplained.org/r/teach-tidyverse/}, \Burl{https://cdmuir.netlify.app/post/2019-07-09-tidyverse/},
+\Burl{https://towardsdatascience.com/rethinking-how-we-teach-the-tidyverse-da09a3a23934}. 
 
 
 \subsection{Installing R packages}\label{packages}
