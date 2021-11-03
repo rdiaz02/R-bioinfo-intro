@@ -448,7 +448,7 @@ introduce RStudio). Some Mac users are very happy just the default, plain,
 interface provided by R under Mac OS X.  If you love vim, there is Vim-R-plugin
 (\Burl{http://www.vim.org/scripts/script.php?script_id=2628};
 \Burl{https://hpcc.ucr.edu/manuals/hpc_cluster/terminalide/}). If you use VSCode
-(or, probably better, VScodium \Burl{https://vscodium.com/}), there are several extensions  for working with
+(or, probably better, VSCodium \Burl{https://vscodium.com/}), there are several extensions  for working with
 R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}. 
 For those used to Eclipse, there is a plug-in designed to
 work with R: StatET
