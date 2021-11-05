@@ -1550,6 +1550,9 @@ and \code{save}.
   \item Open another R session and read
     that object using \texttt{readRDS}
   \end{enumerate}
+\item When could \texttt{save/readRDS} be more useful than \texttt{save/load}? % assign names of objects at will
+  What is a problem of using \texttt{load}? %overwriting
+  What is an advantage of using \texttt{save}? % saving names, multiple objects
 \item Bring usage questions of \texttt{save.image}, \texttt{save},
   \texttt{read/saveRDS} to class.
 \end{enumerate}
