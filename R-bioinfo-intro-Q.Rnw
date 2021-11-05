@@ -1660,8 +1660,8 @@ source("script1.R", echo = TRUE,
   I tend to use either one of these two, and then add things like ``nohup''
   before invoking \R, move it to the background, and also redirect standard error
   to the same file used for standard output (i.e., I type \code{\&> script1.Rout}
-  instead of \code{ > script1.Rout}). In Windows, you might need to use \verb@
-  Rscript.exe @ or \verb@ R.exe @.
+  instead of \code{ > script1.Rout}). In Windows, you might need to use
+  \verb@  Rscript.exe @ or \verb@ R.exe @.
   
   Beware, the above are examples of simple invocations. There are many other
   options (including passing command line arguments; see \texttt{commandArgs}).
