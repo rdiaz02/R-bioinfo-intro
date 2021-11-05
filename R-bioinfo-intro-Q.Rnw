@@ -834,6 +834,8 @@ Let's try to understand what we did. % But first, we need to install \R, and
   \item factors
   \end{enumerate}
 
+  \textbf{Before} we do so, though, try to think what each one of those terms
+  might refer to. And keep those terms in mind as you go over the next activities.
 
 \item Type (do not copy-and-paste!) the example above in a new script and then
   execute it. If you get syntax errors, make sure you verify what you
@@ -960,7 +962,8 @@ Now, assign \code{1 + 2} that to a variable:
 <<>>=
 v1 <- 1 + 2
 @ 
-\noindent(you can also use \code{=} for assignment, but I prefer not to).
+\noindent You can also use \code{=} for assignment, but I strongly prefer not
+to. \activities: why might it not be a good idea to use \code{=} for assignment?
 
 And now display its value
 
@@ -1084,8 +1087,9 @@ Now, shorter:
 @ 
 
 
-Now let's use the help to l ,earn about the help system (and yes, read or
+Now let's use the help to   learn about the help system (and yes, read or
 take a quick look at it):
+
 <<eval=FALSE>>=
 ?help
 ?apropos
@@ -1649,16 +1653,18 @@ source("script1.R", echo = TRUE,
   %% There is a second set of ways, like\\ 
   Probably the preferred way is:\\
   
-  \verb@ R --vanilla < script1.R > scrip1.Rout @ 
+  \verb@ R --vanilla < script1.R > scrip1.Rout @
+  or
+  \verb@ R --vanilla -f script1.R > scrip1.Rout @
   
-  I tend to use the second one, and then add things like
-  ``nohup'' before invoking \R, move it to the background, and also
-  redirect standard error to the same file used for standard output (i.e.,
-  I type \code{\&> script1.Rout} instead of \code{ > script1.Rout}). In
-  Windows, you might need to use \verb@ Rscript.exe @ or \verb@ R.exe @. 
+  I tend to use either one of these two, and then add things like ``nohup''
+  before invoking \R, move it to the background, and also redirect standard error
+  to the same file used for standard output (i.e., I type \code{\&> script1.Rout}
+  instead of \code{ > script1.Rout}). In Windows, you might need to use \verb@
+  Rscript.exe @ or \verb@ R.exe @.
   
-  Beware, the above are examples of simple invocations. There are many
-  other options.
+  Beware, the above are examples of simple invocations. There are many other
+  options (including passing command line arguments; see \texttt{commandArgs}).
   \end{description}
 
 \end{description}
@@ -1716,7 +1722,7 @@ they are doing, and ask questions when things do not make sense.
 Yes, every expression. You want to practice:
 \begin{itemize}
 \item Getting the syntax right.
-\item See error messages and rewriting things correctly.
+\item Seeing and decoding error messages and rewriting things correctly.
 \end{itemize}
 
 
