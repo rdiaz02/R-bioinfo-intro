@@ -1915,6 +1915,18 @@ sum(vv < 5)
 
 Why did that work? What is \code{vv < 5} returning?
 
+
+\subsubsection{Do not use \code{T} for \code{TRUE} or \code{F} for
+  \texttt{FALSE}}\label{no_t_for_true}
+\activities Can you think why? Try to come up with some examples or google
+around. Really. We will show a few examples in class.
+
+Please, please, please, never, ever, use \code{T} for \code{TRUE} or \code{F} for
+\texttt{FALSE}.
+
+%% https://stat.ethz.ch/pipermail/r-help/2008-November/180085.html
+
+
 \subsection{Names of elements}
 \label{names-elements}
 
