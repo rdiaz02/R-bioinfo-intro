@@ -910,7 +910,10 @@ apply(rd2, 1, myfunction)
 
 @ 
 
-
+\item We haven't said it explicitly, but when we use \texttt{apply} we are
+  passing a function (our anonymous function or \texttt{myfunction} as above) to
+  another function. This is something very common and easy in R: passing
+  functions to other functions.
 
 \end{enumerate}
 
@@ -1924,11 +1927,11 @@ Why did that work? What is \code{vv < 5} returning?
 
 \subsubsection{Do not use \code{T} for \code{TRUE} or \code{F} for
   \texttt{FALSE}}\label{no_t_for_true}
-\activities Can you think why? Try to come up with some examples or google
+\activities \  Can you think why? Try to come up with some examples or google
 around. Really. We will show a few examples in class.
 
-Please, please, please, never, ever, use \code{T} for \code{TRUE} or \code{F} for
-\texttt{FALSE}.
+This is a short section: Please, please, please, never, ever, use \code{T} for
+\code{TRUE} or \code{F} for \texttt{FALSE}.
 
 %% https://stat.ethz.ch/pipermail/r-help/2008-November/180085.html
 
