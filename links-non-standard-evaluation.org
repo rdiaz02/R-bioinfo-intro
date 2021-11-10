@@ -1,0 +1,14 @@
+- http://adv-r.had.co.nz/Computing-on-the-language.html
+- https://www.brodieg.com/2020/05/05/on-nse/
+- https://win-vector.com/2019/04/02/standard-evaluation-versus-non-standard-evaluation-in-r/
+- https://thomasadventure.blog/posts/understanding-nse-part1/
+- https://stackoverflow.com/questions/66907140/where-if-anywhere-are-the-dangers-of-non-standard-evaluation-documented
+
+- https://third-bit.com/2018/11/16/non-standard-evaluation/  
+
+- [troubles and issues in the tidyverse]
+- https://renkun.me/2014/12/03/tips-on-non-standard-evaluation-in-r/
+- https://stackoverflow.com/a/67428817
+
+- https://bookdown.org/rdpeng/RProgDA/non-standard-evaluation.html [just refers
+  to other links and focuses on tidyverse functions]
