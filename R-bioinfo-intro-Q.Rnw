@@ -2373,11 +2373,23 @@ though I tend to find the last one confusing. I'd rather do
 listB[[3]][4, 1]
 @ 
 
-which is very different from 
+To make sure we see this more clearly, do:
+
+<<eval=TRUE,echo=TRUE,results='hide'>>=
+listB[[c(3, 11)]]
+listB[[3]][11]
+listB[[3]][3, 3]
+listB[[3]][c(3, 3)]
+@ 
+
+
+That is very different from 
 
 <<eval=TRUE,echo=TRUE,results='hide'>>=
 listB[c(3, 4)]
 @ 
+
+
 
 \subsection{Data frames}
 
