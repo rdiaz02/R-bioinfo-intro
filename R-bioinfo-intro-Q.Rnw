@@ -2009,7 +2009,9 @@ ages[c("Irene", "Juan", "Irene")]
 Using a logical vector \ldots
 <<>>=
 ages[c(FALSE, TRUE, TRUE, FALSE)]
-ages[c(FALSE, TRUE)] ## what is this doing? Avoid these things
+## what are thes doing? Avoid these things
+ages[c(FALSE, TRUE)] 
+ages[c(TRUE, TRUE, FALSE)]
 @ 
 
 \ldots or something that implicitly is a logical vector
