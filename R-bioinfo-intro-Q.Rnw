@@ -1940,7 +1940,7 @@ This is a short section: Please, please, please, never, ever, use \code{T} for
 \label{names-elements}
 
 The elements of a vector can have names (you should make them
-distinct). We will see soon why this is very helpful. For now, see this:
+distinct). We will soon see why this is very helpful. For now, see this:
 
 <<>>=
 ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
