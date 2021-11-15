@@ -2201,7 +2201,7 @@ c("red", "blue")[factor(levels(group))]
 
 
 \subsection{Matrices}
-Vectors where one-dimensional. Matrices are two-dimensional, and arrays
+Vectors were one-dimensional. Matrices are two-dimensional, and arrays
 have arbitrary dimensions. We will stick here to matrices. But you have
 arrays at your disposal, of course. As with vectors, all the elements of a
 matrix or of an array are of the same type.
