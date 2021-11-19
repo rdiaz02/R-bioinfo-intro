@@ -3949,7 +3949,7 @@ i
 
 @ 
 
-This is OK, though
+This is OK, though (but I would not name that variable as \texttt{i})
 
 <<>>=
 
