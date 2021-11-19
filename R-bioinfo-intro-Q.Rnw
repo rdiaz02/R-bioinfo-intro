@@ -4402,68 +4402,6 @@ f1A <- function(x){
 
 
 
-\subsection{The \ldots}
-
-The $\ldots$ allows you to pass further arguments that some function
-inside your function will take care of:
-
-<<>>=
-f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
-
-f0(1:5, col = "red", type = "b")
-@ 
-
-
-\subsubsection{\activities}
-\label{sec:activities-14}
-
-Make sure you understand why only \texttt{fa} does what you want:
-<<eval =FALSE, results='hide'>>=
-
-fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
-fa(1:5, "blue", pch = 8)
-
-fb <- function(x, col = "red", ...) {plot(x, col = col)}
-fb(1:5, "blue", pch = 8)
-
-fc <- function(x, col = "red") {plot(x, col = col, ...)}
-fc(1:5, "blue", pch = 8)
-
-@ 
-
-\subsection{local}
-\label{sec:local}
-
-Look at this
-<<>>=
-
-i <- 2
-local({cat("i ", i); i <- 99; cat(";  i = ", i)})
-i
-
-try(rm(vv))
-local({vv <- 99; cat("vv = ", vv)})
-try(vv)
-
-@
-
-
-\subsubsection{\activities \ local}
-\label{sec:activities--local}
-When could you think of using \texttt{local}?
-
-
-
-%% FIXME:
-
-%% lazy evaluation
-%% f1 <- function(x, y) {return(2 * x)}
-
-% %% But check
-% library(codetools)
-% checkUsageEnv(env = .GlobalEnv)
-
-
 \clearpage
 
 
