@@ -2889,15 +2889,15 @@ to play with it.
 
 
 Would the above work with scatterplot? Nope. You need to use a slightly
-different argument for the call, and you get automatic legend, etc:
+different argument for the call, and you get automatic legend, etc. Pay attention to the syntax, the ``|'':
 
 <<fig.width=4,fig.height=4>>=
 scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", 
             data = anage)
 @ 
 
-And how did I know? Hummm \ldots: I tried, failed, and then looked at the
-help for \code{scatterplot}.
+
+
 
 
 
