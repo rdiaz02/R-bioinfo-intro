@@ -4148,6 +4148,8 @@ By the way, what do you think is more legible, the above function or one
 that explicitly has \texttt{return(x + z)}?  (Yes, that is an \activities
 ).
 
+
+
 \subsubsection{\activities }
 \begin{itemize}
 \item What will be the value of ``z'' used by f1? Think this before typing
@@ -4204,8 +4206,6 @@ variables found''. R uses lexical (or static) scoping. It can be extremely
 handy and fun, but it can lead to surprises. Good explanations here:
 \Burl{http://adv-r.had.co.nz/Functions.html\#lexical-scoping} and
 \Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
-
-
 
 In fact in the examples above there are several issues we might want to
 think about and a few terms we would need to define. There are the issues
@@ -4268,6 +4268,15 @@ rm(c)
 Oh, do you know what ``c'' we just removed? (Yes that was an \activities
 ).
 
+
+
+
+If we have time, we will cover some of these issues in more detail in file \texttt{some-env-scoping-examples.R}.
+
+
+
+
+
 \subsection{\activities : not using global variables}
 \label{sec:activities-13}
 
@@ -4286,8 +4295,92 @@ Oh, do you know what ``c'' we just removed? (Yes that was an \activities
 
 
 
-\subsection{\activities \ Functions that return NULL and invisible}
+
+\subsection{The \ldots}
+
+The $\ldots$ allows you to pass further arguments that some function
+inside your function will take care of:
+
+<<>>=
+f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
+
+f0(1:5, col = "red", type = "b")
+@ 
+
+
+\subsubsection{\activities}
+\label{sec:activities-14}
+
+Make sure you understand why only \texttt{fa} does what you want:
+<<eval =FALSE, results='hide'>>=
+
+fa <- function(x, col = "red", ...) {plot(x, col = col, ...)}
+fa(1:5, "blue", pch = 8)
+
+fb <- function(x, col = "red", ...) {plot(x, col = col)}
+fb(1:5, "blue", pch = 8)
+
+fc <- function(x, col = "red") {plot(x, col = col, ...)}
+fc(1:5, "blue", pch = 8)
+
+@ 
+
+\subsection{local}
+\label{sec:local}
+
+Look at this
+<<>>=
+
+i <- 2
+local({cat("i ", i); i <- 99; cat(";  i = ", i)})
+i
+
+try(rm(vv))
+local({vv <- 99; cat("vv = ", vv)})
+try(vv)
+
+@
+
+
+\subsubsection{\activities \ local}
+\label{sec:activities--local}
+When could you think of using \texttt{local}?
+
+\subsection{An interesting consequence of lazy evaluation}\label{lazy}
+
+Try this
+<<lazyex1>>=
+flazy <- function(x, y) {return(2 * x)}
+flazy(4)
+@ 
+
+Are you surprised? Regardless of it working, I would not do those things
+routinely just for the fun of it.
+
+
+(I have to confess, though, that I am surprised by \texttt{codetools} not saying
+anything about it)
+
+
+<<eval=FALSE>>=
+library(codetools)
+checkUsageEnv(env = .GlobalEnv)
+@ 
+
+
+(This is an awkward place to mention codetools. But we will use it again later)
+
+
+
+
+
+
+
+\subsection{\activities \ Functions that return NULL and invisible} 
 \label{sec:null}
+
+Note: unless we have plenty of  time, we will skip this in class. 
+
 
 Compare these
 <<>>=
@@ -4324,6 +4417,9 @@ cc
 
 \subsection{\activities \ Using return explicitly and invisible}
 \label{sec:invisible_ret}
+
+Note: unless we have plenty of  time, we will skip this in class.
+
 Type the following code carefully (based upon \Burl{https://stackoverflow.com/a/38905341})
 
 <<>>=
@@ -6168,6 +6264,113 @@ A basic piece of code that does most of the above takes less than 70 lines.
 %%   \item First version
 %%   \end{itemize}
 %% \end{description}
+
+\clearpage
+\section{Merging: merge, join}
+\label{sec:merging:-merge-join}
+
+(In development. We will cover this if time permits. For now, I just show
+the code. This is from file \texttt{merge-join.R})
+
+<<>>=
+## Combining data. merge and dplyr:join_*
+## See more details in
+## https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf
+## http://stat545.com/bit001_dplyr-cheatsheet.html
+
+## I tend to use data.table now. The equivalent of left and right join are
+## possible doing: e.g.,
+## https://rstudio-pubs-static.s3.amazonaws.com/52230_5ae0d25125b544caab32f75f0360e775.html)
+## https://stackoverflow.com/questions/12773822/why-does-xy-join-of-data-tables-not-allow-a-full-outer-join-or-a-left-join
+## What I do most often
+## left: merge(x, y, all.x = TRUE)
+## right: merge(x, y, all.y = TRUE)
+## full outer: merge(x, y, all = TRUE)
+
+
+
+
+## All examples with merge from Ch. 13 of "R for dummies", 2nd ed. de
+## Vries and Meys.
+
+## state.x77 is part of datasets, so immediately available
+all.states <- as.data.frame(state.x77)
+all.states$Name <- rownames(state.x77)
+rownames(all.states) <- NULL
+
+
+cold.states <- all.states[all.states$Frost>150, c("Name", "Frost")]
+cold.states
+
+large.states <- all.states[all.states$Area >= 100000, c("Name", "Area")]
+large.states
+
+
+merge(cold.states, large.states)
+merge(cold.states, large.states, by = "Name")
+
+merge(cold.states, large.states, all = TRUE)
+merge(cold.states, large.states, all.x = TRUE)
+merge(cold.states, large.states, all.y = TRUE)
+
+
+library(dplyr)
+
+dplyr::full_join(cold.states, large.states)
+dplyr::full_join(cold.states, large.states, by = "Name")
+
+dplyr::inner_join(cold.states, large.states)
+dplyr::left_join(cold.states, large.states)
+dplyr::right_join(cold.states, large.states)
+
+###### These filter
+
+## In first, with match in second
+dplyr::semi_join(cold.states, large.states)
+dplyr::semi_join(large.states, cold.states)
+
+## In first with no match in second
+dplyr::anti_join(cold.states, large.states)
+
+
+
+## And we can use union, intersection, and setdiff
+
+dA <- data.frame(c1 = letters[1:4], c2 = 1:4)
+dB <- data.frame(c1 = letters[3:4], c2 = c(3, 14))
+
+dplyr::union(dA, dB)
+dplyr::intersect(dA, dB)
+
+dplyr::setdiff(dA, dB)
+dplyr::setdiff(dB, dA)
+
+
+
+## A nice lookup table example, modified from Wickham's Advanced R
+
+
+grades <- c(7, 8, 8, 9, 7)
+
+info <- data.frame(
+    grade = 9:7,
+    desc = c("Excellent", "Good", "Poor"),
+    fail = c(F, F, T)
+)
+
+## Using match
+id <- match(grades, info$grade)
+info[id, ]
+
+## note this
+match(grades, info$grade)
+
+## Using rownames
+rownames(info) <- info$grade
+info[as.character(grades), ]
+
+@ 
+\clearpage
 
 
 \section{If time permits}
