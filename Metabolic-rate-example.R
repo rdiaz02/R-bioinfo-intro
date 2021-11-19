@@ -1,3 +1,5 @@
+## For me: recall to  (setq ess-eval-visibly-p t)
+
 
 ## PURPOSE of this:
 ## Use different types of plot for same data
@@ -167,6 +169,10 @@ legend(10, 2, legend = levels(anage$Class),
        col = c("salmon", "darkgreen"),
        pch = c(1, 2))
 
+
+## Remember: if I want to produce a pdf for real (say, a paper)
+## change settings as needed and surround by pdf() and dev.off()
+
 ## adding lines more of a pain here. We will continue below. Detour for
 ## now to using ggplot2
 
@@ -245,9 +251,9 @@ legend(locator(1), legend = levels(anage$Class),
 ## some more manual work
 
 ## todo
-## - labels con at para etiquetar tick marks
-## complete cases y table sin NAs
-## abline para plot para reptiles y aves
+## - labels with at to use custom tick marks
+## complete cases and table without NAs
+## abline for plot for reptiles and aves
 
 plot(logmet ~ logbm, data = anage,
      xlab = "Log body mass (g)",
