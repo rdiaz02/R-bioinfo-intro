@@ -3796,6 +3796,24 @@ To summarize: when you select only a single column or a single row of an
 array, think about whether the output should be a vector or a matrix
 
 
+\subsection{Other applies}
+\label{sec:other-applies}
+
+We will see \texttt{vapply} which is probably what you want to use in functions
+and code instead of \texttt{sapply} (\texttt{sapply} is fine for interactive use).
+
+\texttt{mapply} allows us to apply a function to multiple vector or list
+arguments. We will use it in the examples discussed in
+\texttt{Metabolic-rate-example.R}. 
+
+It is also possible to use apply over environments: \texttt{eapply}. We will not
+use it in this course.
+
+\subsection{Easy parallelized \texttt{apply} operations}
+Look at package \texttt{parallel} (which is part of the basic packages) and
+its function \texttt{mclapply}. (Under POSIX systems using forking is trivial;
+under Windows you'll need something different).
+
 \section{(Optional: two handy packages \texttt{readr} and \texttt{dplyr})}
 We won't get into details about this: Hadley Wickham has two packages,
 \texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
