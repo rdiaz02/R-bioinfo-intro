@@ -5280,6 +5280,340 @@ opportunities to practice debugging.
 
 
 %% \clearpage
+\subsection{Permutation test}\label{permut}
+We will write a permutation test for comparing two means. Before we get
+carried away, the code below is not the most efficient. More importantly,
+we will not deal with important time saving ideas (such as using
+equivalent statistics, an idea Edgington stressed a lot in his books) nor
+with important statistical ideas (such as using sufficient
+statistics). This is just for the sake of writing a quick and dirty
+permutation test and gaining some programming practice. Note also that you
+have code readily available for this and similar tasks in several R
+packages.  Permutation tests are extremely powerful, but also misleadingly
+simple; using them correctly is often more subtle than some ``data
+scientists'' who've never taken a stats course would lead you to believe
+(e.g., are you really testing what you think you are testing?), and there
+are many scenarios/questions that might be hard to fit in them (i.e., they
+are not \textbf{the} solution to the world's problems); \textit{caveat
+  emptor}.
+
+
+If you do not remember or know what a permutation test is, look it
+up. I'll assume you have a general idea. Stop here about the main
+steps (remember that breaking the problem down into manageable and
+meaningful, smaller, self-contained, problems is a key part of programming). 
+
+
+Now, after thinking, this is what we need to do:
+\begin{enumerate}
+\item Compute our statistic (the difference in means here).
+\item Generate data distributions according to the null hypothesis.
+\item Compute the statistic for each new data configuration.
+\item Compare what we compute from our original data with what we obtain
+  under the null ($H_o$).
+\end{enumerate}
+
+
+
+To play around, let's create some extreme fake data:
+<<>>=
+# unlikely to differ
+d11 <- rnorm(15)
+d12 <- d11[1:7]
+
+# most likely very different
+d21 <- rnorm(13)
+d22 <- d21[1:9] + 3
+@ 
+
+You can check the data will do what you want
+<<results='hide'>>=
+t.test(d11, d12)
+t.test(d21, d22)
+@ 
+
+\subsubsection{First attempt}
+Now, the code:
+<<>>=
+# for steps 1 and 3
+mean.d <- function(x1, x2) 
+  mean(x1) - mean(x2)
+
+## seems to work
+mean.d(d11, d12)
+@ 
+
+%% FIXME: function signatures
+
+
+For step 3 we will examine to ways of doing it. Make sure you understand
+the differences
+<<>>=
+sample.and.stat1 <- function(x1, x2) {
+    tmp <- sample(c(x1, x2))
+    g1 <- tmp[seq(x1)]
+    g2 <- tmp[seq(from = length(x1) + 1, 
+                  to = length(tmp))]
+    return(mean.d(g1, g2))
+}
+
+sample.and.stat2 <- function(x1, x2) {
+    indices <- seq(from = 1, 
+                   to = length(x1) + length(x2))
+    indices1 <- sample(indices, length(x1))
+    indices2 <- setdiff(indices, indices1) 
+    alldata <- c(x1, x2)
+    return(mean.d(alldata[indices1], 
+                  alldata[indices2]))
+}
+@ 
+
+Compare them:
+<<>>=
+set.seed(1) 
+sample.and.stat1(d11, d12)
+sample.and.stat1(d11, d12)
+
+set.seed(1) 
+sample.and.stat2(d11, d12)
+sample.and.stat2(d11, d12)
+@ 
+Make sure you understand what happened. (Hint: are both functions
+implicitly calling the random number generator the same number of times?)
+
+
+
+<<>>=
+
+set.seed(1) 
+null <- sample.and.stat1(d11, d12)
+runif(1)
+
+set.seed(1) 
+null <- sample.and.stat2(d11, d12)
+runif(1)
+
+set.seed(1)
+null <- runif(length(d11))
+runif(1)
+
+set.seed(1)
+null <- runif(length(c(d11, d12)))
+runif(1)
+
+
+## of course, this makes no difference
+
+set.seed(2) 
+null <- sample.and.stat1(d11, d12)
+runif(1)
+
+set.seed(2) 
+null <- sample.and.stat2(d11, d12)
+runif(1)
+
+set.seed(2)
+null <- runif(length(d11))
+runif(1)
+
+set.seed(2)
+null <- runif(length(c(d11, d12)))
+runif(1)
+@ 
+
+
+(Now, we might want to take a look at \texttt{permut-test-2.R})
+%% Now, jump to permut-test-2.R
+
+
+
+
+Now, wrap the above, and create a single function:
+<<>>=
+permut.testA <- function(data1, data2, 
+                         fsample = sample.and.stat1,
+                         num.permut = 100) {
+    obs.stat <- mean.d(data1, data2)
+    
+    permut.stat <- replicate(num.permut, 
+                             fsample(data1, data2))
+    pv <- (sum(abs(permut.stat) > 
+                   abs(obs.stat)) + 1)/(num.permut + 1)
+    
+    message("\n p-value is ", pv, "\n")
+    return(list(obs.stat = obs.stat,
+                permut.stat = permut.stat,
+                pv = pv))
+}
+@ 
+
+Make sure you understand what we've done. For instance, note that we are
+passing a function as an argument\footnote{As for the denominator and
+  numerator (the \code{+ 1}): that is a minor technical
+  detail, and it is true that it makes little difference as $n \rightarrow
+  \infty$. However, that is the correct way of doing it (even if many
+  implementations get it wrong and do not include it). Some of the popular
+  classics, such as Edgington, or Noreen, etc, already mention it very
+  clearly. Think about it: why should you add that 1?}
+
+
+Is it working?
+<<>>=
+tmp <- permut.testA(d11, d12)
+tmp <- permut.testA(d21, d22)
+@ 
+It looks like it is.
+
+
+Well, in fact it is \textbf{wrong}, but we might not have noticed it. What
+p-value would you expect?
+<<>>=
+tmp <- permut.testA(d11, d11)
+tmp <- permut.testA(d12, d12)
+@ 
+
+Moral: check, check, check. One should check against different
+scenarios. (In fact, the above might often look correct a lot of the time;
+try running the comparison of d11 with itself with 100000 permutations).
+
+
+\subsubsection{Test!!!}\label{test}
+
+If we had more time, we would \textbf{definitely} write a test suite, and
+add some of the above as test cases. We cannot get into details, but there
+is one thing called \textbf{test-driven development}
+(\Burl{http://en.wikipedia.org/wiki/Test-driven_development}).\\
+
+Maybe you do not need/want to follow it completely, but writing and using
+tests should be a must for any serious project. In R there are a couple of
+packages that help: ``RUnit'' is a popular one, though ``testthat'' might
+be a lot
+simpler(\Burl{http://4dpiecharts.com/2014/05/12/automatically-convert-runit-tests-to-testthat-tests/}).
+For using ``testthat'' see \Burl{http://r-pkgs.had.co.nz/tests.html} and
+\Burl{http://journal.r-project.org/archive/2011-1/RJournal\_2011-1\_Wickham.pdf}.
+
+
+
+\subsubsection{Second attempt}
+
+I will give the fixed code. You have to understand what changed:
+<<>>=
+permut.testB <- function(data1, data2, 
+                         fsample = sample.and.stat1,
+                         num.permut = 100) {
+    obs.stat <- mean.d(data1, data2)
+    
+    permut.stat <- replicate(num.permut, 
+                             fsample(data1, data2))
+    pv <- (sum(abs(permut.stat) >= 
+                   abs(obs.stat)) + 1)/(num.permut + 1)
+    
+    message("\n p-value is ", pv, "\n")
+    return(list(obs.stat = obs.stat,
+                permut.stat = permut.stat,
+                pv = pv))
+}
+@ 
+
+Quick check (you should do it more thoroughly)
+<<>>=
+
+tmp <- permut.testB(d11, d11)
+
+tmp <- permut.testB(d12, d12)
+@ 
+
+
+
+Better:
+<<>>=
+
+stopifnot(suppressMessages(permut.testB(d11, d11))$pv == 1)
+stopifnot(suppressMessages(permut.testB(d12, d12))$pv == 1)
+xr <- runif(10)
+stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1)
+
+@ 
+
+
+Much better:
+
+<<>>=
+library(testthat)
+@ 
+
+<<>>=
+
+test_that("p-value = 1 when the two vectors identical", {
+    n <- 10
+    for(i in 1:n) {
+       xr <- runif(15)
+       stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1) 
+    }
+})
+
+@ 
+
+<<eval=FALSE>>=
+
+test_that("p_v 1", {
+    ntests <- 100
+    for(i in 1:ntests) {
+        xr <- rnorm(10)
+        expect_identical(permut.testB(xr, xr)$pv, 1)
+    }
+})
+
+@ 
+
+In fact, it is easy to argue that the test should have been written
+first. 
+
+
+
+\subsubsection{Final thing}
+OK, that is good. But let's add a figure so things look more like in textbooks:
+
+<<>>=
+
+permut.test <- function(data1, data2, 
+                        fsample = sample.and.stat1, 
+                        num.permut = 100) {
+  obs.stat <- mean.d(data1, data2)
+  permut.stat <- replicate(num.permut, 
+                           fsample(data1, data2))
+  pv <- (sum(abs(permut.stat) >= abs(obs.stat)) + 
+         1) / (num.permut + 1)
+  message("\n p-value is ", pv, "\n")
+  title <- paste(deparse(substitute(data1)), "-",
+                 deparse(substitute(data2)))
+  subtitle <- paste0("Distribution of permuted statistic.",
+           " In red, observed one.") 
+  hist(permut.stat, xlim = c(min(obs.stat, 
+                      min(permut.stat)),
+                      max(obs.stat, 
+                          max(permut.stat))),
+       main = title, xlab = "", sub = subtitle)
+  abline(v = obs.stat, col = "red")
+  return(list(obs.stat = obs.stat,
+              permut.stat = permut.stat,
+              pv = pv))
+}
+
+@ 
+
+
+Run it
+<<fig.cap='Two examples of permutation tests', fig.width=5, fig.height=9>>=
+par(mfrow = c(2, 1))
+tmp <- permut.test(d11, d12, num.permut = 1000)
+tmp <- permut.test(d21, d22, num.permut = 1000, 
+                   fsample = sample.and.stat2)
+@ 
+
+
+You might want to compare with t-tests, etc. 
+\clearpage
 
 
 
@@ -5852,340 +6186,6 @@ This is, definitely, much simpler and better than my solutions above.
 %% If we use the simple, elegant solution above we can write:
 
 
-\clearpage
-\subsection{Permutation test}\label{permut}
-We will write a permutation test for comparing two means. Before we get
-carried away, the code below is not the most efficient. More importantly,
-we will not deal with important time saving ideas (such as using
-equivalent statistics, an idea Edgington stressed a lot in his books) nor
-with important statistical ideas (such as using sufficient
-statistics). This is just for the sake of writing a quick and dirty
-permutation test and gaining some programming practice. Note also that you
-have code readily available for this and similar tasks in several R
-packages.  Permutation tests are extremely powerful, but also misleadingly
-simple; using them correctly is often more subtle than some ``data
-scientists'' who've never taken a stats course would lead you to believe
-(e.g., are you really testing what you think you are testing?), and there
-are many scenarios/questions that might be hard to fit in them (i.e., they
-are not \textbf{the} solution to the world's problems); \textit{caveat
-  emptor}.
-
-
-If you do not remember or know what a permutation test is, look it
-up. I'll assume you have a general idea. Stop here about the main
-steps (remember that breaking the problem down into manageable and
-meaningful, smaller, self-contained, problems is a key part of programming). 
-
-
-Now, after thinking, this is what we need to do:
-\begin{enumerate}
-\item Compute our statistic (the difference in means here).
-\item Generate data distributions according to the null hypothesis.
-\item Compute the statistic for each new data configuration.
-\item Compare what we compute from our original data with what we obtain
-  under the null ($H_o$).
-\end{enumerate}
-
-
-
-To play around, let's create some extreme fake data:
-<<>>=
-# unlikely to differ
-d11 <- rnorm(15)
-d12 <- d11[1:7]
-
-# most likely very different
-d21 <- rnorm(13)
-d22 <- d21[1:9] + 3
-@ 
-
-You can check the data will do what you want
-<<results='hide'>>=
-t.test(d11, d12)
-t.test(d21, d22)
-@ 
-
-\subsubsection{First attempt}
-Now, the code:
-<<>>=
-# for steps 1 and 3
-mean.d <- function(x1, x2) 
-  mean(x1) - mean(x2)
-
-## seems to work
-mean.d(d11, d12)
-@ 
-
-%% FIXME: function signatures
-
-
-For step 3 we will examine to ways of doing it. Make sure you understand
-the differences
-<<>>=
-sample.and.stat1 <- function(x1, x2) {
-    tmp <- sample(c(x1, x2))
-    g1 <- tmp[seq(x1)]
-    g2 <- tmp[seq(from = length(x1) + 1, 
-                  to = length(tmp))]
-    return(mean.d(g1, g2))
-}
-
-sample.and.stat2 <- function(x1, x2) {
-    indices <- seq(from = 1, 
-                   to = length(x1) + length(x2))
-    indices1 <- sample(indices, length(x1))
-    indices2 <- setdiff(indices, indices1) 
-    alldata <- c(x1, x2)
-    return(mean.d(alldata[indices1], 
-                  alldata[indices2]))
-}
-@ 
-
-Compare them:
-<<>>=
-set.seed(1) 
-sample.and.stat1(d11, d12)
-sample.and.stat1(d11, d12)
-
-set.seed(1) 
-sample.and.stat2(d11, d12)
-sample.and.stat2(d11, d12)
-@ 
-Make sure you understand what happened. (Hint: are both functions
-implicitly calling the random number generator the same number of times?)
-
-
-
-<<>>=
-
-set.seed(1) 
-null <- sample.and.stat1(d11, d12)
-runif(1)
-
-set.seed(1) 
-null <- sample.and.stat2(d11, d12)
-runif(1)
-
-set.seed(1)
-null <- runif(length(d11))
-runif(1)
-
-set.seed(1)
-null <- runif(length(c(d11, d12)))
-runif(1)
-
-
-## of course, this makes no difference
-
-set.seed(2) 
-null <- sample.and.stat1(d11, d12)
-runif(1)
-
-set.seed(2) 
-null <- sample.and.stat2(d11, d12)
-runif(1)
-
-set.seed(2)
-null <- runif(length(d11))
-runif(1)
-
-set.seed(2)
-null <- runif(length(c(d11, d12)))
-runif(1)
-@ 
-
-
-(Now, we might want to take a look at \texttt{permut-test-2.R})
-%% Now, jump to permut-test-2.R
-
-
-
-
-Now, wrap the above, and create a single function:
-<<>>=
-permut.testA <- function(data1, data2, 
-                         fsample = sample.and.stat1,
-                         num.permut = 100) {
-    obs.stat <- mean.d(data1, data2)
-    
-    permut.stat <- replicate(num.permut, 
-                             fsample(data1, data2))
-    pv <- (sum(abs(permut.stat) > 
-                   abs(obs.stat)) + 1)/(num.permut + 1)
-    
-    message("\n p-value is ", pv, "\n")
-    return(list(obs.stat = obs.stat,
-                permut.stat = permut.stat,
-                pv = pv))
-}
-@ 
-
-Make sure you understand what we've done. For instance, note that we are
-passing a function as an argument\footnote{As for the denominator and
-  numerator (the \code{+ 1}): that is a minor technical
-  detail, and it is true that it makes little difference as $n \rightarrow
-  \infty$. However, that is the correct way of doing it (even if many
-  implementations get it wrong and do not include it). Some of the popular
-  classics, such as Edgington, or Noreen, etc, already mention it very
-  clearly. Think about it: why should you add that 1?}
-
-
-Is it working?
-<<>>=
-tmp <- permut.testA(d11, d12)
-tmp <- permut.testA(d21, d22)
-@ 
-It looks like it is.
-
-
-Well, in fact it is \textbf{wrong}, but we might not have noticed it. What
-p-value would you expect?
-<<>>=
-tmp <- permut.testA(d11, d11)
-tmp <- permut.testA(d12, d12)
-@ 
-
-Moral: check, check, check. One should check against different
-scenarios. (In fact, the above might often look correct a lot of the time;
-try running the comparison of d11 with itself with 100000 permutations).
-
-
-\subsubsection{Test!!!}\label{test}
-
-If we had more time, we would \textbf{definitely} write a test suite, and
-add some of the above as test cases. We cannot get into details, but there
-is one thing called \textbf{test-driven development}
-(\Burl{http://en.wikipedia.org/wiki/Test-driven_development}).\\
-
-Maybe you do not need/want to follow it completely, but writing and using
-tests should be a must for any serious project. In R there are a couple of
-packages that help: ``RUnit'' is a popular one, though ``testthat'' might
-be a lot
-simpler(\Burl{http://4dpiecharts.com/2014/05/12/automatically-convert-runit-tests-to-testthat-tests/}).
-For using ``testthat'' see \Burl{http://r-pkgs.had.co.nz/tests.html} and
-\Burl{http://journal.r-project.org/archive/2011-1/RJournal\_2011-1\_Wickham.pdf}.
-
-
-
-\subsubsection{Second attempt}
-
-I will give the fixed code. You have to understand what changed:
-<<>>=
-permut.testB <- function(data1, data2, 
-                         fsample = sample.and.stat1,
-                         num.permut = 100) {
-    obs.stat <- mean.d(data1, data2)
-    
-    permut.stat <- replicate(num.permut, 
-                             fsample(data1, data2))
-    pv <- (sum(abs(permut.stat) >= 
-                   abs(obs.stat)) + 1)/(num.permut + 1)
-    
-    message("\n p-value is ", pv, "\n")
-    return(list(obs.stat = obs.stat,
-                permut.stat = permut.stat,
-                pv = pv))
-}
-@ 
-
-Quick check (you should do it more thoroughly)
-<<>>=
-
-tmp <- permut.testB(d11, d11)
-
-tmp <- permut.testB(d12, d12)
-@ 
-
-
-
-Better:
-<<>>=
-
-stopifnot(suppressMessages(permut.testB(d11, d11))$pv == 1)
-stopifnot(suppressMessages(permut.testB(d12, d12))$pv == 1)
-xr <- runif(10)
-stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1)
-
-@ 
-
-
-Much better:
-
-<<>>=
-library(testthat)
-@ 
-
-<<>>=
-
-test_that("p-value = 1 when the two vectors identical", {
-    n <- 10
-    for(i in 1:n) {
-       xr <- runif(15)
-       stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1) 
-    }
-})
-
-@ 
-
-<<eval=FALSE>>=
-
-test_that("p_v 1", {
-    ntests <- 100
-    for(i in 1:ntests) {
-        xr <- rnorm(10)
-        expect_identical(permut.testB(xr, xr)$pv, 1)
-    }
-})
-
-@ 
-
-In fact, it is easy to argue that the test should have been written
-first. 
-
-
-
-\subsubsection{Final thing}
-OK, that is good. But let's add a figure so things look more like in textbooks:
-
-<<>>=
-
-permut.test <- function(data1, data2, 
-                        fsample = sample.and.stat1, 
-                        num.permut = 100) {
-  obs.stat <- mean.d(data1, data2)
-  permut.stat <- replicate(num.permut, 
-                           fsample(data1, data2))
-  pv <- (sum(abs(permut.stat) >= abs(obs.stat)) + 
-         1) / (num.permut + 1)
-  message("\n p-value is ", pv, "\n")
-  title <- paste(deparse(substitute(data1)), "-",
-                 deparse(substitute(data2)))
-  subtitle <- paste0("Distribution of permuted statistic.",
-           " In red, observed one.") 
-  hist(permut.stat, xlim = c(min(obs.stat, 
-                      min(permut.stat)),
-                      max(obs.stat, 
-                          max(permut.stat))),
-       main = title, xlab = "", sub = subtitle)
-  abline(v = obs.stat, col = "red")
-  return(list(obs.stat = obs.stat,
-              permut.stat = permut.stat,
-              pv = pv))
-}
-
-@ 
-
-
-Run it
-<<fig.cap='Two examples of permutation tests', fig.width=5, fig.height=9>>=
-par(mfrow = c(2, 1))
-tmp <- permut.test(d11, d12, num.permut = 1000)
-tmp <- permut.test(d21, d22, num.permut = 1000, 
-                   fsample = sample.and.stat2)
-@ 
-
-
-You might want to compare with t-tests, etc. 
 \clearpage
 \subsection{Selection bias in classification}\label{selbias}
 
