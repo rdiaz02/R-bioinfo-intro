@@ -3694,9 +3694,7 @@ accomplishing them with the basic functions of R, as well as several
 additional packages that provide for different (easier? faster?)
 approaches/syntax. Here is a blog with some examples and links:
 \Burl{https://www.r-bloggers.com/say-it-in-r-with-by-apply-and-friends/}
-(the original entry, at
-\Burl{http://lamages.blogspot.com.es/2012/01/say-it-in-r-with-by-apply-and-friends.html}, 
-is no longer available). 
+(the original entry at \Burl{https://www.magesblog.com/post/2012-01-28-say-it-in-r-with-by-apply-and-friends/}). 
 For instance, the \code{doBy} package is really nice.
 
 
