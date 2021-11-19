@@ -2865,7 +2865,8 @@ plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
 
 Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
 us use different plotting colors for each, and let us add a legend. Notice
-how the different colors by Class is done in the call to plot:
+how the different colors by Class is done in the call to plot and how we set the
+legends (\activities : why do we know the legend labels are correct?):
 <<fig.width=4,fig.height=4>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
      col = c("salmon", "darkgreen")[Class], data = anage)
