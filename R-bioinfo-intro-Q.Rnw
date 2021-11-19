@@ -4427,6 +4427,18 @@ try(vv)
 \label{sec:activities--local}
 When could you think of using \texttt{local}?
 
+
+
+%% FIXME:
+
+%% lazy evaluation
+%% f1 <- function(x, y) {return(2 * x)}
+
+% %% But check
+% library(codetools)
+% checkUsageEnv(env = .GlobalEnv)
+
+
 \clearpage
 
 
@@ -5903,6 +5915,9 @@ mean.d <- function(x1, x2)
 ## seems to work
 mean.d(d11, d12)
 @ 
+
+%% FIXME: function signatures
+
 
 For step 3 we will examine to ways of doing it. Make sure you understand
 the differences
