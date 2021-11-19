@@ -3146,6 +3146,8 @@ stripchart(xo ~ class, method = "jitter", vertical = TRUE)
 %% something. Can be confusing if the levels are counts
 \section{Tables}\label{tables}
 
+\subsection{Tables: basics}\label{table-basics}
+
 Tabulating data is a very common operation. Let's use again the data frame
 we played with above (and remember to type the code; this is one implicit
 \activities )
