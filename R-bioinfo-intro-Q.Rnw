@@ -5304,9 +5304,13 @@ mean.d(d11, d12)
 %% FIXME: function signatures
 
 
-For step 3 we will examine to ways of doing it. Make sure you understand
+For step 3 we will examine two ways of doing it. Make sure you understand
 the differences
 <<>>=
+## numeric vector, numeric vector -> double (difference of means)
+## Given two vectors, create two new vectors as random combination
+##  of the set of observations into two groups, and return mean difference
+##  of those two groups. [This description could be improved!!]
 sample.and.stat1 <- function(x1, x2) {
     tmp <- sample(c(x1, x2))
     g1 <- tmp[seq(x1)]
@@ -5315,6 +5319,10 @@ sample.and.stat1 <- function(x1, x2) {
     return(mean.d(g1, g2))
 }
 
+## numeric vector, numeric vector -> double (difference of means)
+## Given two vectors, create two new vectors as random combination
+##  of the set of observations into two groups, and return mean difference
+##  of those two groups.
 sample.and.stat2 <- function(x1, x2) {
     indices <- seq(from = 1, 
                    to = length(x1) + length(x2))
