@@ -3069,7 +3069,7 @@ obtain 50 independent random samples from a normal distribution and create
 a vector for the identifiers (the ``labels'') of the subjects. 
 
 
-\paragraph Random numbers for parallelized runs? Yes, R provides those. See the
+\paragraph{Random numbers for parallelized runs?} Yes, R provides those. See the
 help for \texttt{mclapply} and \texttt{mcparallel}. These links contain more
 info:
 \Burl{https://bookdown.org/rdpeng/rprogdatascience/parallel-computation.html},
