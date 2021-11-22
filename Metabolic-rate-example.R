@@ -66,8 +66,10 @@ scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
             data = anage,
             log = "xy",
-            smooth = list(smoother = loessLine,
-                          var = FALSE))
+            smooth = list(smoother = loessLine
+                        ## , var = FALSE ## uncomment if you don't want var.
+                        ## , var = TRUE  ## uncomment if you want variance.
+                          ))
 
 ## Notice colors. Working as expected
 scatterplot(Metabolic.rate..W. ~
@@ -263,8 +265,8 @@ legend(locator(1), legend = levels(anage$Class),
 ## abline for plot for reptiles and aves
 
 plot(logmet ~ logbm, data = anage,
-     xlab = "Log body mass (g)",
-     ylab = "Log metabolic rate (W)",
+     xlab = "Body mass (g)",
+     ylab = " Metabolic rate (W)",      
      axes = FALSE)
 
 box()
@@ -379,6 +381,8 @@ for(att in names(attributes(anage3))) {
     print(identical(attributes(anage3)[[att]],
                     attributes(anage.clean)[[att]]))
 }
+
+
 ## here:
 ## let's use lapply, just to practice
 
