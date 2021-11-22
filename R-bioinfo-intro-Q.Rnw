@@ -4735,7 +4735,7 @@ When browsing or debugging, notice the difference between \texttt{c}  and
 
 Make sure you understand the difference between typing each of these while
 under \texttt{browser()} or \texttt{debug()}. Write a function with a loop
-and that calls another function and use \texttt{c} and \texttt{f} and
+and that calls another function and use \texttt{c} and 
 \texttt{s}
 
 \begin{itemize}
@@ -4743,7 +4743,9 @@ and that calls another function and use \texttt{c} and \texttt{f} and
 \item \texttt{c}
 \item \texttt{s}
 \item \texttt{Q}
-\item \texttt{f} (I don't use it; I use \texttt{c})%% finishes execution of the current loop or function
+\item \texttt{f} (I rarely use it; I use \texttt{c} most of the time. A good
+  explanation of the differences between \texttt{f} and \texttt{c} in
+  \Burl{https://stackoverflow.com/a/37126663})%% finishes execution of the current loop or function
 \end{itemize}
 
 
@@ -4762,7 +4764,8 @@ whatever I need. This just means using the \texttt{edit} option with trace:
 trace("lm", edit = "emacs")
 trace("lm", edit = TRUE)
 @ 
-
+(if doing the second from Emacs, and using emacsclient, you might need to start
+the server)
 
 %%% For me, I use
 % as default editor ecf
