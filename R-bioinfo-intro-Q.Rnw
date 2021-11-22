@@ -5396,6 +5396,8 @@ runif(1)
 
 Now, wrap the above, and create a single function:
 <<>>=
+## FIXME!! A Function signature!!!
+
 permut.testA <- function(data1, data2, 
                          fsample = sample.and.stat1,
                          num.permut = 100) {
@@ -5464,6 +5466,8 @@ For using ``testthat'' see \Burl{http://r-pkgs.had.co.nz/tests.html} and
 
 I will give the fixed code. You have to understand what changed:
 <<>>=
+
+## FIXME: function signature!!!
 permut.testB <- function(data1, data2, 
                          fsample = sample.and.stat1,
                          num.permut = 100) {
@@ -5541,7 +5545,7 @@ first.
 OK, that is good. But let's add a figure so things look more like in textbooks:
 
 <<>>=
-
+## FIXME: function signature
 permut.test <- function(data1, data2, 
                         fsample = sample.and.stat1, 
                         num.permut = 100) {
