@@ -4579,11 +4579,11 @@ strategy, filtering, function definitions, etc.
 \subsection{\activities \ split-apply and plots example}
 \label{sec:activities--split}
 
-Grab the file \texttt{Metabolic-rate-example.R}  from the repository
-(either clone the repo, if you use or would like to use git, or open
-the file as ``Raw'' and then copy and download it \textbf{Do not just
-  right-click on the file and download it} ---try it to see what I mean:
-you will download an HTML file).
+Grab the file \texttt{Metabolic-rate-example.R} from the repository
+(\Burl{https://github.com/rdiaz02/R-bioinfo-intro}); either clone the repo, if
+you use or would like to use git, or open the file as ``Raw'' and then copy and
+download it \textbf{Do not just right-click on the file and download it} ---try
+it to see what I mean: you will download an HTML file.
 
 \section{Go back to the scenarios}\label{back-scenarios}
 You should now be able to go back to section \ref{scenarios} and solve all
