@@ -535,4 +535,3 @@ lapply(dddd, function(u) u$Class)
 
 ## see help of "by" for another example
 ## of extracting coefficients by group
-
