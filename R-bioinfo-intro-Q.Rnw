@@ -4780,7 +4780,7 @@ the server)
 
 You can, though, place code, such as \texttt{browser} at specific lines.
 And how do you find the line number? Use
-\code{as.list(body(theFunctionname)}.
+\code{as.list(body(theFunctionname))}.
 
 Let's start with our simple function:
 
@@ -4984,7 +4984,18 @@ trace(OncoSimulR:::nr_oncoSimul.internal, browser, at = 7)
 @ 
 (notice the message ``Tracing function blablabla (not-exported)'').
 
+And, of course, and probably simpler
 
+<<eval=FALSE, results = 'hide'>>=
+trace(OncoSimulR:::nr_oncoSimul.internal, edit = TRUE)
+@ 
+
+
+This uses another package
+
+<<eval=FALSE, results = 'hide'>>=
+trace(randomForest:::predict.randomForest, edit = TRUE)
+@ 
 
 
 % FIXME add this in the future?
@@ -6281,6 +6292,15 @@ A basic piece of code that does most of the above takes less than 70 lines.
 %% \end{description}
 
 \clearpage
+\section{R packages}
+
+FIXME: to be written in more detail.
+
+We will examine a couple of packages in class, explaining the structure of the
+tar.gz and zip files and what gets placed in your local hard drive, for both
+packages with and without code written in other languages. And we will look at
+one remote repository of a package.
+
 \section{Merging: merge, join}
 \label{sec:merging:-merge-join}
 
