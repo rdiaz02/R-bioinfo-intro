@@ -12,7 +12,7 @@ getAnywhere(plot.TukeyHSD)
 library(OncoSimulR)
 methods("plot")
 ## lots more now. Why? For now, see plot.fitnessEffects
-## Oh, and notice the "*"
+## Oh, and notice the "*" (not exported)
 
 ## or plot.genotype_fitness_matrix
 getAnywhere(plot.fitnessEffects)
