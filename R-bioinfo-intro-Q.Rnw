@@ -5283,6 +5283,24 @@ Now, after thinking, this is what we need to do:
 \end{enumerate}
 
 
+The above list allows us to construct a \textbf{``wish list''}: in the code file,
+a (possibly commented) set of stubs we will fill up, as well as a list of
+tests. When the wish list is empty, and all the tests are passed, we know we are
+done. (As you move through the list, some items might get redefined).
+
+
+<<>>=
+## - Compute our statistic (the difference in means here).
+##
+## - Generate data distributions according to the null hypothesis.
+##
+## - Compute the statistic for each new data configuration.
+##
+## - Compare what we compute from our original data with what we obtain
+##   under the null ($H_o$).
+## 
+@ 
+
 
 To play around, let's create some extreme fake data:
 <<>>=
@@ -5305,11 +5323,11 @@ t.test(d21, d22)
 Now, the code:
 <<>>=
 # for steps 1 and 3
-mean.d <- function(x1, x2) 
+mean_d <- function(x1, x2) 
   mean(x1) - mean(x2)
 
 ## seems to work
-mean.d(d11, d12)
+mean_d(d11, d12)
 @ 
 
 %% FIXME: function signatures
@@ -5322,25 +5340,25 @@ the differences
 ## Given two vectors, create two new vectors as random combination
 ##  of the set of observations into two groups, and return mean difference
 ##  of those two groups. [This description could be improved!!]
-sample.and.stat1 <- function(x1, x2) {
+permut_and_mean1 <- function(x1, x2) {
     tmp <- sample(c(x1, x2))
     g1 <- tmp[seq(x1)]
     g2 <- tmp[seq(from = length(x1) + 1, 
                   to = length(tmp))]
-    return(mean.d(g1, g2))
+    return(mean_d(g1, g2))
 }
 
 ## numeric vector, numeric vector -> double (difference of means)
 ## Given two vectors, create two new vectors as random combination
 ##  of the set of observations into two groups, and return mean difference
 ##  of those two groups.
-sample.and.stat2 <- function(x1, x2) {
+permut_and_mean2 <- function(x1, x2) {
     indices <- seq(from = 1, 
                    to = length(x1) + length(x2))
     indices1 <- sample(indices, length(x1))
     indices2 <- setdiff(indices, indices1) 
     alldata <- c(x1, x2)
-    return(mean.d(alldata[indices1], 
+    return(mean_d(alldata[indices1], 
                   alldata[indices2]))
 }
 @ 
@@ -5348,12 +5366,12 @@ sample.and.stat2 <- function(x1, x2) {
 Compare them:
 <<>>=
 set.seed(1) 
-sample.and.stat1(d11, d12)
-sample.and.stat1(d11, d12)
+permut_and_mean1(d11, d12)
+permut_and_mean1(d11, d12)
 
 set.seed(1) 
-sample.and.stat2(d11, d12)
-sample.and.stat2(d11, d12)
+permut_and_mean2(d11, d12)
+permut_and_mean2(d11, d12)
 @ 
 Make sure you understand what happened. (Hint: are both functions
 implicitly calling the random number generator the same number of times?)
@@ -5363,11 +5381,11 @@ implicitly calling the random number generator the same number of times?)
 <<>>=
 
 set.seed(1) 
-null <- sample.and.stat1(d11, d12)
+null <- permut_and_mean1(d11, d12)
 runif(1)
 
 set.seed(1) 
-null <- sample.and.stat2(d11, d12)
+null <- permut_and_mean2(d11, d12)
 runif(1)
 
 set.seed(1)
@@ -5382,11 +5400,11 @@ runif(1)
 ## of course, this makes no difference
 
 set.seed(2) 
-null <- sample.and.stat1(d11, d12)
+null <- permut_and_mean1(d11, d12)
 runif(1)
 
 set.seed(2) 
-null <- sample.and.stat2(d11, d12)
+null <- permut_and_mean2(d11, d12)
 runif(1)
 
 set.seed(2)
@@ -5399,99 +5417,88 @@ runif(1)
 @ 
 
 
-(Now, we might want to take a look at \texttt{permut-test-2.R})
-%% Now, jump to permut-test-2.R
+This is the crux of the matter:
+<<>>=
+set.seed(33)
+null <- permut_and_mean1(d11, d12)
+runif(1)
+
+set.seed(33)
+null <- sample(length(d11) + length(d12))
+runif(1)
+
+set.seed(33)
+null <- permut_and_mean2(d11, d12)
+runif(1)
+
+set.seed(33)
+null <- sample(1:(length(d11) + length(d12)), length(d11))
+runif(1)
+
+@ 
+
+
+% (Now, we might want to take a look at \texttt{permut-test-2.R})
+% %% Now, jump to permut-test-2.R
 
 
 
-%% Clarify this.
+%% Clarify this. Or not. Steps of runif and steps of sample are not the same.
 % <<>>=
-
 % ## This first
 % set.seed(13457)
 % runif(40)
-
 % set.seed(13457)
 % null <- sample(10)
 % runif(10)
-
-
-
 % test_runif <- function(n, after = 5, seed = sample(1:1e4, 1)) {
 %   set.seed(seed)
 %   null <- sample(n)
 %   post <- runif(after)
-
 %   set.seed(seed)
 %   pre <- runif(n + after)
-
 %   print(post)
 %   print(pre)
 %   ## out <- cbind(post, pre)
 %   print(summary(post - pre))
 %   cbind(post, pre)
 % }
-
-
-
 % set.seed(1)
-% null <- sample.and.stat1(d11, d12)
+% null <- permut_and_mean1(d11, d12)
 % runif(1)
-
 % set.seed(1)
 % null2 <- runif(length(d11) + length(d12) )
 % runif(1)
-
-
 % set.seed(1)
-% null <- sample.and.stat2(d11, d12)
+% null <- permut_and_mean2(d11, d12)
 % runif(1)
-
 % set.seed(1)
 % null2 <- runif(length(d11))
 % runif(1)
-
-
 % set.seed(1)
 % null <- sample(1:10)
 % runif(1)
-
 % set.seed(1)
 % null <- runif(9)
 % runif(1)
-
 % set.seed(1)
 % null <- rnorm(9)
 % runif(1)
-
-
-
 % set.seed(1)
-% null <- sample.and.stat1(d11, d12)
+% null <- permut_and_mean1(d11, d12)
 % runif(1)
-
 % set.seed(1)
 % null <- sample(length(d11) + length(d12))
 % runif(1)
-
-
 % set.seed(1)
-% null <- sample.and.stat2(d11, d12)
+% null <- permut_and_mean2(d11, d12)
 % runif(1)
-
 % set.seed(1)
 % null <- sample(length(d11))
 % runif(1)
-
 % set.seed(1)
 % null <- sample(1:(length(d11) + length(d12)), length(d11))
 % runif(1)
-
-
-
-
-
-
 % @ 
 
 
@@ -5499,10 +5506,10 @@ Now, wrap the above, and create a single function:
 <<>>=
 ## FIXME!! A Function signature!!!
 
-permut.testA <- function(data1, data2, 
-                         fsample = sample.and.stat1,
+permut_testA <- function(data1, data2, 
+                         fsample = permut_and_mean1,
                          num.permut = 100) {
-    obs.stat <- mean.d(data1, data2)
+    obs.stat <- mean_d(data1, data2)
     
     permut.stat <- replicate(num.permut, 
                              fsample(data1, data2))
@@ -5528,8 +5535,8 @@ passing a function as an argument\footnote{As for the denominator and
 
 Is it working?
 <<>>=
-tmp <- permut.testA(d11, d12)
-tmp <- permut.testA(d21, d22)
+tmp <- permut_testA(d11, d12)
+tmp <- permut_testA(d21, d22)
 @ 
 It looks like it is.
 
@@ -5537,8 +5544,8 @@ It looks like it is.
 Well, in fact it is \textbf{wrong}, but we might not have noticed it. What
 p-value would you expect?
 <<>>=
-tmp <- permut.testA(d11, d11)
-tmp <- permut.testA(d12, d12)
+tmp <- permut_testA(d11, d11)
+tmp <- permut_testA(d12, d12)
 @ 
 
 Moral: check, check, check. One should check against different
@@ -5569,10 +5576,10 @@ I will give the fixed code. You have to understand what changed:
 <<>>=
 
 ## FIXME: function signature!!!
-permut.testB <- function(data1, data2, 
-                         fsample = sample.and.stat1,
+permut_testB <- function(data1, data2, 
+                         fsample = permut_and_mean1,
                          num.permut = 100) {
-    obs.stat <- mean.d(data1, data2)
+    obs.stat <- mean_d(data1, data2)
     
     permut.stat <- replicate(num.permut, 
                              fsample(data1, data2))
@@ -5589,9 +5596,9 @@ permut.testB <- function(data1, data2,
 Quick check (you should do it more thoroughly)
 <<>>=
 
-tmp <- permut.testB(d11, d11)
+tmp <- permut_testB(d11, d11)
 
-tmp <- permut.testB(d12, d12)
+tmp <- permut_testB(d12, d12)
 @ 
 
 
@@ -5599,10 +5606,10 @@ tmp <- permut.testB(d12, d12)
 Better:
 <<>>=
 
-stopifnot(suppressMessages(permut.testB(d11, d11))$pv == 1)
-stopifnot(suppressMessages(permut.testB(d12, d12))$pv == 1)
+stopifnot(suppressMessages(permut_testB(d11, d11))$pv == 1)
+stopifnot(suppressMessages(permut_testB(d12, d12))$pv == 1)
 xr <- runif(10)
-stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1)
+stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1)
 
 @ 
 
@@ -5618,27 +5625,31 @@ library(testthat)
 test_that("p-value = 1 when the two vectors identical", {
     n <- 10
     for(i in 1:n) {
-       xr <- runif(15)
-       stopifnot(suppressMessages(permut.testB(xr, xr))$pv == 1) 
+       xr <- rnorm(10)
+       stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1) 
     }
 })
 
 @ 
+Oooops, not quite. Improve that:
+
 
 <<eval=FALSE>>=
 
-test_that("p_v 1", {
+test_that("p-value = 1 when the two vectors identical", {
     ntests <- 100
     for(i in 1:ntests) {
         xr <- rnorm(10)
-        expect_identical(permut.testB(xr, xr)$pv, 1)
+        expect_identical(permut_testB(xr, xr)$pv, 1)
     }
 })
 
 @ 
 
 In fact, it is easy to argue that the test should have been written
-first. 
+first.
+
+And we might want to make sure that the size of \texttt{xr} is itself variable. 
 
 
 
@@ -5647,10 +5658,10 @@ OK, that is good. But let's add a figure so things look more like in textbooks:
 
 <<>>=
 ## FIXME: function signature
-permut.test <- function(data1, data2, 
-                        fsample = sample.and.stat1, 
+permut_test <- function(data1, data2, 
+                        fsample = permut_and_mean1, 
                         num.permut = 100) {
-  obs.stat <- mean.d(data1, data2)
+  obs.stat <- mean_d(data1, data2)
   permut.stat <- replicate(num.permut, 
                            fsample(data1, data2))
   pv <- (sum(abs(permut.stat) >= abs(obs.stat)) + 
@@ -5677,13 +5688,58 @@ permut.test <- function(data1, data2,
 Run it
 <<fig.cap='Two examples of permutation tests', fig.width=5, fig.height=9>>=
 par(mfrow = c(2, 1))
-tmp <- permut.test(d11, d12, num.permut = 1000)
-tmp <- permut.test(d21, d22, num.permut = 1000, 
-                   fsample = sample.and.stat2)
+tmp <- permut_test(d11, d12, num.permut = 1000)
+tmp <- permut_test(d21, d22, num.permut = 1000, 
+                   fsample = permut_and_mean2)
 @ 
 
 
-You might want to compare with t-tests, etc. 
+You might want to compare with t-tests, etc.
+
+
+And, of course, we should add some more tests. These are a minimal set of tests
+(testing functions with a stochastic element can be complicated). And we test the
+final function. (These tests generate lots of figures, which is slightly
+annoying; we might want to do something there).
+
+
+<<eval=FALSE>>=
+
+test_that("p-value = 1 when the two vectors identical", {
+    ntests <- 100
+    for(i in 1:ntests) {
+        xr <- rnorm(10)
+        expect_identical(permut_test(xr, xr)$pv, 1)
+    }
+})
+
+
+test_that("p-value is 1 when same elements, different length", {
+    n <- 100
+    for(i in 1:n) {
+        e <- runif(1)
+        rx1 <- rep(e, 5)
+        rx2 <- rep(e, 15)
+        expect_true(permut_test(rx1, rx2, num.permut = 1000)$pv == 1)
+    }
+})
+
+test_that("p-value is < 1 when extreme differences", {
+    n <- 100
+    numcases <- 100
+    for(i in 1:n) {
+        rxx <- runif(numcases)
+        rxy <- rxx + 1000
+        expect_true(permut_test(rxx, rxy, num.permut = 1000)$pv < 1)
+    }
+})
+
+@
+
+More complex testing (comparing p-value distribution against a uniform
+distribution when null is true, comparing against specific alternatives, etc)
+would be desirable.
+
 \clearpage
 
 
