@@ -5404,6 +5404,96 @@ runif(1)
 
 
 
+%% Clarify this.
+% <<>>=
+
+% ## This first
+% set.seed(13457)
+% runif(40)
+
+% set.seed(13457)
+% null <- sample(10)
+% runif(10)
+
+
+
+% test_runif <- function(n, after = 5, seed = sample(1:1e4, 1)) {
+%   set.seed(seed)
+%   null <- sample(n)
+%   post <- runif(after)
+
+%   set.seed(seed)
+%   pre <- runif(n + after)
+
+%   print(post)
+%   print(pre)
+%   ## out <- cbind(post, pre)
+%   print(summary(post - pre))
+%   cbind(post, pre)
+% }
+
+
+
+% set.seed(1)
+% null <- sample.and.stat1(d11, d12)
+% runif(1)
+
+% set.seed(1)
+% null2 <- runif(length(d11) + length(d12) )
+% runif(1)
+
+
+% set.seed(1)
+% null <- sample.and.stat2(d11, d12)
+% runif(1)
+
+% set.seed(1)
+% null2 <- runif(length(d11))
+% runif(1)
+
+
+% set.seed(1)
+% null <- sample(1:10)
+% runif(1)
+
+% set.seed(1)
+% null <- runif(9)
+% runif(1)
+
+% set.seed(1)
+% null <- rnorm(9)
+% runif(1)
+
+
+
+% set.seed(1)
+% null <- sample.and.stat1(d11, d12)
+% runif(1)
+
+% set.seed(1)
+% null <- sample(length(d11) + length(d12))
+% runif(1)
+
+
+% set.seed(1)
+% null <- sample.and.stat2(d11, d12)
+% runif(1)
+
+% set.seed(1)
+% null <- sample(length(d11))
+% runif(1)
+
+% set.seed(1)
+% null <- sample(1:(length(d11) + length(d12)), length(d11))
+% runif(1)
+
+
+
+
+
+
+% @ 
+
 
 Now, wrap the above, and create a single function:
 <<>>=
