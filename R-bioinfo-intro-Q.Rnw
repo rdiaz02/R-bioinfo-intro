@@ -6447,6 +6447,21 @@ tar.gz and zip files and what gets placed in your local hard drive, for both
 packages with and without code written in other languages. And we will look at
 one remote repository of a package.
 
+\section{A few things to practice}
+These are some miscellaneous things that we have mentioned, but maybe not
+emphatically enough:
+
+
+\begin{itemize}
+\item Difference between \texttt{scan} and \texttt{read.table}: see the help
+\item Using \texttt{mapply}. For example
+  \begin{verbatim}
+   mapply(rep, 11:14, 4:1)
+  \end{verbatim}
+\item \texttt{args}
+
+\end{itemize}
+
 \section{Merging: merge, join}
 \label{sec:merging:-merge-join}
 
