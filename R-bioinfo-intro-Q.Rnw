@@ -5649,7 +5649,9 @@ test_that("p-value = 1 when the two vectors identical", {
 In fact, it is easy to argue that the test should have been written
 first.
 
-And we might want to make sure that the size of \texttt{xr} is itself variable. 
+And we might want to make sure that the size of \texttt{xr} is itself variable.
+
+And we would probably want to use a larger value for \texttt{num.permut}.
 
 
 
@@ -5696,10 +5698,12 @@ tmp <- permut_test(d21, d22, num.permut = 1000,
 
 You might want to compare with t-tests, etc.
 
+You might also want to improve the message: way too many decimals. 
 
-And, of course, we should add some more tests. These are a minimal set of tests
-(testing functions with a stochastic element can be complicated). And we test the
-final function. (These tests generate lots of figures, which is slightly
+
+And, of course, \textbf{we should add some more tests}. These are a minimal set
+of tests (testing functions with a stochastic element can be complicated). And we
+test the final function. (These tests generate lots of figures, which is slightly
 annoying; we might want to do something there).
 
 
@@ -6447,6 +6451,25 @@ tar.gz and zip files and what gets placed in your local hard drive, for both
 packages with and without code written in other languages. And we will look at
 one remote repository of a package.
 
+\begin{itemize}
+\item Does the package need compilation: CRAN info
+\item Does the package use external libraries: CRAN info, BioC info
+\item Directories and files in a package that does not need compilation.
+  \begin{itemize}
+  \item tar gz
+  \item zip file
+  \end{itemize}
+\item Directories and files in a package that needs compilation.
+  \begin{itemize}
+  \item tar gz
+  \item zip file
+  \end{itemize}
+\item Directories and files in our local hard drive: what gets installed
+\item An example repo
+  
+\end{itemize}
+
+
 \section{A few things to practice}
 These are some miscellaneous things that we have mentioned, but maybe not
 emphatically enough:
@@ -6459,6 +6482,26 @@ emphatically enough:
    mapply(rep, 11:14, 4:1)
   \end{verbatim}
 \item \texttt{args}
+\item \texttt{sapply} and \texttt{vapply}. From \texttt{Metabolic-rate-example.R}
+<<eval=FALSE>>=
+i39 <- sapply(3:9, seq)
+i39b <- i39
+i39b[[2]] <- factor(letters[1:5])
+
+sapply(i39, summary)
+vapply(i39, summary,
+       c(Min. = 0, "1st Qu." = 0, Median = 0,
+         mean = 0, "3rd Qu." = 0, Max. = 0))
+
+sapply(i39b, summary)
+vapply(i39b, summary,
+       c(Min. = 0, "1st Qu." = 0, Median = 0,
+         mean = 0, "3rd Qu." = 0, Max. = 0))
+
+## And the very first sapply? Hard to do with vapply
+mapply(seq, from = 1, to = 3:9)
+Map(seq, from = 1, to = 3:9)
+@ 
 
 \end{itemize}
 
