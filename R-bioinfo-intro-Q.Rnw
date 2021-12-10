@@ -2104,6 +2104,9 @@ equality comparison of two floating-point numbers; that is unlikely to do
 what you want. If you know what you are doing, take a look at
 \texttt{all.equal} for near equality comparisons of objects.
 
+These are two links that provide additional examples, and explanations at
+different depths (from simple and intuitive to more detailed):
+\Burl{https://floating-point-gui.de/} and \Burl{https://0.30000000000000004.com/}
 
 
 
@@ -6465,6 +6468,7 @@ one remote repository of a package.
   \item zip file
   \end{itemize}
 \item Directories and files in our local hard drive: what gets installed
+\item Vignettes, PDF of the documentation.
 \item An example repo
   
 \end{itemize}
