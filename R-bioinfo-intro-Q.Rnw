@@ -3228,7 +3228,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 @ 
 
 
-%% FIXME: what I we do not use all variables for indexing?
+%% FIXME: what if we do not use all variables for indexing?
 %% Dealt with in the activities of aggregate + xtabs
 \subsection{xtabs and ftable: summarizing arbitrary stuff}\label{xtabs-arbitrary}
 
