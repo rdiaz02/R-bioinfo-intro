@@ -1,0 +1,7 @@
+* Mention radian
+  - https://github.com/randy3k/radian
+  - https://fromthebottomoftheheap.net/2019/06/18/radian-console-for-r/
+* VScode
+  - https://github.com/REditorSupport/vscode-R
+  - https://github.com/ManuelHentschel/VSCode-R-Debugger
+  - 
