@@ -234,7 +234,7 @@ other pieces, and retain it for longer.
 
 \subsection{The PDF and the code}
 
-The primary output of this document is a PDF.%%  I also provide (and will
+The primary output of this document is a PDF. %%  I also provide (and will
 %% use) an HTML file; this is kind of experimental (a few things might not
 %% be typeset correctly, or some links not work fully, etc). The HTML offers
 %% the advantage that we can accommodate, on the same screen, a running
@@ -243,9 +243,9 @@ The primary output of this document is a PDF.%%  I also provide (and will
 %% and the output in blue. 
 However, all the original files for the document are available (again, under a
 Creative Commons license ---see section \ref{license}) from
-\Burl{https://github.com/rdiaz02/R-bioinfo-intro}. (Note that in the
+\Burl{https://github.com/rdiaz02/R-bioinfo-intro-Q}. (Note that in the
 github repo you will not see the PDF %% HTML,
-or R-bioinfo-intro.R files,
+or R-bioinfo-intro-Q.R files,
 since those are derived from the Rnw file).
 
 
@@ -269,7 +269,7 @@ You should have (or should get) the following files:
 %%   of this PDF and a directory for the figures (used in the HTML). You can
 %%   open the HTML with any browser.
 %% \item \code{script1.R}
-\item \code{R-bioinfo-intro.R}
+\item \code{R-bioinfo-intro-Q.R}
 \end{itemize}
 
 
@@ -340,10 +340,12 @@ This is a partial list a books I like and use when preparing classes:
     ebook and PDF, and you can pay whatever you want for it.). If you want
     to start somewhere and use only a single reference, \textbf{I'd start
       with this book}.
-   \item \textit{Advanced R}. Wickham. (If you go to the web page for the
+   \item \textit{Advanced R, 2nd ed}. Wickham. (If you go to the web page for the
     book, in github, you can download the complete sources and build your
-    own pdf).   
+    own pdf).   \Burl{https://adv-r.hadley.nz/}
   \item \textit{The art of R programming}. Matloff.
+    
+  \item ``fasteR: Fast Lane to Learning R!'': an R tutorial for beginners by Matloff: \Burl{https://github.com/matloff/fasteR}
   \end{itemize}
 \item[Stats and some programming] Introductory statistics (or introductory
   data science) with some
@@ -430,12 +432,11 @@ a binary for your operating system (\Burl{http://cran.r-project.org/bin/}).
   
 \subsection{Installing RStudio}\label{rstudio}
   
-There are a variety of ways of interacting and using R. For ease, and
-because it is a really nice piece of software, we will use RStudio. We
+There are a variety of ways of interacting and using R. For its ease of use, I will introduce RStudio. We
 want to use the "Dektop", that you can download from here:
 \Burl{http://www.rstudio.com/products/rstudio/download/}.
 
-
+Note, though, I do not especially recommend RStudio. In fact, I do not use RStudio at all: see \label{guis}.
 
 
 \subsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
