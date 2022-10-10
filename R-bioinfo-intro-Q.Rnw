@@ -243,7 +243,7 @@ The primary output of this document is a PDF. %%  I also provide (and will
 %% and the output in blue. 
 However, all the original files for the document are available (again, under a
 Creative Commons license ---see section \ref{license}) from
-\Burl{https://github.com/rdiaz02/R-bioinfo-intro-Q}. (Note that in the
+\Burl{https://github.com/rdiaz02/R-bioinfo-intro/blob/master/R-bioinfo-intro-Q.Rnw}. (Note that in the
 github repo you will not see the PDF %% HTML,
 or R-bioinfo-intro-Q.R files,
 since those are derived from the Rnw file).
