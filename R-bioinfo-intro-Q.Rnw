@@ -1660,7 +1660,9 @@ Now, did you notice that we got the mean printed and the figure produced?
   Probably the preferred way is:\\
   
   \verb@ R --vanilla < script1.R > script1.Rout @
+  
   or\\
+
   \verb@ R --vanilla -f script1.R > script1.Rout @
   
   I tend to use either one of these two, and then add things like ``nohup''
