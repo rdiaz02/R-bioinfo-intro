@@ -436,7 +436,7 @@ There are a variety of ways of interacting and using R. For its ease of use, I w
 want to use the "Dektop", that you can download from here:
 \Burl{http://www.rstudio.com/products/rstudio/download/}.
 
-Note, though, I do not especially recommend RStudio. In fact, I do not use RStudio at all: see \label{guis}.
+Note, though, I do not especially recommend RStudio. In fact, I do not use RStudio at all: see section \ref{guis}.
 
 
 \subsection{Editors and  ``GUIs'' for \R, et al.}\label{guis}
