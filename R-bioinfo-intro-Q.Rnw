@@ -1643,7 +1643,9 @@ There are two basic ways of using a script:
 source("script1.R", echo = TRUE, 
        max.deparse.length = 999999)
 @     
-   Now, did you notice that we got the mean printed and the figure produced?
+
+
+Now, did you notice that we got the mean printed and the figure produced?
 
 \item[Calling R from the shell] Open a shell, a command window, or however
   that is called in your operating system, and run \R\ telling it to use a
@@ -1657,9 +1659,9 @@ source("script1.R", echo = TRUE,
   %% There is a second set of ways, like\\ 
   Probably the preferred way is:\\
   
-  \verb@ R --vanilla < script1.R > scrip1.Rout @
-  or
-  \verb@ R --vanilla -f script1.R > scrip1.Rout @
+  \verb@ R --vanilla < script1.R > script1.Rout @
+  or\\
+  \verb@ R --vanilla -f script1.R > script1.Rout @
   
   I tend to use either one of these two, and then add things like ``nohup''
   before invoking \R, move it to the background, and also redirect standard error
@@ -1669,7 +1671,9 @@ source("script1.R", echo = TRUE,
   
   Beware, the above are examples of simple invocations. There are many other
   options (including passing command line arguments; see \texttt{commandArgs}).
-  \end{description}
+  This article contains details and examples: \Burl{https://swcarpentry.github.io/r-novice-inflammation/05-cmdline/}.
+
+\end{description}
 
 \end{description}
 
@@ -1693,14 +1697,25 @@ with a script that reproduces what we did in section \ref{mistery}.
 \item Do an internet search for how to run R scripts non-interactively
   for your operating system, say from a shell/command window.
 
-  I'll show it in Linux. If you use Windows, take a look at this two
+  I'll show it in Linux. If you use Windows, take a look at these 
   links, for example:
-  \Burl{http://datacornering.com/how-to-run-r-scripts-from-the-windows-command-line-cmd/},
+  % \Burl{http://datacornering.com/how-to-run-r-scripts-from-the-windows-command-line-cmd/},
+
+
+  \Burl{https://stackoverflow.com/a/3415135}
   \Burl{https://support.rstudio.com/hc/en-us/articles/218012917-How-to-run-R-scripts-from-the-command-line}.
 
-  How did I find them? The first two hits in a Google search for ``r cmd
-  batch windows''. \texttt{I am not necessarily recommending the above
-    articles!!!}.
+
+  And these are two canonical entries from the R documentation (which are mentioned in one of the references above) and apply in general to all OSs:
+
+  \Burl{https://cran.r-project.org/doc/manuals/R-intro.html#Scripting-with-R}
+
+  \Burl{https://cran.r-project.org/doc/manuals/R-intro.html#Invoking-R-from-the-command-line}
+
+  
+  % How did I find them? The first two hits in a Google search for ``r cmd
+  % batch windows''. \texttt{I am not necessarily recommending the above
+  %   articles!!!}.
   
 
   You might want to try using the examples in those, or other links, to
@@ -1709,6 +1724,9 @@ with a script that reproduces what we did in section \ref{mistery}.
   Note that you can simplify them if you have R in the path. (Google for
   this: how to add a program to the path in your operating system. In
   Linux things ought to work out-of-the-box).
+
+
+
   
 \end{enumerate}
 
