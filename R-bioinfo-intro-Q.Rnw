@@ -1708,9 +1708,9 @@ with a script that reproduces what we did in section \ref{mistery}.
 
   And these are two canonical entries from the R documentation (which are mentioned in one of the references above) and apply in general to all OSs:
 
-  \Burl{https://cran.r-project.org/doc/manuals/R-intro.html#Scripting-with-R}
+  \Burl{https://cran.r-project.org/doc/manuals/R-intro.html\#Scripting-with-R}
 
-  \Burl{https://cran.r-project.org/doc/manuals/R-intro.html#Invoking-R-from-the-command-line}
+  \Burl{https://cran.r-project.org/doc/manuals/R-intro.html\#Invoking-R-from-the-command-line}
 
   
   % How did I find them? The first two hits in a Google search for ``r cmd
