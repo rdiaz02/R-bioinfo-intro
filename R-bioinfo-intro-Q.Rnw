@@ -1960,7 +1960,7 @@ This is a short section: Please, please, please, never, ever, use \code{T} for
 \subsubsection{Shortcircuit logical operations}
 \label{sec:shortc-logic-oper}
 
-``&&'' and ``||'' are short-circuit.
+\code{\&\&} and \code{||} are short-circuit.
 
 
 <<>>=
@@ -1968,9 +1968,9 @@ a <- "hola"
 if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 @
 
-Try to run the above with a ``&'' instead of ``&&''.
+Try to run the above with a \code{\&} instead of \code{\&\&}.
 
-Note, though, that ``Using vectors of more than one element in ‘&&’ or ‘||’ will give a warning (as from R 4.2.0), or an error if the environment variable ‘_R_CHECK_LENGTH_1_LOGIC2_’ is set to a true value (this is intended to become the default in future).'' (From the help). 
+Note, though, that ``Using vectors of more than one element in ‘\&\&’ or ‘||’ will give a warning (as from R 4.2.0), or an error if the environment variable ‘_R_CHECK_LENGTH_1_LOGIC2_’ is set to a true value (this is intended to become the default in future).'' (From the help). 
 
 
 <<>>=
