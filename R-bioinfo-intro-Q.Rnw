@@ -1957,6 +1957,35 @@ This is a short section: Please, please, please, never, ever, use \code{T} for
 %% https://stat.ethz.ch/pipermail/r-help/2008-November/180085.html
 
 
+\subsubsection{Shortcircuit logical operations}
+\label{sec:shortc-logic-oper}
+
+``&&'' and ``||'' are short-circuit.
+
+
+<<>>=
+a <- "hola"
+if (is.numeric(a) && log(a)) cat("\n we entered in the if")
+@
+
+Try to run the above with a ``&'' instead of ``&&''.
+
+Note, though, that ``Using vectors of more than one element in ‘&&’ or ‘||’ will give a warning (as from R 4.2.0), or an error if the environment variable ‘_R_CHECK_LENGTH_1_LOGIC2_’ is set to a true value (this is intended to become the default in future).'' (From the help). 
+
+
+<<>>=
+a1 <- c(TRUE, FALSE)
+b1 <- c(TRUE, TRUE)
+
+a1 && b1
+
+a1 || b1
+@
+
+Notice the warning. And notice that the returned value has length 1.
+     
+
+
 \subsection{Names of elements}
 \label{names-elements}
 
