@@ -1970,7 +1970,7 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 
 Try to run the above with a \code{\&} instead of \code{\&\&}.
 
-Note, though, that ``Using vectors of more than one element in ‘\&\&’ or ‘||’ will give a warning (as from R 4.2.0), or an error if the environment variable ‘_R_CHECK_LENGTH_1_LOGIC2_’ is set to a true value (this is intended to become the default in future).'' (From the help). 
+Note, though, that ``Using vectors of more than one element in ‘\&\&’ or ‘||’ will give a warning (as from R 4.2.0), or an error if the environment variable ‘\_R\_CHECK\_LENGTH\_1\_LOGIC2\_’ is set to a true value (this is intended to become the default in future).'' (From the help). 
 
 
 <<>>=
