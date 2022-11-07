@@ -3164,6 +3164,47 @@ stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
 @ 
 
 
+\subsubsection{Using ggplot to display the box plot with dots}
+
+To use ggplot, we first need to\footnote{We do not really need to, but not doing so would force us to do unnecessary gimnastics.} create a data frame
+
+<<df_for_ggpl_x2hj4>>=
+
+## Note I use somewhat different variable names
+dftt <- data.frame(gene_A = GeneA,
+                   gene_B = GeneB,
+                   type   = Type)
+@ 
+
+Now, plot:
+
+<<ggplot_x2hj4>>=
+library(ggplot2)
+
+p1 <- ggplot(dftt,
+             aes(x = type, y = gene_A, color = type)) +
+    geom_boxplot() +
+    geom_jitter(shape = 16, width = 0.1, height = 0)
+    
+## ?geom_jitter: yes, make sure to understand in what direction
+## jittering is added.
+p1
+
+
+## Add the mean
+p1 + stat_summary(fun.y = mean, geom = "point", shape = 23, size = 4)
+## Did you see the "deprecated"
+
+## Notched
+ggplot(dftt,
+       aes(x = type, y = gene_A, color = type)) +
+    geom_boxplot(notch = TRUE) +
+    geom_jitter(shape = 16, width = 0.1, height = 0)
+@
+
+
+See more examples at \Burl{http://www.sthda.com/english/wiki/ggplot2-box-plot-quick-start-guide-r-software-and-data-visualization}
+
 \subsubsection{\activities}
 \label{sec:activities-10}
 
