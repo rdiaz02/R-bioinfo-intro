@@ -3200,6 +3200,13 @@ ggplot(dftt,
        aes(x = type, y = gene_A, color = type)) +
     geom_boxplot(notch = TRUE) +
     geom_jitter(shape = 16, width = 0.1, height = 0)
+
+## And something probably silly
+ggplot(dftt,
+       aes(x = type, y = gene_A, color = type)) +
+    geom_boxplot(notch = TRUE) +
+    geom_jitter(shape = 16, width = 0.1, height = 0,
+                col = c("yellow", "green")[dftt$type])
 @
 
 
@@ -3773,6 +3780,23 @@ overkill, but knowing about split can make life much simpler in many cases:
 lapply(with(one.dataframe, split(one.dataframe, sex)),
        function(y) mean(y$age))
 
+
+
+
+## Or (this is silly here, just to illustrate)
+
+lapply(split(one.dataframe, one.dataframe$sex),
+       function(x) lm(Y ~ age, data = x))
+
+## And this is similar to some operations we did before
+## with aggregate. Though I think aggregate's output
+## and syntax is more convenient
+
+lapply(split(one.dataframe, one.dataframe$sex),
+       function(x) return(
+                       c(mean_age = mean(x$age),
+                         mean_y = mean(x$Y),
+                         sd_age = sd(x$age))))
 @ 
 
 The above procedure is related to the split-apply-combine and the
@@ -4339,6 +4363,11 @@ c <- 95
 c
 c(5, 6)
 c + 8
+
+## This is NOT a good idea!!
+c <- function(u) 2 * u
+c(8)
+try(c(8, 9))
 @ 
 
 Which, of course, is asking questions about where (and how) R searches for

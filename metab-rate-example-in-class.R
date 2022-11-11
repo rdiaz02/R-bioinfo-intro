@@ -277,10 +277,16 @@ legend(locator(1), legend = levels(anage$Class),
 
 ## some more manual work
 
+## Nos quedamos aquí
+
+
 ## todo
 ## - labels with at to use custom tick marks
 ## complete cases and table without NAs
 ## abline for plot for reptiles and aves
+
+
+
 
 plot(logmet ~ logbm, data = anage,
      xlab = "Body mass (g)",
