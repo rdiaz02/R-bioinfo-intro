@@ -491,13 +491,18 @@ lapply(split(anage, anage$Class),
 
 ############### A tangent
 ## What about sapply?
-## Not a natural thing to do here
+## Not a natural thing to do here ?
 sapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd))
 
 sapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd),
        simplify = FALSE)
+plot(logmet ~ logbm, anage,
+     col = c("salmon", "turquoise")[Class])
+
+sapply(split(anage, anage$Class),
+       function(dd) abline(lm(logmet ~ logbm, data = dd)))
 
 ## And vapply; too much of a mess here
 ## and not a natural application
