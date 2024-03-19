@@ -503,6 +503,26 @@ learn it! Or try RStudio\footnote{Oh, but I must quote Rodney Sparapani here:
 if you like VSCodium, use it. If you prefer Eclipse, then use Eclipse. Etc. But I
 might not be able to help you.
 
+\paragraph{Suggestions if you want to try Emacs:}
+
+\begin{enumerate}
+\item Install Emacs, a recent version (try for it to be at least version 28 or above). Most Linux distributions have a recent enough Emacs. For Windows and macOS a good option might be Vincent Goulet's binaries, which also include additional packages such as ESS: \url{https://gitlab.com/emacs-modified}.
+\item Do the Emacs tutorial: start Emacs, and type \texttt{C-h t} (that is: press the Control key and, while holding it, press ``h''; release and press ``t''). This will give you a basic understanding of Emacs keybindings and common terminology. \textbf{Do not skip this}. 
+\item All you have now is bare bones Emacs. What about starter kits? In other words, ``Emacs bundles of packages + config with all batteries included''? I do not generally recommend them. Some people (mainly ex-Vim users) enjoy Emacs Doom or Spacemacs, but they might later get in the way.
+  If I had to recommend one, I'd try ``Emacs Bedrock'': \url{https://sr.ht/~ashton314/emacs-bedrock/}; it uses some settings and packages I do not use, but seems very minimal, and it looks like it would  easily allow modifying the configuration ``as the user grows in knowledge and power''.
+\item Take a loot at the documentation for ESS, ``Emacs Speaks Statistics'', the way we interact with R: \url{https://ess.r-project.org/Manual/ess.html}.
+\item To learn more about Emacs itself:
+  \begin{itemize}
+  \item The book ``Mastering Emacs'', by Mickey Petersen, that you can purchase from \url{https://www.masteringemacs.org/}. It is not free, but if you are going to use Emacs, it is probably well worth it.
+    
+  \item The book ``Use GNU Emacs. The Plain Text Computing Environment'', by Keith Waclena: \url{https://www2.lib.uchicago.edu/keith/emacs/}. (Freely available as HTML, PDF, Epub ---yeah, there are unfinished chapters, but it is very complete as it is now).
+    
+  \item The Emacs manual. It is long, but there are many things you can skip. It is a very well written and organized manual, with lots of cross-references, that allows you to choose what to read. I think it is the best manual I've ever read. Available as PDF, HTML, and Info.
+    
+\item I'd start with one of Petersen's or Waclena's, or both. And I'd probably intersperse jumping to the Emacs manual to read specific chapters or sections of things that particularly interest you (e.g., read about Dired in Petersen or Waclena, then go to the Emacs Manual). Repeat as needed-
+  \end{itemize}
+\item Continue the journey on your own.
+  \end{enumerate}
 
 \subsubsection{GUIs for analyses}
 \label{sec:guis-analyses}
