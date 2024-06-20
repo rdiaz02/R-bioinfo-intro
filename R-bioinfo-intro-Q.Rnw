@@ -34,7 +34,7 @@
 \newcommand{\activities}{{\textcolor {red} {Activities}}}
 
 % \newcommand{\R}{{something or other R}} but this gets to be a mess. And
-% ugly. 
+% ugly.
 \newcommand{\R}{R}
 
 \newcommand{\flspecific}[1]{{\textit{#1}}}
@@ -71,14 +71,14 @@ opts_knit$set(stop_on_error = 2L)
 ## next are for listings, to produce HTML
 ##listings-knitr-html%%options(formatR.arrow = TRUE)
 ##listings-knitr-html%%render_listings()
-@ 
+@
 
 \begin{document}
 
 %% Only takes effect after begin document?
 %%listings-knitr-html%%<<listingfigdir,error=FALSE, include=FALSE, cache=FALSE>>=
 %%listings-knitr-html%%opts_chunk$set(fig.path = 'figures_html/listings-')
-%%listings-knitr-html%%@ 
+%%listings-knitr-html%%@
 
 
 \title{A quick and crash introduction to R with a bioinformatics bent}
@@ -92,7 +92,7 @@ opts_knit$set(stop_on_error = 2L)
 
 %% <<>>=
 %% opts_chunk$set(size= "small", error=FALSE)
-%% @ 
+%% @
 
 
 
@@ -105,7 +105,7 @@ opts_knit$set(stop_on_error = 2L)
 <<include=FALSE>>=
 rm(list = ls())
 options(width = 60)
-@ 
+@
 
 \section{License and copyright}\label{license}
 This work is Copyright, \copyright, 2014 to present, Ramon Diaz-Uriarte,
@@ -117,22 +117,22 @@ and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
 
 \section{Scenarios}\label{scenarios}
 \begin{itemize}
-  
+
 \item You are designing an experiment: 20 plates are to be assigned
   (randomly) to 4 conditions. You are too young (or too old) to cut paper
   into pieces, place it in a urn, etc. You want a better, faster
   way. Specially because your next experiment will involve 300 units, not
   20.
-  
-  
+
+
 \item The authors of a paper claim there is a weak relationship between
   levels of protein A and growth. However, you know that some of the
   samples are from males and some are from females, and you suspect the
   correlation is present only in males. The authors provide the complete
   data and you want to check for differences in correlation pattern
   between males and females.
-  
-  
+
+
 \item You've been working on a microarray study. For 100 subjects (50 of
   them with leukemia, 50 of them healthy) you have the $Cy3/Cy5$ intensity
   ratios for 300,000 spots. You just got the email with the compressed
@@ -142,7 +142,7 @@ and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
   (corresponding to probes 10, 23, 56, 10,004, 20,000), and a
   quick-and-dirty statistical test of differences for two specific probes,
   probe 7000 and 99,000, that correspond to two well know genes.
-  
+
 
 \item Tomorrow you'll look at the data in more detail. For a set of 20
   selected probes you will want to: a) take a look at the mean of the
@@ -150,12 +150,12 @@ and is licensed under a \textbf{Creative Commons } Attribution-ShareAlike
   of the two groups; b) plot the intensity vs.\ the age of the subject; c)
   plot the log of the intensity vs.\ the age of the subject.
 
-  
+
 %% \item A paper describes a specific growth curve model (some non-linear
 %%   function). You would like to see what the actual curve looks like, and
-%%   how much variation you get if you modify the parameters slightly. 
- 
-  
+%%   how much variation you get if you modify the parameters slightly.
+
+
 \end{itemize}
 
 For each of those problems, would you \ldots
@@ -191,7 +191,7 @@ The structure and logic is as follows:
   document for a class).
 \item We next go over a few practical things we need to get out of the way
   (sections \ref{basics} and \ref{console}).
-  
+
 \item We then (sections \ref{readingr} to \ref{plotsplots}) cover in some
   detail what are the main objects of R (vectors, data frames, matrices),
   how to manipulate them and some plotting. This can be boring, and this
@@ -204,7 +204,7 @@ The structure and logic is as follows:
   \ref{tables} and \ref{rprog}).
 \item We then revisit some examples.
 % \item Then, up to section \ref{back-scenarios}, we go over many details in
-%   a more systematic, but more boring, way. 
+%   a more systematic, but more boring, way.
 \item If you understand all that is done up to that point, you should have a
 decent working understanding of how to use R, and can move on your own.
 \item But you do not want to skip section \ref{debug}: this section covers
@@ -240,7 +240,7 @@ The primary output of this document is a PDF. %%  I also provide (and will
 %% the advantage that we can accommodate, on the same screen, a running
 %% session with \R\, and have the web browser size adjusted to our liking (so
 %% less fiddling around than using a PDF). In the HTML, the code is in red
-%% and the output in blue. 
+%% and the output in blue.
 However, all the original files for the document are available (again, under a
 Creative Commons license ---see section \ref{license}) from
 \Burl{https://github.com/rdiaz02/R-bioinfo-intro/blob/master/R-bioinfo-intro-Q.Rnw}. (Note that in the
@@ -344,7 +344,7 @@ This is a partial list a books I like and use when preparing classes:
     book, in github, you can download the complete sources and build your
     own pdf).   \Burl{https://adv-r.hadley.nz/}
   \item \textit{The art of R programming}. Matloff.
-    
+
   \item ``fasteR: Fast Lane to Learning R!'': an R tutorial for beginners by Matloff: \Burl{https://github.com/matloff/fasteR}
   \end{itemize}
 \item[Stats and some programming] Introductory statistics (or introductory
@@ -379,7 +379,7 @@ This is a partial list a books I like and use when preparing classes:
     Hastie, Tibshirani. The PDF of the book is available for download from
     their web page.
   \end{itemize}
-  
+
 \end{description}
 
 There are of course many others (including classics such as the two by
@@ -394,7 +394,7 @@ about them in class.
 \section{Very basics of using \R}\label{basics}
 
 \subsection{Installing \R}
-  
+
 Go to CRAN, \Burl{http://cran.r-project.org/}. Now, if you know what
 source code is, and you want to compile R, go to Sources
 (\Burl{http://cran.r-project.org/sources.html}). Otherwise, just download
@@ -410,12 +410,12 @@ a binary for your operating system (\Burl{http://cran.r-project.org/bin/}).
      \Burl{http://cran.r-project.org/bin/linux/ubuntu/README.html}, since the
      default Ubuntu packages can be  outdated.
 
-     
+
 \item If you use Windows, you want to install "base". It says so
      clearly: "Binaries for base distribution (managed by Duncan
      Murdoch). This is what you want to install R for the first time."
 
-     
+
    \item If you use Mac, if you play with installation options, note that
      you need to install the tcl/Tk X11 libraries. If you run into
      trouble, make sure to read the FAQ
@@ -425,13 +425,13 @@ a binary for your operating system (\Burl{http://cran.r-project.org/bin/}).
 \item However you do it, please make sure you have a recent version of R.
 \end{itemize}
 
-  
+
   % \item You can change the language if you want. For Spanish, use ``es'' (or
   %   edit directly the {\tt Rconsole} file).
   % \end{itemize}
-  
+
 \subsection{Installing RStudio}\label{rstudio}
-  
+
 There are a variety of ways of interacting and using R. For its ease of use, I will introduce RStudio. We
 want to use the "Dektop", that you can download from here:
 \Burl{http://www.rstudio.com/products/rstudio/download/}.
@@ -450,7 +450,7 @@ interface provided by R under Mac OS X.  If you love vim, there is Vim-R-plugin
 (\Burl{http://www.vim.org/scripts/script.php?script_id=2628};
 \Burl{https://hpcc.ucr.edu/manuals/hpc_cluster/terminalide/}). If you use VSCode
 (or, probably better, VSCodium \Burl{https://vscodium.com/}), there are several extensions  for working with
-R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}. 
+R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}.
 For those used to Eclipse, there is a plug-in designed to
 work with R: StatET
 (\Burl{https://projects.eclipse.org/projects/science.statet}).   And some Windows users like Tinn-R (\Burl{https://github.com/jcfaria/Tinn-R});
@@ -507,18 +507,18 @@ might not be able to help you.
 
 \begin{enumerate}
 \item Install Emacs, a recent version (try for it to be at least version 28 or above). Most Linux distributions have a recent enough Emacs. For Windows and macOS a good option might be Vincent Goulet's binaries, which also include additional packages such as ESS: \url{https://gitlab.com/emacs-modified}.
-\item Do the Emacs tutorial: start Emacs, and type \texttt{C-h t} (that is: press the Control key and, while holding it, press ``h''; release and press ``t''). This will give you a basic understanding of Emacs keybindings and common terminology. \textbf{Do not skip this}. 
+\item Do the Emacs tutorial: start Emacs, and type \texttt{C-h t} (that is: press the Control key and, while holding it, press ``h''; release and press ``t''). This will give you a basic understanding of Emacs keybindings and common terminology. \textbf{Do not skip this}.
 \item All you have now is bare bones Emacs. What about starter kits? In other words, ``Emacs bundles of packages + config with all batteries included''? I do not generally recommend them. Some people (mainly ex-Vim users) enjoy Emacs Doom or Spacemacs, but they might later get in the way.
   If I had to recommend one, I'd try ``Emacs Bedrock'': \url{https://sr.ht/~ashton314/emacs-bedrock/}; it uses some settings and packages I do not use, but seems very minimal, and it looks like it would  easily allow modifying the configuration ``as the user grows in knowledge and power''.
 \item Take a loot at the documentation for ESS, ``Emacs Speaks Statistics'', the way we interact with R: \url{https://ess.r-project.org/Manual/ess.html}.
 \item To learn more about Emacs itself:
   \begin{itemize}
   \item The book ``Mastering Emacs'', by Mickey Petersen, that you can purchase from \url{https://www.masteringemacs.org/}. It is not free, but if you are going to use Emacs, it is probably well worth it.
-    
+
   \item The book ``Use GNU Emacs. The Plain Text Computing Environment'', by Keith Waclena: \url{https://www2.lib.uchicago.edu/keith/emacs/}. (Freely available as HTML, PDF, Epub ---yeah, there are unfinished chapters, but it is very complete as it is now).
-    
+
   \item The Emacs manual. It is long, but there are many things you can skip. It is a very well written and organized manual, with lots of cross-references, that allows you to choose what to read. I think it is the best manual I've ever read. Available as PDF, HTML, and Info.
-    
+
 \item I'd start with one of Petersen's or Waclena's, or both. And I'd probably intersperse jumping to the Emacs manual to read specific chapters or sections of things that particularly interest you (e.g., read about Dired in Petersen or Waclena, then go to the Emacs Manual). Repeat as needed-
   \end{itemize}
 \item Continue the journey on your own.
@@ -557,7 +557,7 @@ RKWard. Why? These are the reasons:
   Produces ``standard'' R code of the analyses (but it seems it can also save the
   dialog box entries). But compared to R Commander, it offers fewer analyses via
   menus in the GUI.
-  
+
 \item[Rattle] Main focus is data mining, and does not offer as much support for
   classical and intro stats.
 \item[JASP] Does not produce (at least as of now) R code. Cannot run R code
@@ -580,7 +580,7 @@ RKWard. Why? These are the reasons:
   has stalled and it is no longer actively maintained, and there are some things
   that no longer work, specially with newer Java versions (see thread in
   \Burl{https://groups.google.com/g/deducer/c/va5YnHNEw_0}).
-  
+
 \end{description}
 
 
@@ -643,11 +643,14 @@ comments by the same person (this could be a personal bias: I tend to
 conceptualize code around nested operations and function composition, and don't
 dislike lisp's parentheses). And yes, I prefer \texttt{data.table} (for both
 speed, but also for syntax and semantics), though we won't be covering it in this
-course.
+course. By the way, tidyverse is not necessarily faster than base R (and sometimes it is slower); and, as just mentioned, if I care about speed I switch to \texttt{data.table}.
+
+And let me return to an additional important problem: the (too frequent for my taste) deprecation of features (which is mentioned also in a link above: \Burl{https://stackoverflow.com/a/61393520} ).  I have code in base R that runs perfectly well 10 or 15 years later; I've had tidyverse code show deprecation notices 6 months after it was written.
 
 Of course, there are other very different opinions:
 \Burl{http://varianceexplained.org/r/teach-tidyverse/}, \Burl{https://cdmuir.netlify.app/post/2019-07-09-tidyverse/},
-\Burl{https://towardsdatascience.com/rethinking-how-we-teach-the-tidyverse-da09a3a23934}. 
+\Burl{https://towardsdatascience.com/rethinking-how-we-teach-the-tidyverse-da09a3a23934}.
+
 
 
 \subsection{Installing R packages}\label{packages}
@@ -660,7 +663,7 @@ If a package is available from CRAN you can do
 
 <<eval=FALSE>>=
 install.packages("car")
-@ 
+@
 (for example --- this installs the \code{car} package and its
 dependencies).
 
@@ -668,7 +671,7 @@ If you want to install more than one package you can do (don't execute the
 code below as we will not use those packages)
 <<eval=FALSE>>=
 install.packages(c("gamm4", "varSelRF"))
-@ 
+@
 
 
 In Bioinformatics, BioConductor (\Burl{http://www.bioconductor.org}) is a
@@ -678,10 +681,10 @@ you to install suites of BioC packages (see
 \Burl{http://www.bioconductor.org/install/}). For example, go to
 \Burl{http://www.bioconductor.org/packages/release/bioc/html/limma.html}
 and see how instructions are clearly given there. The involve doing
-something like 
+something like
 <<eval=FALSE>>=
 BiocManager::install("package_name")
-@ 
+@
 
 % See
 % \Burl{https://cran.r-project.org/web/packages/BiocManager/index.html}.
@@ -692,7 +695,7 @@ BiocManager::install("package_name")
 % <<eval=FALSE>>=
 % source("https://bioconductor.org/biocLite.R")
 % biocLite("package_name")
-% @ 
+% @
 % still work, though it gives a warning. (So if today --- 2018-10-17--- you
 % visit the above page for limma, and you follow the recommendation, you
 % will get a warning).
@@ -720,7 +723,7 @@ Now, make sure you install package ``car'', which we will use below:
 
 <<eval=FALSE>>=
 install.packages("car")
-@ 
+@
 (or do it from the menu of RStudio).
 
 
@@ -754,7 +757,7 @@ also be menu entries (e.g., ``Quit RStudio'' under ``File'', etc).
 
 <<eval=FALSE>>=
 q()
-@ 
+@
 
 
 Say no to the question about saving the workspace.
@@ -788,9 +791,9 @@ What if things hang? Try \code{Control-C} and/or
 \item Can you see how you are offered suggestions as you type?
 \item Install a package. Do it using \texttt{install.packages}. You can
   also try using RStudio. The package to install is called ``varSelRF''.
-  
+
 \item Install the \texttt{limma} package from Bioconductor.
-  
+
 \item Open this file (this file is ``R-bioinfo-intro-Q.Rnw'') in Rstudio. What
   kind of file is this? Can you run code from it? Could you generate the pdf?
 
@@ -802,7 +805,7 @@ What if things hang? Try \code{Control-C} and/or
 \clearpage
 \section{This will not be mysterious at the end of the course}\label{mistery}
 
-(This is an example we go over in section \ref{example-multtest}, p.\ 
+(This is an example we go over in section \ref{example-multtest}, p.\
 \pageref{example-multtest}, with a different number of genes).
 
 We might have heard about the multiple testing problem with microarrays:
@@ -827,15 +830,15 @@ This is the R code:
 <<eval=TRUE,tidy=FALSE, fig.height=5>>=
 randomdata <- matrix(rnorm(50 * 1000), ncol = 50)
 class <- factor(c(rep("NC", 20), rep("cancer", 30)))
-pvalues <- apply(randomdata, 1, 
+pvalues <- apply(randomdata, 1,
                  function(x) t.test(x ~ class)$p.value)
 hist(pvalues)
 sum(pvalues < 0.05)
-@ 
+@
 
 The example could be made faster, you could write a function, prepare
 nicer plots, etc, but the key is that in six lines of code you have
-settled the discussion. 
+settled the discussion.
 
 Let's try to understand what we did. % But first, we need to install \R, and
 % maybe some additional packages.
@@ -862,8 +865,8 @@ Let's try to understand what we did. % But first, we need to install \R, and
   execute it. If you get syntax errors, make sure you verify what you
   wrote. If (but only if) you become desperate, copy-paste the code into a
   script and execute it (or into a file and run it).
-  
-  
+
+
 \item Play with the following and try to understand what is happening. We
   will explain it in class:
 <<activ1, eval=TRUE,tidy=FALSE, echo=TRUE, results=FALSE, fig.show='hide'>>=
@@ -912,12 +915,12 @@ pv2
 ## Compare with
 pvalues[1:10]
 
-@ 
+@
 
 Now, use apply
 <<activ1_c, eval=TRUE, echo=TRUE, results=FALSE>>=
 apply(rd2, 1, function(z) t.test(z ~ class)$p.value)
-@ 
+@
 
 Or very verbose (this is unnecessarily verbose):
 
@@ -929,7 +932,7 @@ myfunction <- function(y, classfactor = class) {
 
 apply(rd2, 1, myfunction)
 
-@ 
+@
 
 \item We haven't said it explicitly, but when we use \texttt{apply} we are
   passing a function (our anonymous function or \texttt{myfunction} as above) to
@@ -956,7 +959,7 @@ Now, move to the console and at the prompt (which will often start with
 
 <<>>=
 1 + 2
-@ 
+@
 
 (All the code for this document is available, so you can copy and paste
 from the original code directly. If you copy code from other documents,
@@ -978,14 +981,14 @@ print 40 numbers:
 
 <<>>=
 1:40
-@ 
+@
 
 
 Now, assign \code{1 + 2} that to a variable:
 
 <<>>=
 v1 <- 1 + 2
-@ 
+@
 \noindent You can also use \code{=} for assignment, but I strongly prefer not
 to. \activities: why might it not be a good idea to use \code{=} for assignment?
 
@@ -993,25 +996,25 @@ And now display its value
 
 <<>>=
 v1
-@ 
+@
 
 If you want to be more verbose, do
 <<>>=
 print(v1)
-@ 
+@
 
 
 Alternatively, you could surround the expression in parentheses:
 <<>>=
 (v1 <- 1 + 2)
-@ 
+@
 and that makes the assignment AND shows you the value just assigned to
 \code{v1}.
 
 Finally, you could do
 <<>>=
 v1 <- 1 + 2; v1
-@ 
+@
 thus separating the two commands with a \code{;}, though that is rarely
 a good idea except for very special cases.
 
@@ -1032,11 +1035,11 @@ confusing. You can bail out by typing \code{Ctrl + c} (Unix) or
 
 Of course, use parenthesis as you think appropriate to make the meaning of
 an expression clear. \R\ uses, for the usual functions, the usual
-precedence rules. If in doubt, use parentheses. 
+precedence rules. If in doubt, use parentheses.
 
 <<>>=
 v11 <- 3 * ( 5 + sqrt(13) - 3^(1/(4 + 1)))
-@ 
+@
 
 
 By the way, if you want to modify partially what you typed, you can repeat
@@ -1058,11 +1061,11 @@ v2, plus several functions that start with ``v'').
 \end{enumerate}
 
 \subsection{Naming variables}
-We created \code{v1} and \code{v2} above. Names of variables in \R\ must 
+We created \code{v1} and \code{v2} above. Names of variables in \R\ must
 begin with a letter (also a period, though this will make them
 hidden). Then you can mix letters, numbers, \code{.} and
 \code{\_}. Variable names are case sensitive, so \code{v1} and \code{V1}
-are different things. 
+are different things.
 
 Once you have something in a variable, you can just use it instead of that
 something:
@@ -1072,7 +1075,7 @@ v3 <- 5
 (v4 <- v1 + v3)
 (v5 <- v1 * v3)
 (v6 <- v1 / v3)
-@ 
+@
 
 
 Newer assignments silently \textbf{overwrite} previous assignments:
@@ -1082,7 +1085,7 @@ z2 <- 999
 z2
 z2 <- "Now z2 is a sentence"
 z2
-@ 
+@
 
 You can delete a variable
 <<>>=
@@ -1103,12 +1106,12 @@ rm(z2)
 Look at one help page:
 <<eval=FALSE>>=
 help(mean)
-@ 
+@
 
 Now, shorter:
 <<eval=FALSE>>=
 ?mean
-@ 
+@
 
 
 Now let's use the help to   learn about the help system (and yes, read or
@@ -1118,7 +1121,7 @@ take a quick look at it):
 ?help
 ?apropos
 @
- 
+
 Now, try
 <<eval=FALSE>>=
 ?normal
@@ -1127,21 +1130,21 @@ apropos("normal")
 apropos("norm")
 help.search("normal")
 @
- 
+
 Many help files include executable code (examples)
 <<eval=FALSE, results='hide'>>=
 example(rnorm)
 example(graphics) ## will give an error
 example(lm)
-@ 
+@
 \noindent and note how you get to see the code that produced the figures.
 example.
 
- 
+
 Some help files include demos
 <<eval=FALSE>>=
 demo(graphics)
-@ 
+@
 \noindent again, note how you get to see the code that produced the
 figures.  example.
 
@@ -1150,7 +1153,7 @@ And some include both
 <<eval=FALSE>>=
 demo(persp)
 example(persp)
-@ 
+@
 
 But there are many other ways of searching for help about how to do
 something with \R. Of course, you can google around, use stackoverflow,
@@ -1213,7 +1216,7 @@ plot(x, y)
 lm(y ~ x)
 z <- 1:10
 t.test(x ~ z)
-@ 
+@
 
 \subsubsection{\activities}
 \label{sec:activities-5a}
@@ -1237,8 +1240,8 @@ some minimal rules of civility. In particular:
 
 \begin{itemize}
 \item Do not extend beyond column 80.
-\item Use spaces appropriately; for example, write 
-  \verb@ x <- rnorm(3, mean = 2) @ and NOT 
+\item Use spaces appropriately; for example, write
+  \verb@ x <- rnorm(3, mean = 2) @ and NOT
   \verb@ x<-rnorm(3,mean=2) @. Thesecondformisclearlyveryhardtoread.
 \end{itemize}
 
@@ -1270,20 +1273,20 @@ only use \code{read.table}.
 <<eval=FALSE>>=
 X <- read.table("hit-table-500-text.txt")
 head(X)
-## We could save what we care about in variables 
+## We could save what we care about in variables
 ## with better names
 align.length <- X[, 5]
 score <- X[, 13]
 
-@ 
+@
 
 
 To see a slightly different example, open \code{AnotherDataSet.txt}. Now do:
 <<>>=
-another.data.set <- read.table("AnotherDataSet.txt", 
+another.data.set <- read.table("AnotherDataSet.txt",
                                header = TRUE)
 summary(another.data.set)
-@ 
+@
 
 Notice that we used the variable names (and took those names from the
 header), and the object is not a matrix, but a data frame (we will see
@@ -1311,7 +1314,7 @@ of dealing with them:
   \begin{enumerate}
   \item Tell \R\ where the file is: specify the full path. Suppose your
     file, ``f1.txt'', is in ``C:/tmp''. Then, say \code{X <-
-      read.table(``C:/tmp/f1.txt'')}. 
+      read.table(``C:/tmp/f1.txt'')}.
     \item Move \R's working directory to the place where your files
       live. Two ways:
       \begin{enumerate}
@@ -1324,7 +1327,7 @@ of dealing with them:
 \end{enumerate}
 
 This is all there is to it. And if you make a mistake, \R\ will let you
-know. 
+know.
 
 
 Now, under Windows the true names of directories can be a mysterious thing
@@ -1335,7 +1338,7 @@ accents, and other non-ASCII characters, and try to keep them under 8
 characters (though that might not be a strong limitation nowadays). And
 try to place things in directories that Windows is unlikely to rename
 (e.g., \verb@ C:\Files-p1 @ is better than \\
-\verb@ C:\Archivos de Programa\Manolo Perez\Mis documentos @). 
+\verb@ C:\Archivos de Programa\Manolo Perez\Mis documentos @).
 
 Avoiding spaces, accents and other non-ASCII characters is also a good
 idea under Unix/Linux (though here there is no problem with file and
@@ -1359,7 +1362,7 @@ located. (You can assume that I have, sometime in the past, issued a
 \label{sec:activities-3}
 
 \begin{enumerate}
-  
+
 \item Use \texttt{read.table} with \texttt{AnotherDataSet}. Make sure R is
   running in the same directory where the file is. And do it in two different
   ways:
@@ -1372,7 +1375,7 @@ located. (You can assume that I have, sometime in the past, issued a
   working directory of R. (You can use \texttt{setwd} or use the pull down
   menus of RStudio: Session -> Set Working Directory). You will then use
   \texttt{read.table} passing the path of the file.
-  
+
 \end{enumerate}
 
 
@@ -1416,11 +1419,11 @@ other special character string to identify them. \textbf{You will most
   \end{enumerate}
 \item In each case above, make sure you can read the data set and check if
   things make sense.
-  
+
   You might need to specify the separator between columns in some cases
   above.
-  
-  
+
+
 \item In ``AnotherDataSet.txt'' substitute the second entry for Sex by
   ``NA'' (without the quotes), save it (say ``ana1.txt'') and read the
   file (as, say, ``ana1''). Now, do a \texttt{summary} of that file. Is it obvious there is an
@@ -1428,7 +1431,7 @@ other special character string to identify them. \textbf{You will most
   account as NAs. For example, if you do: \verb@ table(ana1$Sex,useNA="ifany") @.%
   If you ask for the object itself, you will see``<NA>''.
   And you can also check it by doing: \verb@which(is.na(ana1$Sex))@.%
-  
+
 \item Repeat the above, but substitute not by NA without quotes but by NA
   with quotes. Is that value of Sex considered an NA? %% Yes
 
@@ -1440,13 +1443,13 @@ other special character string to identify them. \textbf{You will most
   \texttt{read.table}: `` Blank fields are also considered to be
   missing values in logical, integer, numeric and complex
   fields.''
-  
+
 \item Now, in the same row, for Age and Sex, replace the values by a space
   (not a ``nothing'', a space), while keeping columns separated by a
   tab.  And, when reading, use the option \texttt{na.strings = `` ''}
   (i.e., tell R that the character for NA is a space).
 
-  
+
 \end{enumerate}
 
 
@@ -1466,12 +1469,12 @@ things, of specialized uses, there are packages such as \code{ff} or
 \subsection{Saving tables, data, and results}\label{savetables}
 
 How can you save data, results, etc? Saving data in matrix or tabular form
-is easily done with \code{write.table}. 
+is easily done with \code{write.table}.
 
 <<>>=
-write.table(another.data.set, 
+write.table(another.data.set,
             file = "the.table.I.just.saved.txt")
-@ 
+@
 
 Open that file in an editor of your choice.
 
@@ -1495,7 +1498,7 @@ a simple example:
 <<echo=TRUE,results="hide">>=
 save.image(file = "this.RData")
 getwd()
-@ 
+@
 
 Note where that file is saved (in the current working directory, which is
 what \code{getwd()} tells you).
@@ -1508,7 +1511,7 @@ rm(list = ls())
 
 <<>>=
 ls()
-@ 
+@
 
 
 The above tells you what you have in your ``working environment''. There
@@ -1520,7 +1523,7 @@ ls()
 v1
 v11
 summary(another.data.set)
-@ 
+@
 
 
 So all the stuff we had before is available in the new \R\  session. (Now
@@ -1531,12 +1534,12 @@ Now, lets try a different example. Do:
 
 <<eval=FALSE>>=
 save.image()
-@ 
+@
 
 
 And now open a new \R\  in that directory. What happens? (Try doing
 \code{ls()} or \\
-\code{summary(another.data.set)}). 
+\code{summary(another.data.set)}).
 
 So be careful with this: you can end up using stuff you didn't know was
 there!!!!  (The truth is that we were told what happened: did you notice
@@ -1544,7 +1547,7 @@ the ``[Previously saved workspace restored]''?).
 
 
 And, by the way, do you understand what \R\ tries to do when it asks ``Save workspace
-image''? 
+image''?
 
 
 
@@ -1571,7 +1574,7 @@ and \code{save}.
   Then, open another R session (you can do this from RStudio or use
   whatever editor or operating system facilities you use) and read
   them.
-  
+
 \item Read the documentation for \texttt{readRDS} (and \texttt{saveRDS}). Then:
   \begin{enumerate}
   \item Save one object using \texttt{saveRDS}
@@ -1625,7 +1628,7 @@ plot(x)
 %% print(mean(x))
 %% plot(x)
 %% sink()
-%% @ 
+%% @
 
 
 
@@ -1660,9 +1663,9 @@ There are two basic ways of using a script:
   \item[Using source from a running R] You have \R\ running and do:
     \code{source(``script1.R'')}. I often add a couple of options:
 <<fig.width=3, fig.height=3>>=
-source("script1.R", echo = TRUE, 
+source("script1.R", echo = TRUE,
        max.deparse.length = 999999)
-@     
+@
 
 
 Now, did you notice that we got the mean printed and the figure produced?
@@ -1672,25 +1675,25 @@ Now, did you notice that we got the mean printed and the figure produced?
   given script file as input. This has the big advantage that you do not
   need to keep a window with \R\ open until the job finishes. This is
   great for long running jobs (say, a set of analyses that takes two
-  weeks). 
-  
+  weeks).
+
   There are several ways of doing it. %% , one of which uses an invocation like\\
   %% \verb@ R CMD BATCH script1.R @
-  %% There is a second set of ways, like\\ 
+  %% There is a second set of ways, like\\
   Probably the preferred way is:\\
-  
+
   \verb@ R --vanilla < script1.R > script1.Rout @
-  
+
   or\\
 
   \verb@ R --vanilla -f script1.R > script1.Rout @
-  
+
   I tend to use either one of these two, and then add things like ``nohup''
   before invoking \R, move it to the background, and also redirect standard error
   to the same file used for standard output (i.e., I type \code{\&> script1.Rout}
   instead of \code{ > script1.Rout}). In Windows, you might need to use
   \verb@  Rscript.exe @ or \verb@ R.exe @.
-  
+
   Beware, the above are examples of simple invocations. There are many other
   options (including passing command line arguments; see \texttt{commandArgs}).
   This article contains details and examples: \Burl{https://swcarpentry.github.io/r-novice-inflammation/05-cmdline/}.
@@ -1719,7 +1722,7 @@ with a script that reproduces what we did in section \ref{mistery}.
 \item Do an internet search for how to run R scripts non-interactively
   for your operating system, say from a shell/command window.
 
-  I'll show it in Linux. If you use Windows, take a look at these 
+  I'll show it in Linux. If you use Windows, take a look at these
   links, for example:
   % \Burl{http://datacornering.com/how-to-run-r-scripts-from-the-windows-command-line-cmd/},
 
@@ -1734,11 +1737,11 @@ with a script that reproduces what we did in section \ref{mistery}.
 
   \Burl{https://cran.r-project.org/doc/manuals/R-intro.html\#Invoking-R-from-the-command-line}
 
-  
+
   % How did I find them? The first two hits in a Google search for ``r cmd
   % batch windows''. \texttt{I am not necessarily recommending the above
   %   articles!!!}.
-  
+
 
   You might want to try using the examples in those, or other links, to
   run scripts from the command window.
@@ -1749,7 +1752,7 @@ with a script that reproduces what we did in section \ref{mistery}.
 
 
 
-  
+
 \end{enumerate}
 
 \clearpage
@@ -1771,7 +1774,7 @@ Yes, every expression. You want to practice:
 
 
 
-\subsection{Vectors} 
+\subsection{Vectors}
 
 Vectors are one of the simplest data structures in \R. They store a set of
 objects (all of the same kind), one after the other, in a single
@@ -1781,7 +1784,7 @@ dimension. We've seen many:
 v1 <- c(1, 2, 3)
 v2 <- c("a", "b", "cucu")
 v3 <- c(1.9, 2.5, 0.6)
-@ 
+@
 
 That, by the way, shows the simplest way of creating a vector in \R: use
 \code{c} to concatenate a bunch of things.
@@ -1795,7 +1798,7 @@ log(v1)
 exp(v3)
 2 * v1
 v3/0.7
-@ 
+@
 
 And what functions are there for things like addition, multiplication,
 exponentiation, division, remainder, etc? As we said, see
@@ -1818,15 +1821,15 @@ seq(from = 1, to = 10)
 seq(from = 1, to = 10, by = 2)
 seq(from = 1, to = 10, length.out = 3)
 1:5
-@ 
+@
 
 
-Now \code{rep} in a few common invocations. 
+Now \code{rep} in a few common invocations.
 <<>>=
 rep(2, 5)
 rep(1:3, 2)
 rep(1:3, 2:4)
-@ 
+@
 
 
 \subsection{Creating vectors from other vectors}
@@ -1838,7 +1841,7 @@ You can concatenate two vectors:
 v1 <- 1:4
 v2 <- 7:12
 (v3 <- c(v1, v2))
-@ 
+@
 
 
 
@@ -1846,14 +1849,14 @@ If you use an arithmetic operation on a vector, you get another vector. E.g,
 <<>>=
 v1 <- 2:8
 (v2 <- 3 + v1)
-@ 
+@
 
 And what about this?
 <<>>=
 v1 <- 1:5
 v2 <- 11:15
 (v3 <- v1 + v2)
-@ 
+@
 
 But what if the two vectors are not the same length? The \textbf{recycling
 rule} applies:
@@ -1861,14 +1864,14 @@ rule} applies:
 v1 <- 1:3
 v2 <- 11:12
 v1 + v2
-@ 
+@
 
 But beware! Look at this
 <<>>=
 v1 <- 1:3
 v2 <- 11:16
 v1 + v2
-@ 
+@
 \noindent no warnings whatsoever. Which might, or might not, be what you
 would have expected.
 
@@ -1888,7 +1891,7 @@ and \code{|} and, likewise, \code{\&\&} and \code{\&}).
 <<eval=FALSE>>=
 ?Comparison
 ?Logic
-@ 
+@
 
 A few examples:
 <<>>=
@@ -1907,7 +1910,7 @@ v2 | v3
 (v1 > 3) & (v11 >= 2)
 (v1 > 3) | (v11 >= 2)
 xor(v2, v3)
-@ 
+@
 
 
 \subsubsection{Logical values as 0, 1\label{log01}}
@@ -1918,16 +1921,16 @@ handy to find out how many elements fulfill a condition.
 
 <<>>=
 vv <- c(1, 3, 10, 2, 9, 5, 4, 6:8)
-@ 
+@
 
 How many elements are smaller than 5 in \code{vv}?
 <<>>=
 length(which(vv < 5))
-@ 
+@
 
 \code{which} is operating on a logical vector, not on \code{vv} directly,
 and \code{length} is counting the length of the output from
-\code{which}. 
+\code{which}.
 
 <<>>=
 vv < 5
@@ -1937,16 +1940,16 @@ which(vv.2)
 vv.3 <- which(vv.2)
 vv.3
 length(vv.3)
-@ 
+@
 
-Do you know what the output from \code{which} is? 
+Do you know what the output from \code{which} is?
 \vspace*{15pt}
 
 
 Alternatively, you can do:
 <<>>=
 length(vv[vv < 5])
-@ 
+@
 Instead of going through \code{which}, we just directly extract the
 relevant elements of \code{vv}, and count how many there are. Implicitly,
 we are creating a new (temporary) vector, that holds only the elements in
@@ -1955,13 +1958,13 @@ temporary vector.
 
 <<>>=
 vv[vv < 5]
-@ 
+@
 
 
 But the following is often much easier to understand (or to use)
 <<>>=
 sum(vv < 5)
-@ 
+@
 
 Why did that work? What is \code{vv < 5} returning?
 
@@ -1990,7 +1993,7 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 
 Try to run the above with a \code{\&} instead of \code{\&\&}.
 
-Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).'' (From the help). 
+Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).'' (From the help).
 
 
 <<>>=
@@ -2003,7 +2006,7 @@ a1 || b1
 @
 
 Notice the warning. And notice that the returned value has length 1.
-     
+
 
 
 \subsection{Names of elements}
@@ -2043,12 +2046,12 @@ Specifying positions you want:
 w[1]
 w[2]
 w[c(4, 3, 2)]
-@ 
+@
 
 <<>>=
 w[c(1, 3)] ## not the same as
 w[c(3, 1)]
-@ 
+@
 
 <<>>=
 w[1:2]
@@ -2056,7 +2059,7 @@ w[3:6]
 w[seq(1, 8, by = 3)]
 vv <- seq(1, 8, by = 3)
 w[vv]
-@ 
+@
 
 
 Specifying positions you do not want (original vector is NOT modified)
@@ -2064,7 +2067,7 @@ Specifying positions you do not want (original vector is NOT modified)
 w[-1]
 w[-c(1, 3)] ## of course, the same as following
 w[-c(3, 1)]
-@ 
+@
 
 
 Using names
@@ -2073,16 +2076,16 @@ Using names
 ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
 ages["Irene"]
 ages[c("Irene", "Juan", "Irene")]
-@ 
+@
 
 
 Using a logical vector \ldots
 <<>>=
 ages[c(FALSE, TRUE, TRUE, FALSE)]
 ## what are thes doing? Avoid these things
-ages[c(FALSE, TRUE)] 
+ages[c(FALSE, TRUE)]
 ages[c(TRUE, TRUE, FALSE)]
-@ 
+@
 
 \ldots or something that implicitly is a logical vector
 <<>>=
@@ -2093,7 +2096,7 @@ w[!(w >= 12)]
 
 ## All less than the median
 w[w < median(w)]
-@ 
+@
 
 
 Of course, if you can access it, you can modify it
@@ -2104,7 +2107,7 @@ w[1] <- 9999
 w
 w[vv] <- 103
 w
-@ 
+@
 
 
 But compare this:
@@ -2112,7 +2115,7 @@ But compare this:
 w[] <- 77
 w[] <- 17:55
 w <- 17:55
-@ 
+@
 
 
 
@@ -2130,7 +2133,7 @@ x - 2
 x <- 1.9999999999999
 x
 x-2
-@ 
+@
 
 All the digits are still there, in the second case, but they are not shown.
 Also note that \code{x-2} is not exactly $-1 \times 10^{-13}$; this is
@@ -2142,7 +2145,7 @@ numbers. We cannot get into details, but see the following example, from
 the FAQ (question 7.31):
 
 \begin{quote}
-  7.31 Why doesn't R think these numbers are equal?  
+  7.31 Why doesn't R think these numbers are equal?
 
   The only numbers that can be represented exactly in R's numeric type are
   integers and fractions whose denominator is a power of 2. Other numbers
@@ -2166,7 +2169,7 @@ Ivo Balbaert in his book ``Julia 1.0 Programming'')
 <<>>=
 0.1 + 0.2 == 0.3
 (0.1 + 0.2) - 0.3
-@ 
+@
 
 
 The take home message: be extremely suspicious whenever you see an
@@ -2190,14 +2193,14 @@ this is a categorical variable, where each ``label'' represents a possible
 value of the category:
 <<tidy=FALSE>>=
 
-Sex.version1 <- factor(c("Female", "Female", "Female", 
+Sex.version1 <- factor(c("Female", "Female", "Female",
                          "Male", "Male"))
 Sex.version2 <- factor(c("XX", "XX", "XX", "XY", "XY"))
-Sex.version3 <- factor(c("Feminine", "Feminine", "Feminine", 
+Sex.version3 <- factor(c("Feminine", "Feminine", "Feminine",
                          "Masculine", "Masculine"))
 Sex.version4 <- factor(c("fe", "fe", "fe", "ma", "ma"))
 
-@ 
+@
 
 We want all those codifications of the sex of five subjects to yield the
 same results of analysis, regardless of what, exactly, the labels
@@ -2213,7 +2216,7 @@ like legitimate numbers:
 postal.code <- c(28001, 28001, 28016, 28430, 28460)
 somey <- c(10, 20, 30, 40, 50)
 summary(aov(somey ~ postal.code))
-@ 
+@
 
 The above is doing something silly: it is fitting a linear regression,
 because it is taking postal.code as a legitimate numeric value. But we
@@ -2233,7 +2236,7 @@ y <- factor(x)
 y
 as.numeric(y)
 y
-@ 
+@
 
 Note that values have been re-codified. An easy way to do this is (you
 should understand what is happening here):
@@ -2243,7 +2246,7 @@ as.numeric(as.character(y))
 
 <<>>=
 as.character(y)
-@ 
+@
 
 
 \subsubsection{Factors and symbols, colors, etc, in plots}
@@ -2251,7 +2254,7 @@ You often see code as follows:
 
 <<eval=FALSE>>=
 plot(y ~ x, col = c("red", "blue")[group])
-@ 
+@
 
 where \texttt{group} is a factor. Why does that work? Oh, and then you
 might see code where we add a legend as
@@ -2259,7 +2262,7 @@ might see code where we add a legend as
 <<eval=FALSE>>=
 legend(1, 2, legend = c("A", "B"), pch = c(1, 2),
        col = c("red", "blue")[factor(levels(group))])
-@ 
+@
 
 
 I won't give the solution here, but these are some hints. Try the following:
@@ -2272,7 +2275,7 @@ c("red", "blue")[gr]
 c("red", "blue")[group]
 c("red", "blue")[levels(group)]
 c("red", "blue")[factor(levels(group))]
-@ 
+@
 
 
 \subsection{Matrices}
@@ -2288,19 +2291,19 @@ matrix or of an array are of the same type.
 matrix(1:10, ncol = 2)
 matrix(1:10, nrow = 5)
 matrix(1:10, ncol = 2, byrow = TRUE)
-@ 
+@
 
 
 \subsubsection{Combining vector to create a matrix: \code{cbind, rbind}}
 \label{sec:comb-vect-create}
-You can glue vectors horizontally or vertically to create a matrix. 
+You can glue vectors horizontally or vertically to create a matrix.
 
 <<>>=
 v1 <- 1:5
 v2 <- 11:15
 rbind(v1, v2)
 cbind(v1, v2)
-@ 
+@
 
 And you can do the same with matrices (if they are of the appropriate
 dimensions, of course)
@@ -2309,7 +2312,7 @@ A <- matrix(1:10, nrow = 5)
 B <- matrix(11:20, nrow = 5)
 cbind(A, B)
 rbind(A, B)
-@ 
+@
 
 
 
@@ -2328,17 +2331,17 @@ A[4, 2] ## fourth row, second column
 A[3, 2] <- 999
 A[1, ] <- c(90, 91, 92)
 A < 4
-@ 
+@
 
 Note that \code{which}, by default, might not do what you expect:
 <<>>=
 which(A == 999)
-@ 
+@
 
 If you want the indices, ask for them
 <<>>=
 which(A == 999, arr.ind = TRUE)
-@ 
+@
 
 
 Names work too:
@@ -2348,7 +2351,7 @@ colnames(B) <- c("A", "E", "I")
 rownames(B) <- letters[1:nrow(B)]
 B[, "E"]
 B["c", ]
-@ 
+@
 
 
 Beware: you can use a matrix to index another matrix. This is slightly
@@ -2359,7 +2362,7 @@ more advanced, but extremely handy:
 A[m1]
 ## compare with
 A[c(1, 3), c(2, 1)]
-@ 
+@
 
 
 \subsubsection{Operations with matrices}
@@ -2375,18 +2378,18 @@ sum(B)
 mean(B)
 colSums(B)
 rowMeans(B)
-@ 
+@
 
 And, of course, we can subset/select rows and columns using those:
 <<>>=
 B[rowMeans(B) > 9, ]
-@ 
+@
 
 
 \subsubsection{Matrices: dropping dimensions (or not)}
 \label{sec:matr-dropp-dimens}
 
-Carefully look at this. What is happening? 
+Carefully look at this. What is happening?
 
 <<>>=
 A[2,  ]
@@ -2396,7 +2399,7 @@ is.vector(A[2, ])
 is.vector(A[2, , drop = FALSE])
 is.matrix(A[2, ])
 is.matrix(A[2, , drop = FALSE])
-@ 
+@
 
 What is going on? When could this matter? What is the default behavior?
 
@@ -2409,42 +2412,42 @@ listA <- list(a = 1:5, b = letters[1:3])
 listA[[1]]
 listA[["a"]]
 listA$a
-@ 
+@
 \noindent so those are three basic ways of getting access to list
 components. And of course
 <<>>=
 listA[[1]][2]
-@ 
+@
 
 And compare with this
 <<>>=
 listA[1]
-@ 
+@
 
 
 A more complex list, that includes another list inside:
 
 <<tidy=FALSE>>=
 
-(listB <- list(one.vector = 1:10,  hello = "Hola", 
+(listB <- list(one.vector = 1:10,  hello = "Hola",
                one.matrix = matrix(rnorm(20), ncol = 5),
-               another.list = 
-               list(a = 5, 
-                    b = factor(c("male", 
+               another.list =
+               list(a = 5,
+                    b = factor(c("male",
                       "female", "female")))))
 
-@ 
+@
 
 Note that many functions in R  return lists.
 
 And what did we do here?
 <<>>=
 listB[[c(3, 4)]]
-@ 
+@
 though I tend to find the last one confusing. I'd rather do
 <<>>=
 listB[[3]][4, 1]
-@ 
+@
 
 To make sure we see this more clearly, do:
 
@@ -2453,14 +2456,14 @@ listB[[c(3, 11)]]
 listB[[3]][11]
 listB[[3]][3, 3]
 listB[[3]][c(3, 3)]
-@ 
+@
 
 
-That is very different from 
+That is very different from
 
 <<eval=TRUE,echo=TRUE,results='hide'>>=
 listB[c(3, 4)]
-@ 
+@
 
 
 
@@ -2476,10 +2479,10 @@ structure, where different columns can have objects of different types
 
 <<>>=
 
-(AB <- read.table("AnotherDataSet.txt", 
+(AB <- read.table("AnotherDataSet.txt",
                   header = TRUE))
 
-@ 
+@
 
 Data frames are extremely handy for data analysis, and you will see them
 used extensively there.
@@ -2497,14 +2500,14 @@ AB$Age
 AB[["Age"]]
 AB["Age"]
 AB[3, 4] <- 97
-@ 
+@
 
 We can go from data frames from matrices, in two different ways (each of
 which does, therefore, a different thing):
 <<>>=
 data.matrix(AB)
 as.matrix(AB)
-@ 
+@
 
 Many matrix operations, in particular \code{rbind} and \code{cbind} will
 also work with data frames.%%  (though care is needed with \code{rbind} when
@@ -2513,20 +2516,20 @@ also work with data frames.%%  (though care is needed with \code{rbind} when
 
 <<>>=
 AB2 <- rbind(AB, AB)
-@ 
+@
 \noindent (yes, the above is somewhat silly, but you get the point).
 
 Of course, creating a data frame is easy:
 <<>>=
 (AC <- data.frame(ID = "a9", Age = 14, Sex = "M", Y = 17))
 rbind(AB, AC)
-@ 
+@
 
 Data frames make it particularly easy to add new variables to the data frame.
 
 <<>>=
 AB2$status <- rep(c("Z", "V"), 5)
-@ 
+@
 
 
 
@@ -2599,7 +2602,7 @@ av[as.vector(m22)]
 ## In fact, no need to turn matrix into vector
 A[as.vector(m22)]
 
-@ 
+@
 
 \clearpage
 
@@ -2629,10 +2632,10 @@ plot(x, y, xlab = "This is the label for the x axis",
      ylab = "Label for the y axis")
 ## And now, we add a horizontal line:
 abline(h = 5, lty = 2)
-@ 
+@
 
 
-There are many, many other types of plots. We will see some later. 
+There are many, many other types of plots. We will see some later.
 
 \subsubsection{\activities}
 \label{sec:activp1}
@@ -2662,7 +2665,7 @@ text(11, 1.5, "pch", cex = 1.3)
 ## show colors for rainbow palette
 points(1:20, rep(2, 20), pch = 16, col = rainbow(20))
 text(11, 2.2, "col", cex = 1.3)
-@ 
+@
 <<ltytype,fig.width=4,fig.height=4, fig.cap='lty for values 1 to 6', fig.lp='fig:'>>=
 plot(c(0.2, 5), c(0.2, 5), type = "n", ann = FALSE, axes = FALSE)
 for(i in 1:6) {
@@ -2670,7 +2673,7 @@ for(i in 1:6) {
     text(2, 2 * (i/3), labels = i, pos = 3)
 }
 
-@ 
+@
 
 
 \subsubsection{\activities}
@@ -2712,7 +2715,7 @@ what I use.
   standard deviation 2; z1 has 10 values, z2 50 values, z3 1000 values.
 \item Plot a histogram of each.
 \item Produce png and pdf files with the plots. Yes, the pdf is a single
-  pdf, with multiple pages. What about the png? 
+  pdf, with multiple pages. What about the png?
 \end{enumerate}
 
 \subsection{Plots, plots, plots. Many types of plots}
@@ -2743,7 +2746,7 @@ demo(graphics)
 example(graphics)
 example(persp)
 demo(persp)
-@ 
+@
 
 
 And, if you have installed package ``ggplot2'' you can also do (after
@@ -2751,7 +2754,7 @@ loading the \texttt{ggplot2} package)
 
 <<eval=FALSE>>=
 example(qplot)
-@ 
+@
 \noindent (though the above gives just a very, very limited view of the
 range of options with ggplot2).
 
@@ -2774,7 +2777,7 @@ example.  We will use output from alignment statistics from BLAST.  Let's take a
 quick look at a couple of things:
 \begin{itemize}
 \item The relationship between percentage identity and score.
-\item The distribution of the alignment length. 
+\item The distribution of the alignment length.
 \end{itemize}
 
 
@@ -2790,7 +2793,7 @@ hit <- read.table("hit-table-500-text.txt")
 ## score is the 13th and percent identity the 3rd
 hist(hit[, 5]) ## the histogram
 plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
-@ 
+@
 
 But that can be easily improved
 
@@ -2800,12 +2803,12 @@ But that can be easily improved
 <<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
 par(mfrow = c(1, 2)) ## two figures side by side
 hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
-plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity", 
+plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity",
      ylab = "Bit score")
-@ 
+@
 
 And, for symmetry, you might want to add a main title to the second
-plot. How? 
+plot. How?
 
 % \end{center}
 %\label{fig-blast}
@@ -2826,9 +2829,9 @@ will!. You will need to install two packages (section \ref{packages}):
 \code{car} and \code{rgl}.
 <<eval=FALSE>>=
 library(car)
-scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident", 
+scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
           zlab = "Length", ylab = "Score")
-@ 
+@
 
 By the way, some questions/answers arise from the figures. For instance:
 why does the distribution of alignment lengths seems to have three
@@ -2839,7 +2842,7 @@ the relationship between Score and the other variables to formally explore
 what is going on\footnote{Not that this would be, in this case, all that
   needed: from what we know about BLAST we can tell a lot about the
   expected relationship between Score and the other variables}. Or
-\ldots. 
+\ldots.
 
 
 \subsubsection{\activities}
@@ -2872,7 +2875,7 @@ mass in birds.  We will use a subset of data from the AnAge data set
 \Burl{http://genomics.senescence.info/species/}. This file contains
 longevity, metabolic rate, body mass, and a variety of other life history
 variables. The data I provide you are a small subset that includes only
-some birds and reptiles. 
+some birds and reptiles.
 
 What I provide you is that is already stored as an R object (so I already
 took care of the \code{read.table} business for you, but if you are
@@ -2884,7 +2887,7 @@ First, let us \textbf{load} the data set, the RData file:
 <<>>=
 load("anage.RData")
 ls() ## a new anage object is present
-@ 
+@
 
 
 Now, look at the data
@@ -2892,7 +2895,7 @@ Now, look at the data
 str(anage)
 head(anage)
 summary(anage)
-@ 
+@
 
 
 You should be able to tell what is going on with the data. And notice
@@ -2909,13 +2912,13 @@ install that package).
 
 
 <<mrateplotx1,fig.width=6, fig.height=6>>=
-library(car) ## make the car package available; this is NOT 
+library(car) ## make the car package available; this is NOT
              ## installing it. It is making it available
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
             data = anage)
-@ 
+@
 
-Look at the axes, etc. 
+Look at the axes, etc.
 
 \vspace*{20pt}
 
@@ -2934,19 +2937,19 @@ would not add the extra lines, boxplots, etc.
 
 <<fig.width=6, fig.height=6>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
-@ 
+@
 
 Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
 us use different plotting colors for each, and let us add a legend. Notice
 how the different colors by Class is done in the call to plot and how we set the
 legends (\activities : why do we know the legend labels are correct?):
 <<fig.width=4,fig.height=4>>=
-plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", 
+plot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
      col = c("salmon", "darkgreen")[Class], data = anage)
-legend(5, 5, legend = levels(anage$Class), 
+legend(5, 5, legend = levels(anage$Class),
        col = c("salmon", "darkgreen"),
        pch = 1)
-@ 
+@
 
 
 
@@ -2966,9 +2969,9 @@ Would the above work with scatterplot? Nope. You need to use a slightly
 different argument for the call, and you get automatic legend, etc. Pay attention to the syntax, the ``|'':
 
 <<fig.width=4,fig.height=4>>=
-scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy", 
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy",
             data = anage)
-@ 
+@
 
 
 
@@ -2983,7 +2986,7 @@ variables and add them to the data set:
 <<>>=
 anage$logMetab <- log(anage$Metabolic.rate..W.)
 anage$logBodyMass <- log(anage$Body.mass..g.)
-@ 
+@
 
 We just created two variables, and added them to \code{anage}.
 
@@ -2995,13 +2998,13 @@ Eh, but I want only the birds. Let's select only the birds using function
 
 <<>>=
 birds <- subset(anage, Class == "Aves")
-@ 
+@
 
 Alternatively, we could have done
 
 <<>>=
 birds <- anage[anage$Class == "Aves", ]
-@ 
+@
 
 
 
@@ -3010,13 +3013,13 @@ birds <- anage[anage$Class == "Aves", ]
 
 <<>>=
 (lm1 <- lm(logMetab ~ logBodyMass, data = birds))
-@ 
+@
 
 
 A little bit more detail:
 <<>>=
 summary(lm1)
-@ 
+@
 We will explain what the output from that table is, if you do not remember
 your statistics classes.
 
@@ -3024,13 +3027,13 @@ Note that, as with the t-test, we can access the elements of \code{lm1}:
 <<>>=
 names(lm1)
 lm1$coefficients
-@ 
+@
 
 but, in general, it often makes more sense (when they are available) to
 use the specific accessor functions:
 <<>>=
 coef(lm1)
-@ 
+@
 
 
 Now, do a plot and add the fitted line:
@@ -3038,22 +3041,22 @@ Now, do a plot and add the fitted line:
 <<>>=
 plot(logMetab ~ logBodyMass, data = birds)
 abline(lm1)
-@ 
+@
 
 
 Note that the above is actually the same as doing (except the one below
 adds more stuff):
 <<>>=
 scatterplot(logMetab ~ logBodyMass, data = birds)
-@ 
+@
 
 or, better yet,
 
 <<>>=
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = birds, 
+scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = birds,
             log = "xy")
 
-@ 
+@
 
 But the procedure above is a general one that will work even if John Fox
 had not written \code{scatterplot}.
@@ -3064,10 +3067,10 @@ had not written \code{scatterplot}.
 This is all I did: %% (the \code{save} thing will become clearer below
 %% ---section \ref{saveRData}):
 <<eval=FALSE>>=
-anage <-  read.table("AnAge_birds_reptiles.txt", 
+anage <-  read.table("AnAge_birds_reptiles.txt",
                      header=TRUE, na.strings="NA")
 save(file = "anage.RData", anage)
-@ 
+@
 The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downloaded.
 
 \clearpage
@@ -3080,10 +3083,10 @@ Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
 have lung cancer. And we have expression data for one gen (say GenA). We
 would like to know whether the (mean) expression of GenA is the same or not
 between the two groups. A \textit{t-}test is well suited for this
-case. Here, we will use simulated data. 
+case. Here, we will use simulated data.
 
 Simulated data? Generating simulated data is extremely useful for testing
-many procedures, emulating specific processes, etc. 
+many procedures, emulating specific processes, etc.
 
 
 \subsubsection{Generating random numbers}
@@ -3096,9 +3099,9 @@ for many different distributions. For instance, do
 help(rnorm)
 help(runif)
 help(rpois)
-@ 
+@
 
-(i.e., look at the help for those functions). 
+(i.e., look at the help for those functions).
 
 
 In fact, those numbers are generated using an algorithm. This comes from
@@ -3112,7 +3115,7 @@ determined by a relatively small set of initial values, called the PRNG's
 state.
 \end{quote}
 
-And 
+And
 
 \begin{quote}
   A PRNG can be started from an arbitrary starting state, using a seed
@@ -3125,8 +3128,8 @@ And
 Now, since we all have different machines, the actual outcome of doing, say
 <<>>=
 rnorm(5)
-@ 
-is likely to differ. 
+@
+is likely to differ.
 
 What can we do to get the exact same random numbers? The quote from the
 Wikipedia just told us: we will set the seed of the random number
@@ -3135,11 +3138,11 @@ numbers on all computers:
 
 <<>>=
 set.seed(2)
-@ 
+@
 (seting the seed to 2 has no particular meaning; we could have used
 another integer; what matters is that we all use the same seed). So lets
 obtain 50 independent random samples from a normal distribution and create
-a vector for the identifiers (the ``labels'') of the subjects. 
+a vector for the identifiers (the ``labels'') of the subjects.
 
 
 \paragraph{Random numbers for parallelized runs?} Yes, R provides those. See the
@@ -3153,12 +3156,12 @@ info:
 GeneA <- rnorm(50)
 round(GeneA, 3)
 (Type <- factor(c(rep("Colon", 30), rep("Lung", 20))))
-@ 
+@
 
 Let's do a t-test:
 <<>>=
 t.test(GeneA ~ Type)
-@ 
+@
 As should be the case (we know it, because we generated the data) the
 means of the two groups are very similar, and there are no significant
 differences between the groups.
@@ -3168,7 +3171,7 @@ groups, and repeat the test.
 <<>>=
 (GeneB <- c(rep(-1, 30), rep(2, 20)) + rnorm(50))
 t.test(GeneB ~ Type)
-@ 
+@
 
 Now we find a large and significant difference between the two groups.
 
@@ -3181,7 +3184,7 @@ boxplot(GeneA ~ Type)
 stripchart(GeneA ~ Type, vertical = TRUE, pch = 1)
 boxplot(GeneB ~ Type)
 stripchart(GeneB ~ Type, vertical = TRUE, pch = 1)
-@ 
+@
 
 
 \subsubsection{Using ggplot to display the box plot with dots}
@@ -3194,7 +3197,7 @@ To use ggplot, we first need to\footnote{We do not really need to, but not doing
 dftt <- data.frame(gene_A = GeneA,
                    gene_B = GeneB,
                    type   = Type)
-@ 
+@
 
 Now, plot:
 
@@ -3205,7 +3208,7 @@ p1 <- ggplot(dftt,
              aes(x = type, y = gene_A, color = type)) +
     geom_boxplot() +
     geom_jitter(shape = 16, width = 0.1, height = 0)
-    
+
 ## ?geom_jitter: yes, make sure to understand in what direction
 ## jittering is added.
 p1
@@ -3253,11 +3256,11 @@ in the x axis)
 xo <- c(rep(1, 5), rep(2, 3), 3)
 xo <- c(xo, 2 * xo, xo + rnorm(length(xo)))
 class <- factor(rep(c("A", "B", "C"), rep(length(xo)/3, 3)))
-@ 
+@
 
 <<eval=TRUE,echo=FALSE,results=FALSE>>=
 stripchart(xo ~ class, method = "jitter", vertical = TRUE)
-@ 
+@
 
 \clearpage
 
@@ -3277,7 +3280,7 @@ we played with above (and remember to type the code; this is one implicit
 table(AB2$Sex)
 with(AB2, table(Sex, status)) ## note "with"
 xtabs( ~ Sex + status, data = AB2)
-@ 
+@
 
 Now, look at this:
 <<>>=
@@ -3285,27 +3288,27 @@ Now, look at this:
 
 as.data.frame(with(AB2, table(Sex, status)))
 
-@ 
+@
 \noindent Did you see how easy it was?
 
 
 
 Can we tabulate AB2 completely? (I am not showing the output, but please
-do it) 
+do it)
 <<results='hide'>>=
 table(AB)
-@ 
+@
 \noindent here it does not make much sense, since some variables seem to
 be continuous. But lets create another data set:
 <<>>=
 AC <- AB2[, c("Sex", "status")]
 table(AC)
-@ 
+@
 
 Of course, you could do
 <<>>=
 table(AB2[, c("Sex", "status")])
-@ 
+@
 
 
 \subsection{More than two dimensions and \texttt{ftable}}
@@ -3323,12 +3326,12 @@ But with more than two variables, sometimes we want ``flat tables'':
 <<ftable1>>=
 ftable(xtabs(~ a + b + c, data = x))
 ## same as ftable(table(x))
-@ 
+@
 
 Eh, wait, I want variable ``c'' in the left-most border! Change order of variables
 <<ftable2>>=
 ftable(xtabs(~ c + a + b, data = x))
-@ 
+@
 
 
 \subsection{Recovering a table from a data frame}
@@ -3343,7 +3346,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 ## xtabs(~ a + b + c, data = x)
 ## or table(x)
 
-@ 
+@
 
 
 %% FIXME: what if we do not use all variables for indexing?
@@ -3362,13 +3365,13 @@ dfx3 <- expand.grid(F1 = c("A", "B"), Age = c(10, 20, 30),
 dfx3$Vx <- c(0, rnorm(nrow(dfx3)-1))
 dfx3
 ftable(xtabs(Vx ~ ., data = dfx3))
-@ 
+@
 
 What if some combinations are missing?
 <<xtabs_ftable_na1>>=
 dfx4 <- dfx3[-c(3, 12), ]
 ftable(xtabs(Vx ~ ., data = dfx4))
-@ 
+@
 
 And what if they are missing values (in Vx, not in the categorical variables)?
 
@@ -3376,7 +3379,7 @@ And what if they are missing values (in Vx, not in the categorical variables)?
 dfx5 <- dfx3
 dfx5[c(3, 12), "Vx"] <- NA
 ftable(xtabs(Vx ~ ., data = dfx5))
-@ 
+@
 
 Think this carefully: is that always the behavior you want?
 
@@ -3391,7 +3394,7 @@ And here? (Look for F1==A, Age == 20, Loc == k1)
 <<xtabs_ftable_na4>>=
 xtabs(Vx ~ ., data = dfx4, addNA = TRUE)
 ftable(xtabs(Vx ~ ., data = dfx4, addNA = TRUE))
-@ 
+@
 
 
 So: one thing is having no observations (cero counts, if these were
@@ -3418,7 +3421,7 @@ the examples for \texttt{xtabs})
 
 <<xtabs_arbitr_5>>=
 ftable(xtabs(Vx ~ Age + Loc, data = dfx3))
-@ 
+@
 
 
 And you could then produce a nice LaTeX table using \texttt{toLatex} after
@@ -3446,7 +3449,7 @@ table(x2, useNA = "ifany")
 
 ## with xtabs
 xtabs(data = data.frame(x1), addNA = TRUE)
-@ 
+@
 
 Now in two dimensions
 
@@ -3464,11 +3467,11 @@ xtabs(data = x4, addNA = TRUE)
 
 table(x3, useNA = "always")
 xtabs(data = x3, addNA = TRUE)
-@ 
+@
 
 Note, by the way, that the behavior of \texttt{xtabs(data = x3, addNA =
   TRUE)} is similar to what we saw with \texttt{xtabs(Vx ~ ., data = dfx4,
-  addNA = TRUE)}: we get 0 in the cells with no combinations. 
+  addNA = TRUE)}: we get 0 in the cells with no combinations.
 
 
 
@@ -3497,7 +3500,7 @@ y$d <- y$a + 1
 ## table of b, c, d, counts are the a
 ## (this is like example above with Freq on the left)
 xtabs(a ~ ., data = y)
-## table of c, d; counts are the a and the b 
+## table of c, d; counts are the a and the b
 ## (instead of just "a" or Freq)
 ## "columns are intrepreted as the levels of a variable"
 ## The first subtable, labeled , ,  = a
@@ -3509,11 +3512,11 @@ xtabs(~ c + d + a + b, data = y)
 ## maybe easier to see?
 ftable(y)
 
-## One more twist: 
+## One more twist:
 ## "columns are intrepreted as the levels of a variable"
-y$e <- y$a + y$c + 9 
+y$e <- y$a + y$c + 9
 xtabs(cbind(a, b, e) ~ ., data = y)
-@ 
+@
 
 
 
@@ -3537,7 +3540,7 @@ need them in the calls of apply or aggregate (we have used these before).
 apply(Z, 1, median)
 apply(Z, 2, median)
 apply(Z, 2, min)
-@ 
+@
 
 For those of you who have programmed before: using the ``apply'' family is
 often much, much, much more efficient (and elegant, and easy to
@@ -3562,13 +3565,13 @@ With lists we will use \code{lapply}. For example, lets look at the
 first element of each of the components of the list (see how we define a
 function on the fly):
 <<tidy=FALSE>>=
-(listA <- list(one.vector = 1:10,  hello = "Hola", 
+(listA <- list(one.vector = 1:10,  hello = "Hola",
                one.matrix = matrix(rnorm(20), ncol = 5),
-               another.list = list(a = 5, 
+               another.list = list(a = 5,
                  b = factor(c("male", "female", "female")))))
 
 lapply(listA, function(x) x[[1]])
-@ 
+@
 
 \subsection{tapply}
 
@@ -3576,12 +3579,12 @@ When we have data that can be used to stratify or select other data, we
 often use \code{tapply}:
 
 <<tidy=FALSE>>=
-(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
-                            sex = factor(c("male", "female", 
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28),
+                            sex = factor(c("male", "female",
                               "female", "male", "male"))))
 
 tapply(one.dataframe$age, one.dataframe$sex, mean)
-@ 
+@
 
 \subsection{aggregate and by}
 \label{sec:aggregate}
@@ -3590,35 +3593,35 @@ tapply(one.dataframe$age, one.dataframe$sex, mean)
 However, \code{aggregate} often returns things in a more convenient form:
 
 <<tidy=FALSE>>=
-(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28), 
-                            sex = factor(c("male", "female", 
+(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28),
+                            sex = factor(c("male", "female",
                               "female", "male", "male"))))
 
 aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
-## make the aggregating variable explicit, 
+## make the aggregating variable explicit,
 ## and give it another name
-aggregate(one.dataframe$age, 
+aggregate(one.dataframe$age,
           list(Sexo = one.dataframe$sex), mean)
 
 ## or use the name of the column/variable
-aggregate(one.dataframe$age, 
+aggregate(one.dataframe$age,
           one.dataframe[2], mean)
-@ 
+@
 
 The function \code{by} is related to \code{aggregate} and \code{tapply},
 but you can use functions that return several different things (e.g., the
 mean and standard deviation) and the return value is a list:
 
 <<>>=
-by(one.dataframe$age, list(one.dataframe$sex), 
+by(one.dataframe$age, list(one.dataframe$sex),
    function(x) c(mean(x), sd(x)))
-@ 
+@
 
 You can do much of that with aggregate too, but the output is different:
 <<>>=
-aggregate(one.dataframe$age, one.dataframe[2], 
+aggregate(one.dataframe$age, one.dataframe[2],
           function(x) c(Mean = mean(x), SD = sd(x)))
-@ 
+@
 
 %% FIXME: but with multiple summary stats, beware of the return!
 %% use cbind instead of c?
@@ -3630,8 +3633,8 @@ And you can use a formula interace which might be more intuitive:
 <<>>=
 aggregate(age ~ sex, data = one.dataframe,
           function(x) c(Mean = mean(x), SD = sd(x)))
-@                              
- 
+@
+
 
 That will work also if what you want to compute functions of has multiple
 columns:
@@ -3647,14 +3650,14 @@ aggregate(one.dataframe[, c("age", "Y")],
           list(Sex = one.dataframe$sex),
           function(x) c(Mean = mean(x), SD = sd(x)))
 
-@ 
+@
 
 Sometimes, using \texttt{with} can be handy, but watch out: we need to be
 explicit about \texttt{FUN} (what would happen if we did not?). Actually,
 there are a couple of things happening here at the same time:
 <<>>=
-with(one.dataframe, 
-     aggregate(age ~ sex, 
+with(one.dataframe,
+     aggregate(age ~ sex,
                FUN = function(x) c(Mean = mean(x), SD = sd(x)))
      )
 @
@@ -3665,8 +3668,8 @@ argument to \texttt{FUN}). What
 happens and why?
 
 <<nofunaggregate,eval=FALSE>>=
-with(one.dataframe, 
-     aggregate(age ~ sex, 
+with(one.dataframe,
+     aggregate(age ~ sex,
                function(x) c(Mean = mean(x), SD = sd(x)))
      )
 @
@@ -3679,20 +3682,20 @@ with(one.dataframe,
 \begin{enumerate}
 \item Create a data frame as follows:
 <<agxtabs>>=
-dfx2b <- data.frame(age = c(13, 13, 16, 25, 28), 
-                     sex = factor(c("male", "female", 
+dfx2b <- data.frame(age = c(13, 13, 16, 25, 28),
+                     sex = factor(c("male", "female",
                                     "female", "male", "male")))
 dfx2b <- rbind(dfx2b, dfx2b)
 dfx2b$Y <- runif(nrow(dfx2b))
 dfx2b$Y[c(5, 10)] <- 0 ## we want to show a specific issue below
 
-@ 
+@
 
 \item Obtain a data frame with the average of Y for all combinations of
   age and sex.
 <<eval=TRUE,echo=FALSE,results='hide'>>=
 aggregate(Y ~ age + sex, data = dfx2b, FUN = mean)
-@ 
+@
 
 \item Using the data frame you just created, present the results as a
   table, using \texttt{xtabs} (maybe \texttt{xtabs} and
@@ -3706,7 +3709,7 @@ aggregate(Y ~ age + sex, data = dfx2b, FUN = mean)
 <<xtabsagg6,eval=TRUE,echo=TRUE,results='show'>>=
 xtabs(Y ~ age + sex,
       data = aggregate(Y ~ age + sex, data = dfx2b, FUN = mean))
-@ 
+@
 
 What are those cells with 0? Do we really have 0 in all those cases?
 
@@ -3714,7 +3717,7 @@ What are those cells with 0? Do we really have 0 in all those cases?
   you do not get 0's where you should have NAs. Please, try it before
   looking at the code!!!
 
- \vspace*{30pt}  
+ \vspace*{30pt}
 <<xtabsagg7,eval=TRUE,echo=TRUE,results='show'>>=
 
 ftable(xtabs(Y ~ age + sex,
@@ -3722,7 +3725,7 @@ ftable(xtabs(Y ~ age + sex,
                               FUN = mean, drop = FALSE),
       addNA = TRUE))
 
-@  
+@
 
 Where is the 0? Where are the NAs?
 
@@ -3730,7 +3733,7 @@ Where is the 0? Where are the NAs?
 Notice how the problems we saw in section \ref{xtabs-arbitrary} when using
 \texttt{xtabs} with missing combinations of some levels and data frame
 \texttt{dfx4} are now dealt with explicitly: our data frame contains NAs
-for missing combinations. 
+for missing combinations.
 
 
 \item Turn the first value of Y into an NA. You now want the behavior of
@@ -3739,7 +3742,7 @@ for missing combinations.
   \texttt{na.action} in \texttt{aggregate}. Again, try before looking at
   the code.
 
-  
+
 <<xtabsagg8,eval=TRUE,echo=TRUE,results='show'>>=
 dfx2b$Y[1] <- NA
 
@@ -3774,7 +3777,7 @@ xtabs(radon ~ height,
                        data = df7,
                        FUN = mean,
                        drop = FALSE))
-@ 
+@
 
 (We did not use ftable in the previous example: it gives ugly output since
 there is no table to flatten there)
@@ -3817,7 +3820,7 @@ lapply(split(one.dataframe, one.dataframe$sex),
                        c(mean_age = mean(x$age),
                          mean_y = mean(x$Y),
                          sd_age = sd(x$age))))
-@ 
+@
 
 The above procedure is related to the split-apply-combine and the
 map-reduce approaches. And \texttt{by}, \texttt{aggregate}, and friends
@@ -3834,7 +3837,7 @@ accomplishing them with the basic functions of R, as well as several
 additional packages that provide for different (easier? faster?)
 approaches/syntax. Here is a blog with some examples and links:
 \Burl{https://www.r-bloggers.com/say-it-in-r-with-by-apply-and-friends/}
-(the original entry at \Burl{https://www.magesblog.com/post/2012-01-28-say-it-in-r-with-by-apply-and-friends/}). 
+(the original entry at \Burl{https://www.magesblog.com/post/2012-01-28-say-it-in-r-with-by-apply-and-friends/}).
 For instance, the \code{doBy} package is really nice.
 
 
@@ -3850,7 +3853,7 @@ E[, 1, drop = FALSE]
 E[1, ]
 E[1, , drop = FALSE]
 
-@ 
+@
 
 Unless we use \code{drop = FALSE}, if we select only one row or one
 column, the result is not a matrix, but a vector\footnote{row vector? column
@@ -3865,31 +3868,31 @@ interest us in the matrix.
 
 <<>>=
 rows.of.interest <- c(1, 3)
-@ 
+@
 
 We can do
 
 <<>>=
 apply(E[rows.of.interest, ], 1, median)
 
-@ 
+@
 
 Now, imagine that in a particular case, \code{rows.of.interest} only has
 one element:
 <<>>=
 rows.of.interest <- c(3)
-@ 
+@
 
 <<eval=FALSE>>=
 apply(E[rows.of.interest, ], 1, median)
-@ 
+@
 
 What is the error message suggesting?
 
 But we can make sure our procedure does not crash by using \code{drop = FALSE}:
 <<>>=
 apply(E[rows.of.interest, , drop = FALSE], 1, median)
-@ 
+@
 
 
 The situation above can be even more confusing with some matrix operations.
@@ -3898,12 +3901,12 @@ The situation above can be even more confusing with some matrix operations.
 % The following is actually worse, because you can get into a confusing
 % situation and have errors that are hard to catch (note: \verb=%*%= is
 % matrix multiplication). Suppose we want to multiply a matrix formed by
-% some columns of E with a matrix formed by those same rows of E. 
+% some columns of E with a matrix formed by those same rows of E.
 
 % <<>>=
 % vector.indices <- c(1, 3)
 % E[, vector.indices] %*% E[vector.indices, ]
-% @ 
+% @
 
 
 %  the first column of E by the first row of E. We know that
@@ -3911,12 +3914,12 @@ The situation above can be even more confusing with some matrix operations.
 
 % <<>>=
 % E[, 1] %*% E[1, ]
-% @ 
+% @
 
 % That is not what we wanted. We should have written:
 % <<>>=
 % E[, 1, drop = FALSE] %*% E[1, , drop = FALSE]
-% @ 
+% @
 
 % because if we drop dimensions, this is what we are doing (the following
 % are equivalent):
@@ -3927,7 +3930,7 @@ The situation above can be even more confusing with some matrix operations.
 % sum(E[1, ] * E[, 1])
 % sum(c(1, 2, 3) * c(1, 4, 7))
 % E[1, , drop = FALSE] %*% E[, 1, drop = FALSE]
-% @ 
+% @
 
 
 To summarize: when you select only a single column or a single row of an
@@ -3942,7 +3945,7 @@ and code instead of \texttt{sapply} (\texttt{sapply} is fine for interactive use
 
 \texttt{mapply} allows us to apply a function to multiple vector or list
 arguments. We will use it in the examples discussed in
-\texttt{Metabolic-rate-example.R}. 
+\texttt{Metabolic-rate-example.R}.
 
 It is also possible to use apply over environments: \texttt{eapply}. We will not
 use it in this course.
@@ -3957,7 +3960,7 @@ We won't get into details about this: Hadley Wickham has two packages,
 \texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
 data manipulation (dplyr) and reading large flat files (readr). Both are
 explained, in addition to the documentation of each of the packages, in
-Peng's  ``R programming for data   science'' book. 
+Peng's  ``R programming for data   science'' book.
 
 This link has a handy summary of \texttt{dplyr}:
 \Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
@@ -3973,7 +3976,7 @@ As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}.
 
 \R\  is a programming language. Comprehensive coverage is given in the books
 by Chambers ``Software for Data Analysis: Programming with R'', %% Gentleman
-%% ``R Programming for Bioinformatics'', 
+%% ``R Programming for Bioinformatics'',
 Matloff's ``The art of R programming'', Wickham's ``Advanced R'', and
 Venables and Ripley ``S Programming'' (see details in
 \Burl{http://www.r-project.org/doc/bib/R-books.html}). Chapters 9 and 10
@@ -3999,12 +4002,12 @@ A few examples follow. Make sure you understand them.
 \code{for} iterates over sets. They need not be numbers:
 
 <<>>=
-names.of.friends <- c("Ana", "Rebeca", "Marta", 
+names.of.friends <- c("Ana", "Rebeca", "Marta",
                       "Quique", "Virgilio")
 for(friend in names.of.friends) {
   cat("\n I should call", friend, "\n")
 }
-@ 
+@
 
 % How with sapply? Recall cat has NULL as return value
 
@@ -4019,14 +4022,14 @@ but they can be numbers:
 
 plot(c(0, 10), c(0, 10), xlab ="", ylab ="", type = "n")
 
-for(i in 1:10) 
+for(i in 1:10)
   abline(h = i, lty = i, lwd = 2)
 
-@ 
+@
 
 (note that in the example above I could get away without using braces
 ---\code{``\{\}''}--- after the \code{for} because the complete expression
-is only one function call, \code{abline}). 
+is only one function call, \code{abline}).
 
 \code{while} keeps repeating a set of instructions until a condition is
 fulfilled. In this example, the condition is actually two conditions. Make
@@ -4047,7 +4050,7 @@ while( (x < 10) && (y < 2)) {
 x
 y
 
-@ 
+@
 
 \code{while} is often combined with \code{break} to bail out of a loop as
 soon as something interesting happens (and that something is detected with
@@ -4065,7 +4068,7 @@ while(TRUE) {
   if (z < 15) break
 }
 
-@ 
+@
 
 Did you notice that \code{iteration <- iteration + 1} is now in a
 different place, and we initialize it with a value of 0?
@@ -4090,14 +4093,14 @@ for(i in 1:10) { x <- i}
 
 i
 
-@ 
+@
 
 
 <<>>=
 
 rm(i)
 
-for(i in 1:10) { 
+for(i in 1:10) {
     cat("\n before", i)
     i <- (i - 3)
     cat("  after ", i)
@@ -4105,7 +4108,7 @@ for(i in 1:10) {
 
 i
 
-@ 
+@
 
 This is OK, though (but I would not name that variable as \texttt{i})
 
@@ -4123,7 +4126,7 @@ repeat {
 
 i
 
-@ 
+@
 
 \subsection{Defining your own functions}
 
@@ -4157,7 +4160,7 @@ In the above, you substitute ``the.name.of.my.function'' by, well, the
 name of your function, and ``arg1, arg2, arg3'', by the arguments of the
 function. Then, you write the \R\  code in the place where it says ``\#what
 my function does''. %% (By the way, \verb=#= is the sign that delimits the
-%% beginning of a comment). 
+%% beginning of a comment).
 The \ldots refer to other arguments passed on to
 functions called inside the main function.
 
@@ -4173,7 +4176,7 @@ multByTwo <- function(x) {
 a <- 3
 multByTwo(a)
 multByTwo(45)
-@ 
+@
 
 
 Another example
@@ -4185,7 +4188,7 @@ plotAndSummary <- function(x) {
 }
 x <- rnorm(50)
 
-@ 
+@
 
 (I won't be showing the output of plotAndSummary: but make sure you do it,
 and understand what is going on).
@@ -4193,7 +4196,7 @@ and understand what is going on).
 <<results="hide",fig.keep="none">>=
 plotAndSummary(x)
 plotAndSummary(runif(24))
-@ 
+@
 
 
 Using more arguments, one of them default:
@@ -4214,7 +4217,7 @@ plotAndLm <- function(x, y, title = "A figure") {
 
 x <- 1:20
 y <- 5 + 3 *x + rnorm(20, sd = 3)
-@ 
+@
 
 (Again, I am not showing the output here. But make sure you understand
 what is happening!)
@@ -4222,17 +4225,17 @@ what is happening!)
 plotAndLm(x, y)
 plotAndLm(x, y, title = "A user specified title")
 output1 <- plotAndLm(x, y, title = "A user specified title")
-@ 
+@
 
-Make sure you understand the difference between 
+Make sure you understand the difference between
 <<results="hide",fig.keep="none">>=
 plotAndLm(x, y)
-@ 
+@
 
 and
 <<results="hide",fig.keep="none">>=
 out2 <- plotAndLm(x, y)
-@ 
+@
 
 (hint: in the last call, you are assigning something to ``out2''. Look at
 the last line of the function ``plotAndLm''). Not all functions return
@@ -4252,18 +4255,18 @@ arguments, and avoid passing unnamed arguments after named ones. For instance:
 
 <<>>=
 f1 <- function(one, two, three) {
-    cat("one = ", one, 
-        " two = ", two, 
+    cat("one = ", one,
+        " two = ", two,
         " three = ", three, "\n")}
 
 ## We are OK
-f1(1, 2, 3) 
+f1(1, 2, 3)
 ## We are OK, but this is getting risky
-f1(two = 2, three = 3, 1) 
+f1(two = 2, three = 3, 1)
 ## We are no longer OK. Nothing "strange" happened
 ## but we would need to be very careful. So avoid it.
-f1(two = 2, 3, 1) 
-@ 
+f1(two = 2, 3, 1)
+@
 
 The above rules are even more important when arguments with default
 arguments are considered. Really: type the above code. Those are
@@ -4272,14 +4275,14 @@ arguments are considered. Really: type the above code. Those are
 
 \subsection{Scoping, frames, environments, etc}\label{scoping}
 This is more advanced material. Do this when you are awake. For now, we
-will only scratch the surface. 
+will only scratch the surface.
 
 Suppose this:
 <<eval=TRUE>>=
 f1 <- function(x) {
     x + z
 }
-@ 
+@
 
 
 By the way, what do you think is more legible, the above function or one
@@ -4292,7 +4295,7 @@ that explicitly has \texttt{return(x + z)}?  (Yes, that is an \activities
 \begin{itemize}
 \item What will be the value of ``z'' used by f1? Think this before typing
   anything!
-  
+
 \item Make sure there are no objects named \texttt{z} in the workspace and
   do \texttt{f1(3)}
 
@@ -4312,7 +4315,7 @@ f11 <- function(y) {
     pressing return!}:
 <<f11z1ret>>=
 f11(4)
-@ 
+@
 
 \item And now type this. What is changing?
 
@@ -4331,7 +4334,7 @@ f3 <- function(x, y) {
     pressing return!}:
 <<f3v1000b>>=
 f3(2, 9)
-@ 
+@
 
 \noindent (In R it is perfectly OK to define a function inside another
 function. In fact, it can make some code much easier to understand.)
@@ -4388,7 +4391,7 @@ c + 8
 c <- function(u) 2 * u
 c(8)
 try(c(8, 9))
-@ 
+@
 
 Which, of course, is asking questions about where (and how) R searches for
 things (even if we never write code such as that in f3, f2, or f1). Read,
@@ -4398,7 +4401,7 @@ this
 
 <<eval=FALSE>>=
 search()
-@ 
+@
 and try to figure out what is happening.
 
 
@@ -4407,7 +4410,7 @@ it here any further (though we might talk about it in class). But now,
 before we leave, we will remove our ``c'':
 <<>>=
 rm(c)
-@ 
+@
 Oh, do you know what ``c'' we just removed? (Yes that was an \activities
 ).
 
@@ -4448,7 +4451,7 @@ inside your function will take care of:
 f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
 
 f0(1:5, col = "red", type = "b")
-@ 
+@
 
 
 \subsubsection{\activities}
@@ -4466,7 +4469,7 @@ fb(1:5, "blue", pch = 8)
 fc <- function(x, col = "red") {plot(x, col = col, ...)}
 fc(1:5, "blue", pch = 8)
 
-@ 
+@
 
 \subsection{local}
 \label{sec:local}
@@ -4495,7 +4498,7 @@ Try this
 <<lazyex1>>=
 flazy <- function(x, y) {return(2 * x)}
 flazy(4)
-@ 
+@
 
 Are you surprised? Regardless of it working, I would not do those things
 routinely just for the fun of it.
@@ -4508,7 +4511,7 @@ anything about it)
 <<eval=FALSE>>=
 library(codetools)
 checkUsageEnv(env = .GlobalEnv)
-@ 
+@
 
 
 (This is an awkward place to mention codetools. But we will use it again later)
@@ -4519,10 +4522,10 @@ checkUsageEnv(env = .GlobalEnv)
 
 
 
-\subsection{\activities \ Functions that return NULL and invisible} 
+\subsection{\activities \ Functions that return NULL and invisible}
 \label{sec:null}
 
-Note: unless we have plenty of  time, we will skip this in class. 
+Note: unless we have plenty of  time, we will skip this in class.
 
 
 Compare these
@@ -4545,12 +4548,12 @@ cc <- fc(4)
 cc
 (fc(4))
 
-@ 
+@
 
 
 
 \begin{enumerate}
-\item What are the differences between the three functions? 
+\item What are the differences between the three functions?
 \item When could you want to use \textbf{fa}?
 \item What is the difference between \texttt{cat} and \texttt{message}?
   Why one or the other?
@@ -4664,13 +4667,13 @@ steps are:
 <<eval=TRUE,results='hide'>>=
 randomdata <- matrix(rnorm(50 * 500), ncol = 50)
 class <- factor(c(rep("NC", 20), rep("cancer", 30)))
-@ 
+@
 
 Do we know what the output from a \textit{t-test} looks like? What do we
 want to select? Lets play a little bit:
 
 <<>>=
- 
+
 tmp <- t.test(randomdata[1, ] ~ class)
 tmp
 attributes(tmp)
@@ -4681,13 +4684,13 @@ OK, so now we know what to select (note: I do NOT show the results of the
 computations here!):
 
 <<fig.keep="none",eval=TRUE,results='hide'>>=
- 
-pvalues <- apply(randomdata, 1, 
+
+pvalues <- apply(randomdata, 1,
                  function(x) t.test(x ~ class)$p.value)
 hist(pvalues)
 order(pvalues)
 which(pvalues < 0.05)
-@ 
+@
 <<results='hide'>>=
 sum(pvalues < 0.05)
 @
@@ -4697,7 +4700,7 @@ Now, repeat all of this by running the script:
 <<fig.keep="none",results='hide'>>=
 source("lastExample.R")
 sum(pvalues < 0.05)
-@ 
+@
 
 
 Please, look at ``lastExample.R'', and understand what happened. You need
@@ -4706,7 +4709,7 @@ to explicitly print results. Or you can use \code{source("lastExample.R",
   echo = TRUE)}.
 
 
-Please, understand what is happening. 
+Please, understand what is happening.
 
 
 
@@ -4744,7 +4747,7 @@ code. Debugging is a big issue. As Matloff insists, debugging is basically
 about testing your assumptions about what a piece of code is doing. In
 what follows, I provide just a quick summary of really helpful things that
 I use often (there are some extra techniques and approaches, but really
-understanding the ones below will take you far).  
+understanding the ones below will take you far).
 
 Anyway, here are some additional places to look at:
 \Burl{https://web.archive.org/web/20170706215053/http://www.stats.uwo.ca:80/faculty/murdoch/software/debuggingR/}
@@ -4764,7 +4767,7 @@ you do type the code and play around: these are necessarily interactive
 things, and that does not play well with static notes).
 
 \activities: Really, do type the code!! The activities consist on typing
-the code and seeing what is happening. 
+the code and seeing what is happening.
 
 \subsection{What exactly broke?}
 
@@ -4788,7 +4791,7 @@ f3 <- function(z, u) {
 f3(3, 7)
 
 
-@ 
+@
 
 <<eval=FALSE,error=TRUE>>=
 
@@ -4798,7 +4801,7 @@ traceback()
 
 f3(5, "a")
 traceback()
-@ 
+@
 
 
 %% using f2(v + u) above is confusing, because the error jumps in f1, when
@@ -4825,7 +4828,7 @@ debug(f3)
 f3(3, 5)
 undebug(f3) ## stop debugging
 f3(3, 5)
-@ 
+@
 
 In addition to \texttt{debug} you can use \texttt{debugonce}, so you do
 not need to remember to do \texttt{undebug}.
@@ -4837,7 +4840,7 @@ it stops, look around (e.g., type \code{ls()}, reassign values, etc).
 <<eval=FALSE>>=
 f3(3, 5)
 f3(3, 11)
-@ 
+@
 
 Or you can set up conditional browsers. For example, call it only if
 \code{z > 5}:
@@ -4861,7 +4864,7 @@ f3 <- function(z, u) {
     return(a + b)
 }
 
-@ 
+@
 
 
 It is bad practice to leave \code{browser}s around (for obvious
@@ -4878,7 +4881,7 @@ When browsing or debugging, notice the difference between \texttt{c}  and
 
 Make sure you understand the difference between typing each of these while
 under \texttt{browser()} or \texttt{debug()}. Write a function with a loop
-and that calls another function and use \texttt{c} and 
+and that calls another function and use \texttt{c} and
 \texttt{s}
 
 \begin{itemize}
@@ -4906,14 +4909,14 @@ whatever I need. This just means using the \texttt{edit} option with trace:
 <<eval=FALSE>>=
 trace("lm", edit = "emacs")
 trace("lm", edit = TRUE)
-@ 
+@
 (if doing the second from Emacs, and using emacsclient, you might need to start
 the server)
 
 %%% For me, I use
 % as default editor ecf
 % #!/bin/bash
-% emacsclient -s  /tmp/emacs1000/server -c $1    
+% emacsclient -s  /tmp/emacs1000/server -c $1
 % and have it as my default editor so I can do
 % trace("something", edit = TRUE)
 % or
@@ -4933,16 +4936,16 @@ as.list(body(f3))
 
 trace(f3, tracer = browser, at = 3)
 
-f3 # notice the message 
-@ 
+f3 # notice the message
+@
 
 <<eval=FALSE>>=
 f3(4, 5)
 untrace(f3) ## stop tracing
-@ 
+@
 
 
-This uses \code{lm}, which we have not written. 
+This uses \code{lm}, which we have not written.
 <<eval=FALSE>>=
 
 
@@ -4954,7 +4957,7 @@ lm(y ~ x)
 ## stop tracing
 untrace(lm)
 
-@ 
+@
 
 
 \subsection{Autopsies when things fail}
@@ -4966,11 +4969,11 @@ to look around:
 opt <- options(error = recover)
 ## Notice the next show, as they should,
 ## different frame numbers. The error is in different
-## places. You can enter in the relevant frames 
+## places. You can enter in the relevant frames
 ## and look around
 f3(3, "a")
 f3(-5, 3)
-@ 
+@
 
 
 You will be shown the possible frames, you can enter the one you want, and
@@ -4981,7 +4984,7 @@ when you only get errors from time to time, etc.
 Once you are done, set the option back to what it was:
 <<eval=FALSE>>=
 options(opt)
-@ 
+@
 
 
 
@@ -5001,7 +5004,7 @@ f3 <- function(z, u) {
     f2(v + u)
 }
 f3(3, "a")
-@ 
+@
 
 
 If you submit all that code to be executed, you will get an error, and
@@ -5021,14 +5024,14 @@ turn warnings into errors, and use the above debugging approaches. Just do
 
 <<eval=FALSE>>=
 opt <- options(warn = 2)
-@ 
+@
 
 And then, a warning will behave as an error. Once you are done, return
 things back to what they were:
 
 <<eval=FALSE>>=
 options(opt)
-@ 
+@
 
 
 \subsection{Confused about where you are?}
@@ -5043,13 +5046,13 @@ debug(f1); debug(f2); debug(f3)
 f3(4, 5) ## now, keeping pressing enter or n
          ## and you'll get deeper and deeper
          ## while in browser mode, type where
-@ 
+@
 Return things to normal
 <<eval=FALSE>>=
 undebug(f3)
 undebug(f2)
 undebug(f1)
-@ 
+@
 
 
 \subsection{Protecting from possible failures}
@@ -5074,7 +5077,7 @@ ft(9)
 
 ft("a")
 
-@ 
+@
 
 The above is a silly example, of course, but suppose taking the log is not
 a fundamental part of the code, and you want to be allowed to continue, or
@@ -5094,7 +5097,7 @@ If we load a package, say \texttt{OncoSimulR} (from BioConductor) we can do
 <<>>=
 library(OncoSimulR)
 ls(pos = 2)
-@ 
+@
 and we see the names of the exported functions.
 
 I know there is a function called \texttt{nr\_oncoSimul.internal}. You
@@ -5107,7 +5110,7 @@ the package).
 In fact, notice this (results not shown)
 <<eval=TRUE, results='hide'>>=
 getAnywhere("nr_oncoSimul.internal")
-@ 
+@
 
 so, yes, that function exists in the namespace of OncoSimulR.
 
@@ -5115,7 +5118,7 @@ Can you debug it? Sure, you just have to do:
 
 <<eval=FALSE, results='hide'>>=
 debugonce(OncoSimulR:::nr_oncoSimul.internal)
-@ 
+@
 (i.e., you use \texttt{:::}).
 
 
@@ -5124,21 +5127,21 @@ You can also add browsers:
 <<eval=FALSE, results = 'hide'>>=
 as.list(body(OncoSimulR:::nr_oncoSimul.internal))
 trace(OncoSimulR:::nr_oncoSimul.internal, browser, at = 7)
-@ 
+@
 (notice the message ``Tracing function blablabla (not-exported)'').
 
 And, of course, and probably simpler
 
 <<eval=FALSE, results = 'hide'>>=
 trace(OncoSimulR:::nr_oncoSimul.internal, edit = TRUE)
-@ 
+@
 
 
 This uses another package
 
 <<eval=FALSE, results = 'hide'>>=
 trace(randomForest:::predict.randomForest, edit = TRUE)
-@ 
+@
 
 
 % FIXME add this in the future?
@@ -5198,7 +5201,7 @@ opportunities to practice debugging.
 
 %% \item Are there differences in the frequency of T between the two types of
 %%   sequences?
-  
+
 %% \end{itemize}
 
 %% All the files are in the directory \texttt{permafrost} (part of the
@@ -5225,7 +5228,7 @@ opportunities to practice debugging.
 
 %% generate <- function(l1 = 10, l2 = 500) {
 %%     ls <- round(runif(1, l1, l2))
-%%     return(paste0(sample(nt, ls, replace = TRUE), 
+%%     return(paste0(sample(nt, ls, replace = TRUE),
 %%                   collapse = ""))
 %% }
 
@@ -5237,7 +5240,7 @@ opportunities to practice debugging.
 
 %% tmp <- replicate(nseqs, generateAndWrite())
 
-%% @ 
+%% @
 
 
 
@@ -5261,7 +5264,7 @@ opportunities to practice debugging.
 %% <<reading-codons,results='hide'>>=
 %% files <- dir(path = "./permafrost", full.names = TRUE)
 %% sequences <- lapply(files, function(x) scan(x, what = "", quiet = TRUE))
-%% @ 
+%% @
 %% \noindent (using \texttt{quiet} is so as to avoid 5000 lines of
 %% uninteresting output).
 
@@ -5274,25 +5277,25 @@ opportunities to practice debugging.
 %% matchAnyCodon <- function(x, codons = stopCodons) {
 %%   any(sapply(codons, function(codon) grepl(codon, x)))
 %% }
-%% @ 
+%% @
 
 %% Actually, for real, I'd use this different definition which is slightly
 %% faster and more strict (see also section \ref{venn}):
 
 %% <<>>=
 %% matchAnyCodon <- function(x, codons = stopCodons) {
-%%   any(vapply(codons, 
+%%   any(vapply(codons,
 %%              function(codon) grepl(codon, x),
 %%              logical(1)))
 %% }
 
-%% @ 
+%% @
 
 %% What sequences have the stop codons? Easy:
 
 %% <<>>=
 %% seqs.stop.codon <- sapply(sequences, matchAnyCodon)
-%% @ 
+%% @
 
 
 %% Make sure nothing strange (such as missing values, it is a vector of
@@ -5300,7 +5303,7 @@ opportunities to practice debugging.
 %% <<results='hide'>>=
 %% summary(seqs.stop.codon)
 %% str(seqs.stop.codon)
-%% @ 
+%% @
 
 
 
@@ -5309,13 +5312,13 @@ opportunities to practice debugging.
 %% <<>>=
 %% seqsStop <- sequences[seqs.stop.codon]
 %% seqsNonStop <- sequences[!seqs.stop.codon]
-%% @ 
+%% @
 
 %% Lengths?
 %% <<results='hide'>>=
 %% summary(sapply(seqsStop, nchar))
 %% summary(sapply(seqsNonStop, nchar))
-%% @ 
+%% @
 
 %% Frequency of nucleotides? First, we need a function to break into
 %% characters and then tabulate; we just want the frequency of T. But the
@@ -5327,7 +5330,7 @@ opportunities to practice debugging.
 %%     indivc <- strsplit(x, "")[[1]]
 %%     table(indivc)[4]/length(indivc)
 %% }
-%% @ 
+%% @
 
 %% This is better:
 %% <<>>=
@@ -5335,7 +5338,7 @@ opportunities to practice debugging.
 %%     indivc <- strsplit(x, "")[[1]]
 %%     table(indivc)["T"]/length(indivc)
 %% }
-%% @ 
+%% @
 
 %% Eh, instead of length(indivc) can use nchar.
 
@@ -5344,7 +5347,7 @@ opportunities to practice debugging.
 %% summary(sapply(seqsStop, fnucl))
 %% summary(sapply(seqsNonStop, fnucl))
 
-%% @ 
+%% @
 
 %% Why do we get two NAs in the second call? What could we do ---maybe if
 %% there is no T we want a 0, not an NA?
@@ -5365,7 +5368,7 @@ opportunities to practice debugging.
 
 %% generate <- function(l1 = 10, l2 = 500) {
 %%     ls <- round(runif(1, l1, l2))
-%%     return(paste0(sample(nt, ls, replace = TRUE), 
+%%     return(paste0(sample(nt, ls, replace = TRUE),
 %%                   collapse = ""))
 %% }
 
@@ -5377,7 +5380,7 @@ opportunities to practice debugging.
 
 %% tmp <- replicate(nseqs, generateAndWrite())
 
-%% @ 
+%% @
 
 
 %% \subsubsection{A few comments}
@@ -5413,7 +5416,7 @@ are not \textbf{the} solution to the world's problems); \textit{caveat
 If you do not remember or know what a permutation test is, look it
 up. I'll assume you have a general idea. Stop here about the main
 steps (remember that breaking the problem down into manageable and
-meaningful, smaller, self-contained, problems is a key part of programming). 
+meaningful, smaller, self-contained, problems is a key part of programming).
 
 
 Now, after thinking, this is what we need to do:
@@ -5441,8 +5444,8 @@ done. (As you move through the list, some items might get redefined).
 ##
 ## - Compare what we compute from our original data with what we obtain
 ##   under the null ($H_o$).
-## 
-@ 
+##
+@
 
 
 To play around, let's create some extreme fake data:
@@ -5454,24 +5457,24 @@ d12 <- d11[1:7]
 # most likely very different
 d21 <- rnorm(13)
 d22 <- d21[1:9] + 3
-@ 
+@
 
 You can check the data will do what you want
 <<results='hide'>>=
 t.test(d11, d12)
 t.test(d21, d22)
-@ 
+@
 
 \subsubsection{First attempt}
 Now, the code:
 <<>>=
 # for steps 1 and 3
-mean_d <- function(x1, x2) 
+mean_d <- function(x1, x2)
   mean(x1) - mean(x2)
 
 ## seems to work
 mean_d(d11, d12)
-@ 
+@
 
 %% FIXME: function signatures
 
@@ -5486,7 +5489,7 @@ the differences
 permut_and_mean1 <- function(x1, x2) {
     tmp <- sample(c(x1, x2))
     g1 <- tmp[seq(x1)]
-    g2 <- tmp[seq(from = length(x1) + 1, 
+    g2 <- tmp[seq(from = length(x1) + 1,
                   to = length(tmp))]
     return(mean_d(g1, g2))
 }
@@ -5496,26 +5499,26 @@ permut_and_mean1 <- function(x1, x2) {
 ##  of the set of observations into two groups, and return mean difference
 ##  of those two groups.
 permut_and_mean2 <- function(x1, x2) {
-    indices <- seq(from = 1, 
+    indices <- seq(from = 1,
                    to = length(x1) + length(x2))
     indices1 <- sample(indices, length(x1))
-    indices2 <- setdiff(indices, indices1) 
+    indices2 <- setdiff(indices, indices1)
     alldata <- c(x1, x2)
-    return(mean_d(alldata[indices1], 
+    return(mean_d(alldata[indices1],
                   alldata[indices2]))
 }
-@ 
+@
 
 Compare them:
 <<>>=
-set.seed(1) 
+set.seed(1)
 permut_and_mean1(d11, d12)
 permut_and_mean1(d11, d12)
 
-set.seed(1) 
+set.seed(1)
 permut_and_mean2(d11, d12)
 permut_and_mean2(d11, d12)
-@ 
+@
 Make sure you understand what happened. (Hint: are both functions
 implicitly calling the random number generator the same number of times?)
 
@@ -5523,11 +5526,11 @@ implicitly calling the random number generator the same number of times?)
 
 <<>>=
 
-set.seed(1) 
+set.seed(1)
 null <- permut_and_mean1(d11, d12)
 runif(1)
 
-set.seed(1) 
+set.seed(1)
 null <- permut_and_mean2(d11, d12)
 runif(1)
 
@@ -5542,11 +5545,11 @@ runif(1)
 
 ## of course, this makes no difference
 
-set.seed(2) 
+set.seed(2)
 null <- permut_and_mean1(d11, d12)
 runif(1)
 
-set.seed(2) 
+set.seed(2)
 null <- permut_and_mean2(d11, d12)
 runif(1)
 
@@ -5557,7 +5560,7 @@ runif(1)
 set.seed(2)
 null <- runif(length(c(d11, d12)))
 runif(1)
-@ 
+@
 
 
 This is the crux of the matter:
@@ -5578,7 +5581,7 @@ set.seed(33)
 null <- sample(1:(length(d11) + length(d12)), length(d11))
 runif(1)
 
-@ 
+@
 
 
 % (Now, we might want to take a look at \texttt{permut-test-2.R})
@@ -5642,29 +5645,29 @@ runif(1)
 % set.seed(1)
 % null <- sample(1:(length(d11) + length(d12)), length(d11))
 % runif(1)
-% @ 
+% @
 
 
 Now, wrap the above, and create a single function:
 <<>>=
 ## FIXME!! A Function signature!!!
 
-permut_testA <- function(data1, data2, 
+permut_testA <- function(data1, data2,
                          fsample = permut_and_mean1,
                          num.permut = 100) {
     obs.stat <- mean_d(data1, data2)
-    
-    permut.stat <- replicate(num.permut, 
+
+    permut.stat <- replicate(num.permut,
                              fsample(data1, data2))
-    pv <- (sum(abs(permut.stat) > 
+    pv <- (sum(abs(permut.stat) >
                    abs(obs.stat)) + 1)/(num.permut + 1)
-    
+
     message("\n p-value is ", pv, "\n")
     return(list(obs.stat = obs.stat,
                 permut.stat = permut.stat,
                 pv = pv))
 }
-@ 
+@
 
 Make sure you understand what we've done. For instance, note that we are
 passing a function as an argument\footnote{As for the denominator and
@@ -5680,7 +5683,7 @@ Is it working?
 <<>>=
 tmp <- permut_testA(d11, d12)
 tmp <- permut_testA(d21, d22)
-@ 
+@
 It looks like it is.
 
 
@@ -5689,7 +5692,7 @@ p-value would you expect?
 <<>>=
 tmp <- permut_testA(d11, d11)
 tmp <- permut_testA(d12, d12)
-@ 
+@
 
 Moral: check, check, check. One should check against different
 scenarios. (In fact, the above might often look correct a lot of the time;
@@ -5719,22 +5722,22 @@ I will give the fixed code. You have to understand what changed:
 <<>>=
 
 ## FIXME: function signature!!!
-permut_testB <- function(data1, data2, 
+permut_testB <- function(data1, data2,
                          fsample = permut_and_mean1,
                          num.permut = 100) {
     obs.stat <- mean_d(data1, data2)
-    
-    permut.stat <- replicate(num.permut, 
+
+    permut.stat <- replicate(num.permut,
                              fsample(data1, data2))
-    pv <- (sum(abs(permut.stat) >= 
+    pv <- (sum(abs(permut.stat) >=
                    abs(obs.stat)) + 1)/(num.permut + 1)
-    
+
     message("\n p-value is ", pv, "\n")
     return(list(obs.stat = obs.stat,
                 permut.stat = permut.stat,
                 pv = pv))
 }
-@ 
+@
 
 Quick check (you should do it more thoroughly)
 <<>>=
@@ -5742,7 +5745,7 @@ Quick check (you should do it more thoroughly)
 tmp <- permut_testB(d11, d11)
 
 tmp <- permut_testB(d12, d12)
-@ 
+@
 
 
 
@@ -5754,14 +5757,14 @@ stopifnot(suppressMessages(permut_testB(d12, d12))$pv == 1)
 xr <- runif(10)
 stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1)
 
-@ 
+@
 
 
 Much better:
 
 <<>>=
 library(testthat)
-@ 
+@
 
 <<>>=
 
@@ -5769,11 +5772,11 @@ test_that("p-value = 1 when the two vectors identical", {
     n <- 10
     for(i in 1:n) {
        xr <- rnorm(10)
-       stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1) 
+       stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1)
     }
 })
 
-@ 
+@
 Oooops, not quite. Improve that:
 
 
@@ -5787,7 +5790,7 @@ test_that("p-value = 1 when the two vectors identical", {
     }
 })
 
-@ 
+@
 
 In fact, it is easy to argue that the test should have been written
 first.
@@ -5803,22 +5806,22 @@ OK, that is good. But let's add a figure so things look more like in textbooks:
 
 <<>>=
 ## FIXME: function signature
-permut_test <- function(data1, data2, 
-                        fsample = permut_and_mean1, 
+permut_test <- function(data1, data2,
+                        fsample = permut_and_mean1,
                         num.permut = 100) {
   obs.stat <- mean_d(data1, data2)
-  permut.stat <- replicate(num.permut, 
+  permut.stat <- replicate(num.permut,
                            fsample(data1, data2))
-  pv <- (sum(abs(permut.stat) >= abs(obs.stat)) + 
+  pv <- (sum(abs(permut.stat) >= abs(obs.stat)) +
          1) / (num.permut + 1)
   message("\n p-value is ", pv, "\n")
   title <- paste(deparse(substitute(data1)), "-",
                  deparse(substitute(data2)))
   subtitle <- paste0("Distribution of permuted statistic.",
-           " In red, observed one.") 
-  hist(permut.stat, xlim = c(min(obs.stat, 
+           " In red, observed one.")
+  hist(permut.stat, xlim = c(min(obs.stat,
                       min(permut.stat)),
-                      max(obs.stat, 
+                      max(obs.stat,
                           max(permut.stat))),
        main = title, xlab = "", sub = subtitle)
   abline(v = obs.stat, col = "red")
@@ -5827,21 +5830,21 @@ permut_test <- function(data1, data2,
               pv = pv))
 }
 
-@ 
+@
 
 
 Run it
 <<fig.cap='Two examples of permutation tests', fig.width=5, fig.height=9>>=
 par(mfrow = c(2, 1))
 tmp <- permut_test(d11, d12, num.permut = 1000)
-tmp <- permut_test(d21, d22, num.permut = 1000, 
+tmp <- permut_test(d21, d22, num.permut = 1000,
                    fsample = permut_and_mean2)
-@ 
+@
 
 
 You might want to compare with t-tests, etc.
 
-You might also want to improve the message: way too many decimals. 
+You might also want to improve the message: way too many decimals.
 
 
 And, of course, \textbf{we should add some more tests}. These are a minimal set
@@ -5918,7 +5921,7 @@ B <- scan("Condition_B.txt", what = "")
 C <- scan("Condition_C.txt", what = "")
 
 
-@ 
+@
 
 
 Which are overexpressed in both A and B? And in A, B, C?
@@ -5927,7 +5930,7 @@ sort(intersect(A, B))
 sort(intersect(A, intersect(B, C)))
 ## simpler
 sort(Reduce(intersect, list(A, B, C)))
-@ 
+@
 
 
 
@@ -5947,18 +5950,18 @@ Let's try something else, and try to be a little bit more general.
 First, try to make reading the genes a simple thing. Place all of them in
 a list, with as many elements as conditions.
 <<>>=
-####   Read all lists of genes that start with "Condition" 
+####   Read all lists of genes that start with "Condition"
 ####    and store as a list
 gf <- dir(pattern = "^Condition_")
 ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
 
-@ 
+@
 
 %% Using vapply here is very hard.
 %% <<>>=
 %% ovxpGenes_b <- vapply(gf, function(x) scan(x, what = ""),
 %%                       character(1))
-%% @ 
+%% @
 
 
 There is nothing wrong with the call to \texttt{sapply}, but using
@@ -5971,21 +5974,21 @@ But ``Condition\_'' is repeated as a prefix. And txt as postfix.  Get rid
 of them in the names of the list:
 
 <<>>=
-names(ovxpGenes) <- 
-    sapply(names(ovxpGenes), 
-           function(x) strsplit(strsplit(x, 
-                                         "Condition_")[[1]][2], 
+names(ovxpGenes) <-
+    sapply(names(ovxpGenes),
+           function(x) strsplit(strsplit(x,
+                                         "Condition_")[[1]][2],
                                 "\\.txt")[[1]][1])
 
-@ 
+@
 
 We could also do:
 <<eval=FALSE>>=
-names(ovxpGenes) <- sapply(strsplit(names(ovxpGenes), 
-                                    "Condition_"), 
-                           function(x) 
+names(ovxpGenes) <- sapply(strsplit(names(ovxpGenes),
+                                    "Condition_"),
+                           function(x)
                                strsplit(x[2], "\\.txt")[[1]][1])
-@ 
+@
 
 (Note that using \texttt{x[2]} and \texttt{x[[2]]} works equally well in
 the last example).
@@ -5998,14 +6001,14 @@ string and then discard pieces, but directly replace the unwanted text by ``'':
 
 ovxpGenes <-  sapply(gf, function(x) scan(x, what = ""))
 
-gsub(".txt", "", gsub("Condition_", "", names(ovxpGenes)), 
+gsub(".txt", "", gsub("Condition_", "", names(ovxpGenes)),
      fixed = TRUE)
 
-names(ovxpGenes) <- gsub(".txt", "", gsub("Condition_", "", 
-                                          names(ovxpGenes)), 
+names(ovxpGenes) <- gsub(".txt", "", gsub("Condition_", "",
+                                          names(ovxpGenes)),
                          fixed = TRUE)
 
-@ 
+@
 
 
 
@@ -6024,7 +6027,7 @@ want here.
 
 <<>>=
 all.the.genes <- sort(unique(unlist(ovxpGenes)))
-@ 
+@
 
 
 Now, there are several ways of getting our matrix.
@@ -6044,7 +6047,7 @@ f2 <- function(x, all.the.genes) {
 
 f2(ovxpGenes[[1]], all.the.genes)
 
-@ 
+@
 
 
 
@@ -6055,7 +6058,7 @@ class by Carlos Carretero:
 
 sapply(ovxpGenes, function(z) {all.the.genes %in% z})
 
-@ 
+@
 
 This is, definitely, much simpler and better than my solution above.
 
@@ -6067,12 +6070,12 @@ We are almost done:
 
 <<>>=
 
-overexpressed <- sapply(ovxpGenes, 
+overexpressed <- sapply(ovxpGenes,
                         function(z) {all.the.genes %in% z})
 
 rownames(overexpressed) <- all.the.genes
 
-@ 
+@
 
 STOP! We gave several possible ways of doing this: compare the
 output of those  (maybe using \texttt{identical} or, for programming,
@@ -6087,13 +6090,13 @@ inside functions. So let's be more strict:
 
 <<>>=
 
-overexpressed <- vapply(ovxpGenes, 
+overexpressed <- vapply(ovxpGenes,
                         function(z) {all.the.genes %in% z},
                         logical(length(all.the.genes)))
 
 rownames(overexpressed) <- all.the.genes
 
-@ 
+@
 
 
 Now, a few checks:
@@ -6104,7 +6107,7 @@ colSums(overexpressed)
 lapply(ovxpGenes, length)
 # But if automatic, better to use stopifnot
 
-stopifnot(colSums(overexpressed) == 
+stopifnot(colSums(overexpressed) ==
               unlist(lapply(ovxpGenes, length)))
 
 
@@ -6112,7 +6115,7 @@ stopifnot(colSums(overexpressed) ==
 h <- rownames(overexpressed)[which(overexpressed[, "A"] == 1)]
 stopifnot(identical(h, sort(ovxpGenes[["A"]])))
 
-@ 
+@
 
 
 Now, a plot after all this work (you will need to install ``limma'' ---go
@@ -6120,7 +6123,7 @@ to section \ref{packages})
 <<>>=
 library(limma)
 vennDiagram(overexpressed)
-@ 
+@
 
 And it is now also trivial to find out which are overexpressed in
 arbitrary conditions. For instance (the number is the row number),
@@ -6129,25 +6132,25 @@ overexpressed in both A and B:
 
 which(overexpressed[, "A"] & overexpressed[, "B"])
 length(which(overexpressed[, "A"] & overexpressed[, "B"]))
-@ 
+@
 
 or
 
 <<>>=
 sum(overexpressed[, "A"] * overexpressed[, "B"])
-@ 
+@
 
 And which are induced in all?
 <<>>=
 which(rowSums(overexpressed) == 3)
 ## or safer?
 which(rowSums(overexpressed) > 2.99)
-@ 
+@
 
 And how many are overexpressed in 3, in 2, and in 1?
 <<>>=
 table(rowSums(overexpressed))
-@ 
+@
 
 Etc, etc.
 
@@ -6157,7 +6160,7 @@ all is simple (this might be considered more advanced, but is great
 because this will work with lists of arbitrary number of components):
 <<>>=
 sort(Reduce(intersect, ovxpGenes))
-@ 
+@
 
 
 
@@ -6189,23 +6192,23 @@ though.  Oh, by the way, I use \texttt{sapply} below, when creating
 ##                 list with contents of files
 ## Files contain gene names
 ## List has as many elements as files
-readListGenes <- function(prefix = "Condition_", 
+readListGenes <- function(prefix = "Condition_",
                           postfix = "txt") {
     ## Read a bunch of files, named "prefixSOMETHING.postfix",
     ## and place the gene names inside in a list
     gg <- dir(pattern = paste0("^", prefix))
     ovG <-  sapply(gg, function(x) scan(x, what = ""))
     matchpost <- paste0("\\.", postfix)
-    names(ovG) <- 
-    sapply(names(ovG), 
-           function(x) strsplit(strsplit(x, 
-                                         prefix)[[1]][2], 
+    names(ovG) <-
+    sapply(names(ovG),
+           function(x) strsplit(strsplit(x,
+                                         prefix)[[1]][2],
                                 matchpost)[[1]][1])
     return(ovG)
 }
 
 
-@ 
+@
 
 Now, place everything in a matrix.
 
@@ -6222,7 +6225,7 @@ trueIfMatch <- function(lx) {
     return(ove)
 }
 
-@ 
+@
 
 So that we end up with:
 <<>>=
@@ -6231,20 +6234,20 @@ So that we end up with:
 ##                                       ncol = length of list)
 ##                       for gene present/absent in each file
 
-geneFiles2Mat <- function(prefix = "Condition_", 
+geneFiles2Mat <- function(prefix = "Condition_",
                           postfix = "txt") {
     l1 <- readListGenes(prefix = prefix, postfix = postfix)
     return(trueIfMatch(l1))
 }
 
 
-@ 
+@
 
 And now just call it:
 
 <<>>=
 ovxABC <- geneFiles2Mat()
-@ 
+@
 
 
 Wait: two final checks:
@@ -6256,7 +6259,7 @@ stopifnot(identical(sort(Reduce(intersect, ovxpGenes)),
 
 stopifnot(identical(ovxABC, overexpressed))
 
-@ 
+@
 
 
 
@@ -6277,12 +6280,12 @@ This code could get you going (results not shown)
 
 library(dplyr)
 
-dfj <- dplyr::full_join(data.frame(g = A, A = 1), 
+dfj <- dplyr::full_join(data.frame(g = A, A = 1),
                         data.frame(g = B, B = 1))
 
 sum(dfj[, "A"] * dfj[, "B"], na.rm = TRUE)
 
-@ 
+@
 
 
 
@@ -6308,14 +6311,14 @@ want here.
 
 <<>>=
 all.the.genes <- sort(unique(unlist(ovxpGenes)))
-@ 
+@
 
 
 Which of those genes are in the first condition?  Or which, among
 all.the.genes, are overexpressed in condition A? This works
 <<>>=
 head(match(ovxpGenes[[1]], all.the.genes))
-@ 
+@
 \noindent (I used \code{head} to show only the first part of the output).
 
 
@@ -6327,7 +6330,7 @@ different length.
 
 str(sapply(ovxpGenes, function(z) {match(z, all.the.genes)}))
 
-@ 
+@
 \noindent(I used \code{str} to show only the first part of the output).
 
 We want to return a TRUE where the gene is overexpressed and a FALSE if
@@ -6352,7 +6355,7 @@ f1 <- function(x, all.the.genes) {
     return(vv)
 }
 
-@ 
+@
 
 
 
@@ -6362,7 +6365,7 @@ See if it works
 head(f1(ovxpGenes[[1]], all.the.genes))
 ## and on the third?
 head(f1(ovxpGenes[[3]], all.the.genes))
-@ 
+@
 
 
 But this is probably clearer? Using a lookup table kind of approach; that
@@ -6379,15 +6382,15 @@ f2 <- function(x, all.the.genes) {
     return(vv)
 }
 
-@ 
+@
 
 I leave it as an exercise to show that both functions, \texttt{f1} and
-\texttt{f2}, are doing the same thing. 
+\texttt{f2}, are doing the same thing.
 
 And you can try another solution, one that uses the following idea:
 <<eval=FALSE>>=
 which( all.the.genes %in% x )
-@ 
+@
 
 So:
 <<>>=
@@ -6397,16 +6400,16 @@ f3 <- function(x, all.the.genes) {
     return(vv)
 }
 
-@ 
+@
 
 
 This very simple and elegant solution was suggested in class by
-Carlos Carretero: 
+Carlos Carretero:
 
 <<results='hide'>>=
 sapply(ovxpGenes, function(z) {all.the.genes %in% z})
 
-@ 
+@
 
 This is, definitely, much simpler and better than my solutions above.
 
@@ -6428,33 +6431,33 @@ This is, definitely, much simpler and better than my solutions above.
 %%     vv <- rep(FALSE, length(allgenes))
 %%     pos.match <- match(x, allgenes)
 %%     vv[pos.match] <- TRUE
-%%     return(vv)  
+%%     return(vv)
 %% }
 
 
 %% geneListToMatrix <- function(lgenes) {
 %%     ## For you: add a meaningful comment here!
 %%     allgenes <- sort(unique(unlist(lgenes)))
-%%     ox <- vapply(lgenes, 
-%%                  function(x) trueIfMatch(x, allgenes), 
+%%     ox <- vapply(lgenes,
+%%                  function(x) trueIfMatch(x, allgenes),
 %%                  logical(length(allgenes)))
-%%     rownames(ox) <- allgenes  
+%%     rownames(ox) <- allgenes
 %%     return(ox)
 %% }
 
-%% @ 
+%% @
 
 
 %% Now, create a function that will do everything:
 %% <<>>=
 
-%% geneFiles2Mat <- function(prefix = "Condition_", 
+%% geneFiles2Mat <- function(prefix = "Condition_",
 %%                           postfix = "txt") {
 %%     l1 <- readListGenes(prefix = prefix, postfix = postfix)
 %%     return(geneListToMatrix(l1))
 %% }
 
-%% @ 
+%% @
 
 
 %% If we use the simple, elegant solution above we can write:
@@ -6471,7 +6474,7 @@ classification problems. This is what we want:
 \begin{itemize}
 \item Simulate some data, without signal, for a number of subjects and a
   two-class problem.
-  \item For simplicity use the randomForest algorithm. 
+  \item For simplicity use the randomForest algorithm.
   \item For simplicity, use cross-validation.
   \item Filter genes using the p-value from a t-test.
   \item Of course, the selection bias problem will arise when you filter
@@ -6496,17 +6499,17 @@ A few hints:
   compact way of doing it. The code is taken from Venables and Ripley, ``S
   programming'', 2000, Springer, p.\ 175, and I have added a few notes and
   an example:
-  
+
 <<results='hide'>>=
 ## x2 is a data vector
 x2 <- rnorm(27)
 N <- length(x2)
 knumber <- 10  ## the k in k-fold
 ## In the k-th time, we leave out as testing set those
-## subjects that have index.select = 
+## subjects that have index.select =
 ## Thus, index.select is the vector of indices
-index.select <- sample(rep(1:knumber, 
-                           length = N), 
+index.select <- sample(rep(1:knumber,
+                           length = N),
                        N, replace = FALSE)
 
 rep(1:knumber, length = N)
@@ -6514,13 +6517,13 @@ table(index.select)
 sum(index.select != 1)
 sum(index.select != 10)
 sum(index.select != 6)
-@   
-  
+@
+
 Once you have that, you can do something like
 
 <<eval=FALSE>>=
 do.something.with.train.and.test <- function(train, test) {
-    ## As it says, it does something with the 
+    ## As it says, it does something with the
     ## two sets of data
 }
 
@@ -6529,29 +6532,29 @@ for(sample.number in 1:knumber) {
     x2.test <- x2[index.select == sample.number]
     do.something.with.train.and.test(x2.train, x2.test)
 }
-@ 
+@
 
 \item We will train a model with a set of data, and test it with those
   left out. Again, with random forest, use \code{randomForest} and
   \code{predict} (which is really \code{predict.randomForest}). Look at
   the help.
-  
+
 \item For the simplest ``classification error'' we just compared observed
   class with predicted class. How do you do it?
-  
+
 \item Beware: randomForest (as most other modeling functions) expects data
   with subjects in rows and variables (genes) in columns.
-  
+
 \item For one simulated data set, you can get the effects of selection
   bias. But you will want to repeat this several times.
-  
-  
+
+
 \item Oh, how do you compare? Is this like a paired design (for each
   simulated data set, you get two numbers, one under selection bias and
   one under non-selection bias)? Or is it something else? Make sure that
   how you show your results reflects how you perform the simulations.
-  
-  
+
+
 \item The following should be function arguments (in parentheses,
   suggested default arguments, not because they are realistic now, but
   just to speed up the process): number of genes (1000), ``k'' in k-fold
@@ -6560,19 +6563,19 @@ for(sample.number in 1:knumber) {
   (10). Number of subjects can be set to a number (50), or you can pass
   the sizes of each of the two classes (e.g., 25 and 25); if number of
   subjects, what would you do with odd numbers?
-  
-  
+
+
 \item The above are default arguments. But enlightenment will come easily
   if you play around with those: is selection bias more severe the more
   genes you select? The more genes you can select from?  What about number
   of subjects? Etc, etc.
 
-\item You will want textual output and figures, of course.  
-  
+\item You will want textual output and figures, of course.
+
 \end{itemize}
 
 
-A basic piece of code that does most of the above takes less than 70 lines. 
+A basic piece of code that does most of the above takes less than 70 lines.
 
 
 
@@ -6610,7 +6613,7 @@ one remote repository of a package.
 \item Directories and files in our local hard drive: what gets installed
 \item Vignettes, PDF of the documentation.
 \item An example repo
-  
+
 \end{itemize}
 
 
@@ -6645,7 +6648,7 @@ vapply(i39b, summary,
 ## And the very first sapply? Hard to do with vapply
 mapply(seq, from = 1, to = 3:9)
 Map(seq, from = 1, to = 3:9)
-@ 
+@
 
 \end{itemize}
 
@@ -6752,7 +6755,7 @@ match(grades, info$grade)
 rownames(info) <- info$grade
 info[as.character(grades), ]
 
-@ 
+@
 \clearpage
 
 
@@ -6770,7 +6773,7 @@ See \texttt{reshape-long-wide.R}
 \section{Session info}
 <<>>=
 sessionInfo()
-@ 
+@
 
 
 
@@ -6778,7 +6781,7 @@ sessionInfo()
 %% \section{Test}
 %% <<>>=
 %% mytry(log("a"))
-%% @ 
+%% @
 
 \end{document}
 
@@ -6791,7 +6794,7 @@ sessionInfo()
 
 %% so if it is not utf-8, knitr complaints about character encoding when
 %% processing some chunks. And I guess that is because my locale is UTF-8.
-  
+
 %%%%%%%%%%%%%% For pdf, I use runKnitr.sh which has
 
 %% #!/bin/bash
@@ -6807,7 +6810,7 @@ sessionInfo()
 %% ## pdflatex should have -synctex=1, which my alias already does
 %% pdflatex --file-line-error --shell-escape "${1%.*}"
 %% ## get bib to work
-%% texi2pdf $BASENAME.tex 
+%% texi2pdf $BASENAME.tex
 %% $RSCRIPT -e "source('~/bin/patchKnitrSynctex-RDU.R'); patchKnitrSynctex('${1%.*}.tex')"
 %% rm $BASENAME.Rnw.synctex.gz
 %% rm $BASENAME.Rnw.pdf
@@ -6829,12 +6832,12 @@ sessionInfo()
 
 %% ## It would be great to have this work from Emacs with C-c C-c
 %% ## maybe with start-process or similar.
-  
 
-  
-  
+
+
+
 %%% For HTML, I use make-knitr-hmtl.sh which is
-  
+
 %% #!/bin/bash
 %% FILE=$1
 %% BASENAME=$(basename $FILE .Rnw)
@@ -6853,6 +6856,6 @@ sessionInfo()
 %% cp $BASENAME.html ./$BASENAME-html-dir/.
 %% cp -a figure ./$BASENAME-html-dir/.
 %% zip -r $BASENAME-html-dir.zip $BASENAME-html-dir
-  
-  
-%% And uses sweave2html from http://biostat.mc.vanderbilt.edu/wiki/Main/SweaveConvert#Converting_from_LaTeX_to_html  
+
+
+%% And uses sweave2html from http://biostat.mc.vanderbilt.edu/wiki/Main/SweaveConvert#Converting_from_LaTeX_to_html
