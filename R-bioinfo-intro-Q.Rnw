@@ -451,7 +451,7 @@ interface provided by R under Mac OS X.  If you love vim, there is Vim-R-plugin
 \Burl{https://hpcc.ucr.edu/manuals/hpc_cluster/terminalide/}). If you use VSCode
 (or, probably better, VSCodium \Burl{https://vscodium.com/}), there are several extensions  for working with
 R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}.
-For those used to Eclipse, there is a plug-in designed to
+For those used to Eclipse, there is (or used to be) a plug-in designed to
 work with R: StatET
 (\Burl{https://projects.eclipse.org/projects/science.statet}).   And some Windows users like Tinn-R (\Burl{https://github.com/jcfaria/Tinn-R});
 I used to use Tinn-R in R courses I taught 12 to 15 years ago, but I think it has
