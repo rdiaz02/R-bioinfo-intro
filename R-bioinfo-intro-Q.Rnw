@@ -451,7 +451,7 @@ interface provided by R under Mac OS X.  If you love vim, there is Vim-R-plugin
 \Burl{https://hpcc.ucr.edu/manuals/hpc_cluster/terminalide/}). If you use VSCode
 (or, probably better, VSCodium \Burl{https://vscodium.com/}), there are several extensions  for working with
 R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}.
-For those used to Eclipse, there is (or used to be) a plug-in designed to
+For those used to Eclipse, there is a plug-in designed to
 work with R: StatET
 (\Burl{https://projects.eclipse.org/projects/science.statet}).   And some Windows users like Tinn-R (\Burl{https://github.com/jcfaria/Tinn-R});
 I used to use Tinn-R in R courses I taught 12 to 15 years ago, but I think it has
@@ -650,7 +650,6 @@ And let me return to an additional important problem: the (too frequent for my t
 Of course, there are other very different opinions:
 \Burl{http://varianceexplained.org/r/teach-tidyverse/}, \Burl{https://cdmuir.netlify.app/post/2019-07-09-tidyverse/},
 \Burl{https://towardsdatascience.com/rethinking-how-we-teach-the-tidyverse-da09a3a23934}.
-
 
 
 \subsection{Installing R packages}\label{packages}
@@ -3487,6 +3486,10 @@ report:
 \label{sec:activities-11}
 Make sure you type all of the examples above. Also, if LaTeX is anything
 that interests you, do the last example using \texttt{toLatex}.
+
+
+%% FIXME: from a xtab to a data.frame of individual cases
+%% https://stackoverflow.com/a/36499608
 
 \subsection{Tables, II}
 Tabulating data is a very common operation. The following are slightly
