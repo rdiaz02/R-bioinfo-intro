@@ -453,7 +453,7 @@ interface provided by R under Mac OS X.  If you love vim, there is Vim-R-plugin
 R: \Burl{https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r}.
 For those used to Eclipse, there is a plug-in designed to
 work with R: StatET
-(\Burl{https://projects.eclipse.org/projects/science.statet}).   And some Windows users like Tinn-R (\Burl{https://github.com/jcfaria/Tinn-R});
+(\Burl{https://projects.eclipse.org/projects/science.statet}).   And some Windows users like Tinn-R (\Burl{https://github.com/jcfaria/Tinn-R} or \Burl{https://tinn-r.org/en/}, as the github repo does not show any commits for the last four years?);
 I used to use Tinn-R in R courses I taught 12 to 15 years ago, but I think it has
 lost ground to RStudio.   And then, if you
 look around, there are other options for other editors.
@@ -519,7 +519,7 @@ might not be able to help you.
 
   \item The Emacs manual. It is long, but there are many things you can skip. It is a very well written and organized manual, with lots of cross-references, that allows you to choose what to read. I think it is the best manual I've ever read. Available as PDF, HTML, and Info.
 
-\item I'd start with one of Petersen's or Waclena's, or both. And I'd probably intersperse jumping to the Emacs manual to read specific chapters or sections of things that particularly interest you (e.g., read about Dired in Petersen or Waclena, then go to the Emacs Manual). Repeat as needed-
+\item I'd start with one of Petersen's or Waclena's, or both. And I'd probably intersperse jumping to the Emacs manual to read specific chapters or sections of things that particularly interest you (e.g., read about Dired in Petersen or Waclena, then go to the Emacs Manual). Repeat as needed.
   \end{itemize}
 \item Continue the journey on your own.
   \end{enumerate}
@@ -616,7 +616,9 @@ this is what I use in my scratchpads.
 
 \subsubsection{tidyverse}\label{sec:tidyverse}
 
-This was mentioned above, and some students ask. So I'll anticipate. We have
+This was mentioned above, and some students ask. So I'll anticipate.
+
+We have
 referred to \Burl{https://github.com/matloff/TidyverseSkeptic} (and the longer
 version:
 \Burl{https://github.com/matloff/TidyverseSkeptic/blob/master/READMEFull.md}).
@@ -634,9 +636,12 @@ same person and others (e.g.,
 \Burl{https://news.ycombinator.com/item?id=20363863}): I find the tidyverse
 limiting and complicating and it hides details in base R --details that are not
 that complicated, and details that you will appreciate understanding for, say,
-manipulating R's statistical functions output-- plus it created other problems
-with nonstandard evaluation.  With regards to the famous pipe, I first liked it
-when I saw it (I use in the shell a lot) but then found it hard to debug programs
+manipulating R's statistical functions output or for reading the R that forms the core of R itself-- plus it created other problems
+with nonstandard evaluation.
+
+
+With regards to the famous pipe, I first liked it
+when I saw it (I use it in the shell a lot) but then found it hard to debug programs
 that use it, and to comment/uncomment code, and I have an opinion similar to the
 one in \Burl{https://news.ycombinator.com/item?id=20369115} and earlier and later
 comments by the same person (this could be a personal bias: I tend to
@@ -651,6 +656,8 @@ Of course, there are other very different opinions:
 \Burl{http://varianceexplained.org/r/teach-tidyverse/}, \Burl{https://cdmuir.netlify.app/post/2019-07-09-tidyverse/},
 \Burl{https://towardsdatascience.com/rethinking-how-we-teach-the-tidyverse-da09a3a23934}.
 
+
+Summary: little tidyverse here. I strongly believe that a solid foundation in base R \textbf{must} come first.
 
 \subsection{Installing R packages}\label{packages}
 Most ``for real'' work with \R\ you do will require installation of
@@ -1234,7 +1241,7 @@ t.test(x ~ z)
 \subsection{Coding style}\label{style}
 You write R code for the computer to do something, but that code should be
 readable by humans (including not only other people besides yourself, but
-yourself in the future). Please, make sure your code is tidy and respects
+yourself in the future). Please, make sure your code is legible and respects
 some minimal rules of civility. In particular:
 
 \begin{itemize}
@@ -1251,10 +1258,15 @@ look at the code in the base R distribution, or look at the code in
 classics such as ``Modern applied statistics with S'' or ``S
 programming''(Venables and Ripley), or ``Software for data analysis''
 (Chambers), or \ldots. Programming environments (e.g., Emacs + ESS) will
-offer ways of tidying your code, and there is even a package that can help
-you do it
-(\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
-\Burl{http://yihui.name/formatR}).
+offer ways of tidying your code, and there are tools that can help you here
+(\Burl{https://lintr.r-lib.org/}); you might want to have your editor alert you to coding style problems with the help of lintr (RStudio might have it integrated already?). You can also take a look at \Burl{http://yihui.name/formatR}.
+
+
+% is even a package that can help
+% you do it
+% (\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
+% \Burl{http://yihui.name/formatR}).
+
 
 
 \clearpage
