@@ -1262,6 +1262,19 @@ offer ways of tidying your code, and there are tools that can help you here
 (\Burl{https://lintr.r-lib.org/}); you might want to have your editor alert you to coding style problems with the help of lintr (RStudio might have it integrated already?). You can also take a look at \Burl{http://yihui.name/formatR}.
 
 
+\activities: show in class how lintr works (in my case with Emacs+ESS). Show, for instance:
+\begin{itemize}
+\item using ``='' for assignment;
+\item not using spaces around (infix) operators
+\item putting spaces after parenthesis
+\item unused and unbound variables
+\item cyclomatic complexity
+\item 80-column rule
+  \end{itemize}
+
+And what about comments? My preferences: signature and purpose right before the function, comments inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose.
+
+
 % is even a package that can help
 % you do it
 % (\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
@@ -1277,7 +1290,7 @@ offer ways of tidying your code, and there are tools that can help you here
 There are many ways to load data into \R\ (for example, see the book by
 P.\ Spector, or the ``R Data Import/Export'' manual
 \Burl{http://cran.r-project.org/doc/manuals/R-data.html}). Here we will
-only use \code{read.table}.
+only use \code{read.table}. What about \code{read.csv}? See the help.
 
 
 %% Let's repeat some of what we did with the BLAST example (section \ref{blast}).
@@ -1470,9 +1483,12 @@ with \code{read.table}, or at least you do not want to use
 \code{read.table} without helping it recognize the types of columns, etc,
 etc. Look specially at the help for \code{scan}, try data base solutions,
 etc. (See the book by P.\ Spector, or the ``R Data Import/Export'' manual
-\Burl{http://cran.r-project.org/doc/manuals/R-data.html}). For even larger
-things, of specialized uses, there are packages such as \code{ff} or
-\code{bigmemory}.
+\Burl{http://cran.r-project.org/doc/manuals/R-data.html}).
+
+For rectangular files, the first functions I'd try are \code{fread}, from package \code{data.table} and \code{read\_delim} from package \code{readr}.
+
+
+For even larger things, of specialized uses, there are packages such as \code{ff} or \code{bigmemory}.
 
 
 
@@ -2016,7 +2032,7 @@ a1 && b1
 a1 || b1
 @
 
-Notice the warning. And notice that the returned value has length 1.
+Notice the warning. And notice that the returned value has length 1. Wait, was that a warning or was that an error?
 
 
 
