@@ -336,24 +336,28 @@ This is a partial list a books I like and use when preparing classes:
 \begin{description}
 \item[Programming] As it says, just focus on programming R:
   \begin{itemize}
+  \item ``fasteR: Fast Lane to Learning R!'': an R tutorial for beginners by Matloff: \Burl{https://github.com/matloff/fasteR}. If you are in a hurry, start here.
+
   \item \textit{R Programming for Data Science}. Peng. (This is an
     ebook and PDF, and you can pay whatever you want for it.). If you want
     to start somewhere and use only a single reference, \textbf{I'd start
       with this book}.
-   \item \textit{Advanced R, 2nd ed}. Wickham. (If you go to the web page for the
+
+  \item \textit{The art of R programming}. Matloff.
+  \item \textit{Advanced R, 2nd ed}. Wickham. (If you go to the web page for the
     book, in github, you can download the complete sources and build your
     own pdf).   \Burl{https://adv-r.hadley.nz/}
-  \item \textit{The art of R programming}. Matloff.
+  \item \textit{Mastering software development with R}. Peng, Cross, Anderson. \Burl{https://leanpub.com/msdr}. The title is very descriptive.
 
-  \item ``fasteR: Fast Lane to Learning R!'': an R tutorial for beginners by Matloff: \Burl{https://github.com/matloff/fasteR}
+    \item \textit{R for Data Science, 2nd ed}. Wickham, Çetinkaya-Rundel, Grolemund. \Burl{https://r4ds.hadley.nz/}. Emphasis on data transformations and plot. Heavilty uses the tidyverse.
+
   \end{itemize}
 \item[Stats and some programming] Introductory statistics (or introductory
   data science) with some
   programming interleaved.
   \begin{itemize}
   \item \textit{Introductory statistics with R, 2nd ed}. Dalgaard.
-  \item \textit{R in Action}. Kabacoff. (A second ed.\  available since
-    June 2015).
+  \item \textit{R in Action, 3rd ed}. Kabacoff. \Burl{https://www.manning.com/books/r-in-action-third-edition}.
 
   \end{itemize}
 \item[Linear models et al.] Linear models are fundamental in
@@ -385,7 +389,7 @@ This is a partial list a books I like and use when preparing classes:
 There are of course many others (including classics such as the two by
 Venables and Ripley, or Chamber's \textit{Software for data analysis},
 many specific to some fields, several devoted to graphics, etc, etc).
-There is also a (short) list of books I think are not worth it; ask me
+There is also a list of books I think are not worth it or do not given you anything the ones above already give you, in a much better way; ask me
 about them in class.
 
 
