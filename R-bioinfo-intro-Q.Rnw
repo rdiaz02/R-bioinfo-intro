@@ -349,7 +349,7 @@ This is a partial list a books I like and use when preparing classes:
     own pdf).   \Burl{https://adv-r.hadley.nz/}
   \item \textit{Mastering software development with R}. Peng, Cross, Anderson. \Burl{https://leanpub.com/msdr}. The title is very descriptive.
 
-    \item \textit{R for Data Science, 2nd ed}. Wickham, Çetinkaya-Rundel, Grolemund. \Burl{https://r4ds.hadley.nz/}. Emphasis on data transformations and plot. Heavilty uses the tidyverse.
+    \item \textit{R for Data Science, 2nd ed}. Wickham, \c{C}etinkaya-Rundel, Grolemund. \Burl{https://r4ds.hadley.nz/}. Emphasis on data transformations and plots. Heavily uses the tidyverse.
 
   \end{itemize}
 \item[Stats and some programming] Introductory statistics (or introductory
