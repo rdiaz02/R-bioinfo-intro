@@ -336,7 +336,7 @@ This is a partial list a books I like and use when preparing classes:
 \begin{description}
 \item[Programming] As it says, just focus on programming R:
   \begin{itemize}
-  \item ``fasteR: Fast Lane to Learning R!'': an R tutorial for beginners by Matloff: \Burl{https://github.com/matloff/fasteR}. If you are in a hurry, start here.
+  \item ``fasteR: Fast Lane to Learning R!'': an R tutorial for beginners by Matloff: \Burl{https://github.com/matloff/fasteR}. If you are in a hurry, start here. (Note, though, that I think that some of the books Matloff recommends are not the best choices.)
 
   \item \textit{R Programming for Data Science}. Peng. (This is an
     ebook and PDF, and you can pay whatever you want for it.). If you want
