@@ -2024,7 +2024,10 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 
 Try to run the above with a \code{\&} instead of \code{\&\&}.
 
-Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).'' (From the help).
+Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).'' In R-4.4.1 this is now an error: ``Using vectors of more than one element in ‘\&\&’ or ‘||’ will give an error.''
+
+
+(From the help).
 
 
 <<>>=
@@ -2064,7 +2067,7 @@ There are several ways of getting access to specific elements of a vector:
 \item By specifying the positions you want (or do not want): giving
   indexes (or indices).
   \item By giving the names of the elements.
-  \item By using  logical vector (which is really very similar to the third).
+  \item By using  logical vector (which is really very similar to the first).
   \item By using any expression that will generate any of the above.
 \end{itemize}
 Positions or names will be given in between \code{[]}.
@@ -2393,6 +2396,13 @@ more advanced, but extremely handy:
 A[m1]
 ## compare with
 A[c(1, 3), c(2, 1)]
+@
+
+If you go back to the argument \texttt{arr.ind} this should make sense:
+
+<<>>=
+(mm2 <- which(A < 5, arr.ind = TRUE))
+A[mm2]
 @
 
 
@@ -2974,6 +2984,7 @@ Recall we had both birds (Aves) and reptiles, in variable ``Class''. Let
 us use different plotting colors for each, and let us add a legend. Notice
 how the different colors by Class is done in the call to plot and how we set the
 legends (\activities : why do we know the legend labels are correct?):
+
 <<fig.width=4,fig.height=4>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
      col = c("salmon", "darkgreen")[Class], data = anage)
@@ -3378,6 +3389,15 @@ xtabs(Freq ~ a + b + c, data = dfx)
 ## or table(x)
 
 @
+
+\subsection{Recovering the data that produced the table}
+And what if we want to recover the data and we have a data frame that already contains the frequencies? The following code is something you should be able to understand:
+
+<<>>=
+dfx[rep(1:nrow(dfx), dfx$Freq), c("a", "b", "c")]
+@
+
+The order of the data are not the same as in \texttt{x} and the rownames look strange, but the data are the same.
 
 
 %% FIXME: what if we do not use all variables for indexing?
