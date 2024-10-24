@@ -3404,12 +3404,16 @@ The order of the data are not the same as in \texttt{x} and the rownames look st
 %% Dealt with in the activities of aggregate + xtabs
 \subsection{xtabs and ftable: summarizing arbitrary stuff}\label{xtabs-arbitrary}
 
-Suppose we have a data frame some arbitrary variable for (some of) the
-levels of some categorical variable. But we want a table (pay attention:
+
+(This is here for completeness, but we are unlikely to cover this in class. Specially the examples with NAs are tricky.)
+
+
+Suppose we have a data frame with values of some arbitrary variable for (some of) the
+levels of some categorical variable. And we want a table (pay attention:
 what is \texttt{expand.grid} doing?):
 
 <<xtabs_ftable>>=
-
+set.seed(1)
 dfx3 <- expand.grid(F1 = c("A", "B"), Age = c(10, 20, 30),
                     Loc = c("k1", "m3"))
 
@@ -3423,6 +3427,8 @@ What if some combinations are missing?
 dfx4 <- dfx3[-c(3, 12), ]
 ftable(xtabs(Vx ~ ., data = dfx4))
 @
+Notice how the second row, first column (F1==A, Age == 20, Loc == k1) and the last row, second column, are now shown as 0.
+
 
 And what if they are missing values (in Vx, not in the categorical variables)?
 
@@ -3432,20 +3438,22 @@ dfx5[c(3, 12), "Vx"] <- NA
 ftable(xtabs(Vx ~ ., data = dfx5))
 @
 
-Think this carefully: is that always the behavior you want?
+% I now (2024-10) don't understand what I was trying to show
+% since addNA changes nothing. Has the behavior of xtabs changed?
+% Yes: the dfx5 behavior has changed from R-4.3 to R-4.4.1
+% https://bugs.r-project.org/show_bug.cgi?id=17770#c11
+% Think this carefully: is that always the behavior you want?
 
-Change that:
+% Change that:
 
-<<xtabs_ftable_na3>>=
-xtabs(Vx ~ ., data = dfx5, addNA = TRUE)
-ftable(xtabs(Vx ~ ., data = dfx5, addNA = TRUE))
-@
+% <<xtabs_ftable_na3>>=
+% ftable(xtabs(Vx ~ ., data = dfx5, addNA = TRUE))
+% @
 
-And here? (Look for F1==A, Age == 20, Loc == k1)
-<<xtabs_ftable_na4>>=
-xtabs(Vx ~ ., data = dfx4, addNA = TRUE)
-ftable(xtabs(Vx ~ ., data = dfx4, addNA = TRUE))
-@
+% And here? (Look for F1==A, Age == 20, Loc == k1)
+% <<xtabs_ftable_na4>>=
+% ftable(xtabs(Vx ~ ., data = dfx4, addNA = TRUE))
+% @
 
 
 So: one thing is having no observations (cero counts, if these were
@@ -3454,16 +3462,18 @@ combinations.  We will see some of this again in section
 \ref{sec:activ-aggr-xtabs}.
 
 
-I would argue that the last table, with \texttt{dfx4}, is probably not
-doing what we want (the 0 have different meanings, as there was actually
+I would argue that the table with \texttt{dfx4} is probably not
+doing what we want: the 0 have different meanings, as there was actually
 an entry, a set of value that actually had 0, whereas some other 0 are
-coming from combinations that are not present). As we will see in section
+coming from combinations that are not present. As we will see in section
 \ref{sec:activ-aggr-xtabs}, this is probably something that ought to have
 been considered when we created \texttt{dfx4}.
 
 
-(There is another option for \texttt{xtabs}: \texttt{na.action}; look at
-the examples for \texttt{xtabs})
+(Note that this is tricky stuff and has prompted some discussion, and changes as recent as from 2024-03: \Burl{https://bugs.r-project.org/show_bug.cgi?id=17770#c11}. So recent, that previous versions of these notes had additional examples that now have identical behavior and are no longer shown.)
+
+% (There is another option for \texttt{xtabs}: \texttt{na.action}; look at
+% the examples for \texttt{xtabs})
 
 
 
@@ -3495,10 +3505,11 @@ x2 <- c(1, 1, 2, 2, 2, 3)
 which(is.na(x1))
 table(x1)
 table(x1, useNA = "ifany")
-table(x2, useNA = "always")
 table(x2, useNA = "ifany")
+table(x2, useNA = "always")
 
 ## with xtabs
+xtabs(data = data.frame(x1), addNA = FALSE)
 xtabs(data = data.frame(x1), addNA = TRUE)
 @
 
@@ -3507,22 +3518,23 @@ Now in two dimensions
 <<tabna2>>=
 (x3 <-  data.frame(a = c(1,2,2,1,2,2,1),
                   b = c(1,2,2,1,1,2,1)))
-table(x)
+table(x3)
 
 (x4 <-  data.frame(a = c(1,2,2,1,2,2,NA),
                   b = c(1,2,2,1,1,2,1)))
 table(x4)
 table(x4, useNA = "ifany")
 table(x4, useNA = "always")
+xtabs(data = x4, addNA = FALSE)
 xtabs(data = x4, addNA = TRUE)
 
 table(x3, useNA = "always")
 xtabs(data = x3, addNA = TRUE)
 @
 
-Note, by the way, that the behavior of \texttt{xtabs(data = x3, addNA =
-  TRUE)} is similar to what we saw with \texttt{xtabs(Vx ~ ., data = dfx4,
-  addNA = TRUE)}: we get 0 in the cells with no combinations.
+% Note, by the way, that the behavior of \texttt{xtabs(data = x3, addNA =
+%   TRUE)} is similar to what we saw with \texttt{xtabs(Vx ~ ., data = dfx4,
+%   addNA = TRUE)}: we get 0 in the cells with no combinations.
 
 
 
@@ -3628,31 +3640,104 @@ function on the fly):
 lapply(listA, function(x) x[[1]])
 @
 
-\subsection{tapply}
+\subsection{tapply and by}\label{sec:tapply-by}
 
-When we have data that can be used to stratify or select other data, we
-often use \code{tapply}:
+When we have data (a column or several columns) that can be used to stratify or select other data (generally a vector), we often use \code{tapply}.
+
 
 <<tidy=FALSE>>=
 (one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28),
                             sex = factor(c("male", "female",
-                              "female", "male", "male"))))
+                                           "female", "male", "male")))
+)
+one.dataframe <- rbind(one.dataframe, one.dataframe)
+one.dataframe$age[6:10] <- one.dataframe$age[6:10] + 2
+one.dataframe$country <- rep(c("A", "B"), c(5, 5))
+one.dataframe$Y <- rnorm(10)
+one.dataframe
+@
 
+<<tapp1>>=
 tapply(one.dataframe$age, one.dataframe$sex, mean)
 @
 
-\subsection{aggregate and by}
+And we can form groups according to two or more variables
+<<tapp1b>>=
+tapply(one.dataframe$age,
+       list(one.dataframe$sex, one.dataframe$country),
+       mean)
+@
+
+We can also use a function that returns more than one summary statistic:
+
+<<tapp2>>=
+tapply(one.dataframe$age,
+       one.dataframe$sex,
+       function(x) c(Mean = mean(x), SD = sd(x)))
+@
+
+But this, though it works, is probably not what we want:
+
+<<>>=
+tapply(one.dataframe$age,
+       list(one.dataframe$sex, one.dataframe$country),
+       function(x) c(Mean = mean(x), SD = sd(x)))
+@
+% $
+
+\texttt{aggregate} (below) is probably what we'll want to use.
+
+\texttt{by} will also work; \texttt{by} is related to \texttt{tapply}, but works on complete data frames and the look of the output is different:
+
+
+<<>>=
+by(one.dataframe,
+   list(one.dataframe$sex, one.dataframe$country),
+   function(x) c(Mean_Age = mean(x$age), SD_Age = sd(x$age),
+                 Median_Y = median(x$Y)))
+@
+% $ try to get latex shortcuts to behave with emacs
+
+(\texttt{by} uses \texttt{split} underneath; we will see \texttt{split} in sections \ref{sec:split-} and in an example in \ref{sec:metab-rate-long}.)
+
+% These next lines works, but it is too much detail
+
+% ## by(one.dataframe[, c("age", "Y")],
+% ##    list(one.dataframe$sex, one.dataframe$country),
+% ##    function(x) c(Mean = mean(x), SD = sd(x)))
+
+
+% The function \code{by} is related to \code{aggregate} and \code{tapply},
+% but you can use functions that return several different things (e.g., the
+% mean and standard deviation) and the return value is a list:
+
+% <<>>=
+% by(one.dataframe$age, list(one.dataframe$sex),
+%    function(x) c(Mean = mean(x), SD = sd(x)))
+
+% by(cbind(age = one.dataframe$age,
+%          Y = one.dataframe$Y),
+%    list(one.dataframe$sex,
+%               one.dataframe$country),
+%    function(x) c(Mean = mean(x$age), SD = sd(x$Y)))
+
+% by(one.dataframe[, c("age", "Y")],
+%    list(one.dataframe$sex,
+%         one.dataframe$country),
+%    function(x) c(Mean = mean(x$age), SD = sd(x$Y)))
+% @
+
+
+
+\subsection{aggregate}
 \label{sec:aggregate}
 
 
-However, \code{aggregate} often returns things in a more convenient form:
+\code{aggregate} often returns things in a more convenient form:
 
 <<tidy=FALSE>>=
-(one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28),
-                            sex = factor(c("male", "female",
-                              "female", "male", "male"))))
-
 aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
+
 ## make the aggregating variable explicit,
 ## and give it another name
 aggregate(one.dataframe$age,
@@ -3663,20 +3748,40 @@ aggregate(one.dataframe$age,
           one.dataframe[2], mean)
 @
 
-The function \code{by} is related to \code{aggregate} and \code{tapply},
-but you can use functions that return several different things (e.g., the
-mean and standard deviation) and the return value is a list:
+Can aggregate using two or more variables:
 
-<<>>=
-by(one.dataframe$age, list(one.dataframe$sex),
-   function(x) c(mean(x), sd(x)))
+<<aggggg>>=
+aggregate(one.dataframe$age,
+          list(Sex = one.dataframe$sex,
+               Country = one.dataframe$country), mean)
+
 @
 
-You can do much of that with aggregate too, but the output is different:
+
+
+
+
+And we can use a function that returns several things:
+
 <<>>=
-aggregate(one.dataframe$age, one.dataframe[2],
-          function(x) c(Mean = mean(x), SD = sd(x)))
+aggregate(one.dataframe$age,
+          list(Sex = one.dataframe$sex,
+               Country = one.dataframe$country),
+          function(x) c(Mean = mean(x), SD = sd(x))
+          )
 @
+
+% %% Why does the output give "x.Mean"? because that is the name of the argument. You could do
+
+% <<>>=
+% aggregate(data.frame(cucu = one.dataframe$age),
+%           list(Sex = one.dataframe$sex,
+%                Country = one.dataframe$country),
+%           function(x) c(Mean = mean(x), SD = sd(x))
+%           )
+% @
+
+
 
 %% FIXME: but with multiple summary stats, beware of the return!
 %% use cbind instead of c?
@@ -3684,32 +3789,79 @@ aggregate(one.dataframe$age, one.dataframe[2],
 %% or doBy and then summaryBy
 
 
-And you can use a formula interace which might be more intuitive:
+And you can use a formula interface which might be more intuitive. This is actually what I tend to use most of the time:
+
 <<>>=
-aggregate(age ~ sex, data = one.dataframe,
+aggregate(age ~ sex + country, data = one.dataframe,
           function(x) c(Mean = mean(x), SD = sd(x)))
 @
 
 
-That will work also if what you want to compute functions of has multiple
-columns:
+That will work also if what you want to compute functions of has multiple columns:
 
 <<>>=
 
-one.dataframe$Y <- 1:5
+(ag1 <- aggregate(cbind(age, Y) ~ sex + country,
+                  data = one.dataframe,
+                  function(x) c(Mean = mean(x), SD = sd(x))))
 
-aggregate(cbind(age, Y) ~ sex, data = one.dataframe,
-          function(x) c(Mean = mean(x), SD = sd(x)))
+
 
 aggregate(one.dataframe[, c("age", "Y")],
-          list(Sex = one.dataframe$sex),
+          list(Sex = one.dataframe$sex,
+               Country = one.dataframe$country),
           function(x) c(Mean = mean(x), SD = sd(x)))
 
 @
 
+\subsubsection{\texttt{aggregate}: supplementary details}
+\label{sec:texttt-suppl-deta}
+
+(What follows are supplementary details:)
+
+Note, though, that the output from the last calls is not a dataframe of five columns: the output for Sex is a single dataframe column (that comprises a two-column matrix), and likewise for Country.
+
+<<>>=
+dim(ag1)
+names(ag1)
+ag1[, "age"]
+ag1[, "Y"]
+@
+
+
+What can we do if we want a data frame with five columns? One option is to search (the internet) for functions that will do that. But the following is a much simpler alternative that uses base R with \texttt{do.call}:
+
+<<>>=
+do.call(data.frame,
+        aggregate(cbind(age, Y) ~ sex + country,
+                  data = one.dataframe,
+                  function(x) c(Mean = mean(x), SD = sd(x)))
+        )
+@
+
+Incidentally, this issue comes up from time to time in forums\footnote{\Bulr{https://stackoverflow.com/a/17659731}, \Burl{https://stackoverflow.com/a/14759569}, \Burl{https://stackoverflow.com/a/12064297}, \Burl{https://stackoverflow.com/q/32561050}}.
+
+% Another option involves using two calls and \texttt{cbind}ing the output:
+
+% <<>>=
+
+% call_1 <- aggregate(cbind(age, Y) ~ sex + country,
+%                     data = one.dataframe,
+%                     mean)
+
+% call_2 <- aggregate(cbind(age, Y) ~ sex + country,
+%                     data = one.dataframe,
+%                     sd)
+% ## Now, cbind the appropiate columns of call_1 and call_2
+% ## and rename the columns
+% @
+
+
+
+
 Sometimes, using \texttt{with} can be handy, but watch out: we need to be
-explicit about \texttt{FUN} (what would happen if we did not?). Actually,
-there are a couple of things happening here at the same time:
+explicit about \texttt{FUN} (what would happen if we did not?). % Actually,
+% there are a couple of things happening here at the same time:
 <<>>=
 with(one.dataframe,
      aggregate(age ~ sex,
@@ -3728,10 +3880,11 @@ with(one.dataframe,
                function(x) c(Mean = mean(x), SD = sd(x)))
      )
 @
+%% FUN is not passed, and it takes the function(x) as the data
+%% argument
 
 
-
-\subsubsection{\activities: \  aggregate, multiple columns, and xtabs}
+\subsubsection{\activities: \  aggregate, multiple columns, and xtabs.0s and NAs}
 \label{sec:activ-aggr-xtabs}
 
 \begin{enumerate}
@@ -3777,22 +3930,16 @@ What are those cells with 0? Do we really have 0 in all those cases?
 
 ftable(xtabs(Y ~ age + sex,
              data = aggregate(Y ~ age + sex, data = dfx2b,
-                              FUN = mean, drop = FALSE),
-      addNA = TRUE))
+                              FUN = mean, drop = FALSE)))
 
 @
 
-Where is the 0? Where are the NAs?
-
-
-Notice how the problems we saw in section \ref{xtabs-arbitrary} when using
-\texttt{xtabs} with missing combinations of some levels and data frame
-\texttt{dfx4} are now dealt with explicitly: our data frame contains NAs
-for missing combinations.
+Where is the 0? Where are the NAs? Our data frame now contains NAs
+for missing combinations. (Notice how the problems we saw in section \ref{xtabs-arbitrary} when using \texttt{xtabs} with missing combinations of some levels and data frame \texttt{dfx4} are now dealt with explicitly).
 
 
 \item Turn the first value of Y into an NA. You now want the behavior of
-  mean to be such that if there is an NA in a set of values, you get the
+  function \texttt{mean} to be such that if there is an NA in a set of values, you get the
   mean to be NA (not the mean of the values with the NA removed). Look at
   \texttt{na.action} in \texttt{aggregate}. Again, try before looking at
   the code.
@@ -3805,15 +3952,35 @@ ftable(xtabs(Y ~ age + sex,
              data = aggregate(Y ~ age + sex, data = dfx2b,
                               FUN = mean,
                               na.action = na.pass,
-                              drop = FALSE),
-      addNA = TRUE))
+                              drop = FALSE)))
 
 @
 
+Notice how that differs from (look at argument \texttt{na.action})
+
+<<>>=
+ftable(xtabs(Y ~ age + sex,
+             data = aggregate(Y ~ age + sex, data = dfx2b,
+                              FUN = mean,
+                              na.action = na.omit,
+                              drop = FALSE)))
+@
+
+\end{enumerate}
 
 
-\item Using only one variable for aggregate or xtabs. What is the
-  difference? Compare carefully what is happening here
+
+
+(Note: some people are surprised by the use of \texttt{xtabs} on the
+output from \texttt{aggregate}. But combining \texttt{xtabs} and
+\texttt{aggregate} is an orthodox procedure: it is mentioned in the help page for \texttt{aggregate}.)
+
+
+
+\subsubsection{More on aggregate and xtabs}
+(This is supplementary material)
+
+Some additional explorations of the combination of \texttt{xtabs} and \texttt{aggregate}. Using only one variable for aggregate or xtabs. What is the  difference? Compare carefully what is happening here
 
 <<>>=
 df7 <- expand.grid(location = c("A", "B"),
@@ -3838,32 +4005,27 @@ xtabs(radon ~ height,
 there is no table to flatten there)
 
 
-\end{enumerate}
 
-
-(Note: some people are surprised by the use of \texttt{xtabs} on the
-output from \texttt{aggregate}. But combining \texttt{xtabs} and
-\texttt{aggregate} is an orthodox procedure: it is mentioned in the help
-page for \texttt{aggregate}.)
 
 \subsection{split }
 \label{sec:split-}
 
 
 Another very handy function is \texttt{split}. What we will do next is an
-overkill, but knowing about split can make life much simpler in many cases:
+overkill, but knowing about split can make life much simpler in many cases (for example, in  section \ref{sec:metab-rate-long})
 
 <<>>=
 
-lapply(with(one.dataframe, split(one.dataframe, sex)),
+lapply(split(one.dataframe, one.dataframe$sex),
        function(y) mean(y$age))
-
 
 
 
 ## Or (this is silly here, just to illustrate)
 
-lapply(split(one.dataframe, one.dataframe$sex),
+lapply(split(one.dataframe,
+             list(one.dataframe$sex,
+                  one.dataframe$country)),
        function(x) lm(Y ~ age, data = x))
 
 ## And this is similar to some operations we did before
@@ -4020,7 +4182,7 @@ Peng's  ``R programming for data   science'' book.
 This link has a handy summary of \texttt{dplyr}:
 \Burl{https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf}.
 
-As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}.
+As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}; for very large data, I prefer \texttt{read\_table}.
 
 \clearpage
 
