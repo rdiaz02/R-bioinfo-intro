@@ -2024,7 +2024,8 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 
 Try to run the above with a \code{\&} instead of \code{\&\&}.
 
-Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).'' In R-4.4.1 this is now an error: ``Using vectors of more than one element in ‘\&\&’ or ‘||’ will give an error.''
+% Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).''
+In R-4.4.1 this is now an error: ``Using vectors of more than one element in '\&\&' or '||' will give an error.''
 
 
 (From the help).
@@ -3470,7 +3471,7 @@ coming from combinations that are not present. As we will see in section
 been considered when we created \texttt{dfx4}.
 
 
-(Note that this is tricky stuff and has prompted some discussion, and changes as recent as from 2024-03: \Burl{https://bugs.r-project.org/show_bug.cgi?id=17770#c11}. So recent, that previous versions of these notes had additional examples that now have identical behavior and are no longer shown.)
+(Note that this is tricky stuff and has prompted some discussion, and changes as recent as from 2024-03: \Burl{https://bugs.r-project.org/show_bug.cgi?id=17770\#c11}. So recent, that previous versions of these notes had additional examples that now have identical behavior and are no longer shown.)
 
 % (There is another option for \texttt{xtabs}: \texttt{na.action}; look at
 % the examples for \texttt{xtabs})
@@ -3839,7 +3840,7 @@ do.call(data.frame,
         )
 @
 
-Incidentally, this issue comes up from time to time in forums\footnote{\Bulr{https://stackoverflow.com/a/17659731}, \Burl{https://stackoverflow.com/a/14759569}, \Burl{https://stackoverflow.com/a/12064297}, \Burl{https://stackoverflow.com/q/32561050}}.
+Incidentally, this issue comes up from time to time in forums\footnote{\Burl{https://stackoverflow.com/a/17659731}, \Burl{https://stackoverflow.com/a/14759569}, \Burl{https://stackoverflow.com/a/12064297}, \Burl{https://stackoverflow.com/q/32561050}}.
 
 % Another option involves using two calls and \texttt{cbind}ing the output:
 
@@ -4578,10 +4579,10 @@ function. In fact, it can make some code much easier to understand.)
 The above questions are, basically, about ``where is the value of free
 variables found''. R uses lexical (or static) scoping. % It can be extremely
 % handy and fun, but it can lead to surprises.
-Good explanations here: \Burl{https://cran.r-project.org/doc/manuals/R-intro.html#Scope} (An Introduction to R),
+Good explanations here: \Burl{https://cran.r-project.org/doc/manuals/R-intro.html\#Scope} (An Introduction to R),
 \Burl{https://socserv.socsci.mcmaster.ca/jfox/Books/Companion-1E/appendix-scope.pdf}
 % \Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
-and \Burl{https://adv-r.hadley.nz/functions.html#lexical-scoping}.
+and \Burl{https://adv-r.hadley.nz/functions.html\#lexical-scoping}.
 
 In fact in the examples above there are several issues we might want to
 think about and a few terms we would need to define. There are the issues
@@ -4631,7 +4632,7 @@ try(c(8, 9))
 Which, of course, is asking questions about where (and how) R searches for
 things (even if we never write code such as that in f3, f2, or f1). Read,
 for instance, chapter 8 of ``Advanced R'', available for example here
-\Bulr{https://adv-r.hadley.nz/environments.html}. But maybe before that do
+\Burl{https://adv-r.hadley.nz/environments.html}. But maybe before that do
 this
 
 <<eval=FALSE>>=
