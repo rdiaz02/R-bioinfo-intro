@@ -4192,8 +4192,7 @@ As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}; fo
 \section{\R\  programming}\label{rprog}
 
 \R\  is a programming language. Comprehensive coverage is given in the books
-by Chambers ``Software for Data Analysis: Programming with R'', %% Gentleman
-%% ``R Programming for Bioinformatics'',
+by Chambers ``Software for Data Analysis: Programming with R'',
 Matloff's ``The art of R programming'', Wickham's ``Advanced R'', and
 Venables and Ripley ``S Programming'' (see details in
 \Burl{http://www.r-project.org/doc/bib/R-books.html}). Chapters 9 and 10
@@ -4300,7 +4299,7 @@ different place, and we initialize it with a value of 0?
 
 
 You can do confusing things. It is better to avoid them, and to avoid
-using the loop index:
+using the loop index (though this is all explained in the help):
 
 <<>>=
 
@@ -4345,6 +4344,23 @@ i
 
 @
 
+
+\texttt{if}, \texttt{if ... else}, and \texttt{switch} are also available, of course. Regarding \texttt{if}, \texttt{if ... else} and \texttt{for}: I find it worth to \textbf{always} (almost always) use braces (``{}''), even for statements in a single line: minimizes mistakes and hard-to-debugg errors and makes it easier to understand the code.
+
+<<>>=
+aa <- 9
+
+if (aa < 95) {
+  cat("\n aa is < 95\n")
+} else if (aa > 100) {
+  cat("\n hummm.... larger than a 100\n")
+} else {
+  cat("\n between 95 and a 100\n")
+}
+
+@
+
+
 \subsection{Defining your own functions}
 
 As the ``Introduction to R'' manual says
@@ -4360,8 +4376,8 @@ As the ``Introduction to R'' manual says
   written functions.
 \end{quote}
 
-Here we only cover the very basics. See the ``Introduction to R'' for more
-details, and the books above for even more coverage.
+Here we only cover the very basics. % See the ``Introduction to R'' for more
+% details, and the books above for even more coverage.
 
 
 
@@ -4513,7 +4529,7 @@ that explicitly has \texttt{return(x + z)}?  (Yes, that is an \activities
 \item What will be the value of ``z'' used by f1? Think this before typing
   anything!
 
-\item Make sure there are no objects named \texttt{z} in the workspace and
+\item Make sure there are no objects named \texttt{z} in the workspace (e.g., \texttt{rm(z)}) and
   do \texttt{f1(3)}
 
 \item Now assign \texttt{-100} to ``z'' and do \texttt{f1(3)}.
@@ -4560,10 +4576,12 @@ function. In fact, it can make some code much easier to understand.)
 
 
 The above questions are, basically, about ``where is the value of free
-variables found''. R uses lexical (or static) scoping. It can be extremely
-handy and fun, but it can lead to surprises. Good explanations here:
-\Burl{http://adv-r.had.co.nz/Functions.html\#lexical-scoping} and
-\Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
+variables found''. R uses lexical (or static) scoping. % It can be extremely
+% handy and fun, but it can lead to surprises.
+Good explanations here: \Burl{https://cran.r-project.org/doc/manuals/R-intro.html#Scope} (An Introduction to R),
+\Burl{https://socserv.socsci.mcmaster.ca/jfox/Books/Companion-1E/appendix-scope.pdf}
+% \Burl{http://cran.r-project.org/doc/contrib/Fox-Companion/appendix-scope.pdf}
+and \Burl{https://adv-r.hadley.nz/functions.html#lexical-scoping}.
 
 In fact in the examples above there are several issues we might want to
 think about and a few terms we would need to define. There are the issues
@@ -4613,7 +4631,7 @@ try(c(8, 9))
 Which, of course, is asking questions about where (and how) R searches for
 things (even if we never write code such as that in f3, f2, or f1). Read,
 for instance, chapter 8 of ``Advanced R'', available for example here
-\Burl{http://adv-r.had.co.nz/Environments.html}. But maybe before that do
+\Bulr{https://adv-r.hadley.nz/environments.html}. But maybe before that do
 this
 
 <<eval=FALSE>>=
@@ -4787,38 +4805,38 @@ Type the following code carefully (based upon \Burl{https://stackoverflow.com/a/
 
 <<>>=
 f1x <- function(x){
-  if( x > 0 ){
-      invisible("bigger than 0")
-  } else{
-     return("less than 0")
+  if (x > 0) {
+    invisible("bigger than 0")
+  } else {
+    return("less than 0")
   }
   "something went wrong"
 }
 
 f1y <- function(x){
-  if( x > 0 ){
-     invisible("bigger than 0")
-  } else{
-     return("less than 0")
+  if (x > 0) {
+    invisible("bigger than 0")
+  } else {
+    return("less than 0")
   }
 }
 
 
 f1z <- function(x){
-  if( x > 0 ){
-      invisible("bigger than 0")
-  } else{
-     return("less than 0")
+  if (x > 0) {
+    invisible("bigger than 0")
+  } else {
+    return("less than 0")
   }
   return("something went wrong")
 }
 
 
 f1w <- function(x){
-  if( x > 0 ){
-      return(invisible("bigger than 0"))
-  } else{
-     return("less than 0")
+  if (x > 0) {
+    return(invisible("bigger than 0"))
+  } else {
+    return("less than 0")
   }
   return("something went wrong")
 }
@@ -4848,10 +4866,10 @@ This is my preferred version:
 <<>>=
 
 f1A <- function(x){
-  if( x > 0 ){
-      return(invisible("bigger than 0"))
-  } else{
-     return("less than 0")
+  if (x > 0) {
+    return(invisible("bigger than 0"))
+  } else {
+    return("less than 0")
   }
 }
 
