@@ -3633,13 +3633,31 @@ With lists we will use \code{lapply}. For example, lets look at the
 first element of each of the components of the list (see how we define a
 function on the fly):
 <<tidy=FALSE>>=
-(listA <- list(one.vector = 1:10,  hello = "Hola",
+(listA <- list(one.vector = 11:30,  hello = "Hola",
                one.matrix = matrix(rnorm(20), ncol = 5),
                another.list = list(a = 5,
                  b = factor(c("male", "female", "female")))))
 
-lapply(listA, function(x) x[[1]])
+lapply(listA, function(x) x[1])
 @
+
+Now, look at this, which is very similar, but here we access the second element:
+
+<<>>=
+(listB <- list(one.vector = 11:22, hello = c("Hola", "adios"),
+               one.matrix = matrix(111:125, ncol = 5),
+               another.list =
+                 list(a = 5:9,
+                      b = factor(c("male", "female", "female")))))
+
+lapply(listB, function(x) x[2])
+
+## Notice this too
+lapply(listB, function(x) class(x))
+@
+
+
+
 
 \subsection{tapply and by}\label{sec:tapply-by}
 
@@ -4028,6 +4046,14 @@ lapply(split(one.dataframe,
              list(one.dataframe$sex,
                   one.dataframe$country)),
        function(x) lm(Y ~ age, data = x))
+
+## How is this different or similar?
+## (hint: how are we telling lm where Y and age come from?)
+lapply(split(one.dataframe,
+             list(one.dataframe$sex,
+                  one.dataframe$country)),
+       function(x) lm(x$Y ~ x$age))
+
 
 ## And this is similar to some operations we did before
 ## with aggregate. Though I think aggregate's output
