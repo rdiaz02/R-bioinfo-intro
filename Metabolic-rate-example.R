@@ -11,8 +11,8 @@
 ## What is in the workspace? I want it clean
 rm(list = ls())
 
-anage <-  read.table("AnAge_birds_reptiles.txt", 
-                     header=TRUE, na.strings="NA")
+anage <-  read.table("AnAge_birds_reptiles.txt",
+                     header = TRUE, na.strings = "NA")
 
 
 ## Simpler to do it now, so it is available later
@@ -27,7 +27,7 @@ plot(Metabolic.rate..W. ~ Body.mass..g.,
      col = c("red", "blue")[anage$Class],
      log = "xy")
 
-
+## skip (much longer, up to line 204)
 
 ## skip
 ######################################################################
@@ -104,19 +104,19 @@ scatterplot(Metabolic.rate..W. ~
             cex = c(1, 8)[Class])
 
 
-## Hummmm... no points
+## Hummm... does not work
 scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
             data = anage,
             log = "xy",
             cex = c(1, 8)[anage$Class])
 
-
+## This is no longer relevant as it works
 ## What is happening here?? (For details of stringsAsFactors: https://developer.r-project.org/Blog/public/2020/02/16/stringsasfactors/index.html)
+
+## Yes, it is a factor
 anage$Class
 
-## Aha!
-anage$Class <- factor(anage$Class)
 
 ## Now
 plot(Metabolic.rate..W. ~ Body.mass..g.,
@@ -124,7 +124,7 @@ plot(Metabolic.rate..W. ~ Body.mass..g.,
      log = "xy",
      cex = c(1, 3)[anage$Class])
 
-## Still does not do what we want
+## Does not do what we want
 scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
             data = anage,
@@ -133,7 +133,7 @@ scatterplot(Metabolic.rate..W. ~
 
 
 
-## let's try again. 
+## let's try again.
 dx <- na.omit(anage[, c("Metabolic.rate..W.",
                         "Body.mass..g.",
                         "Class")])
@@ -155,7 +155,8 @@ scatterplot(Metabolic.rate..W. ~
 
 ## continue with plot
 
-
+######################################################################
+## /skip
 
 ## ## This would break if Class is not a factor
 plot(Metabolic.rate..W. ~ Body.mass..g.,
@@ -234,7 +235,7 @@ p2 <- ggplot(aes(x = Body.mass..g.,
                  y = Metabolic.rate..W.,
                  color = Class),
              data = anage) +
-    geom_point() 
+    geom_point()
 p2
 
 p2 + scale_x_log10() + scale_y_log10() +
@@ -284,7 +285,7 @@ legend(locator(1), legend = levels(anage$Class),
 
 plot(logmet ~ logbm, data = anage,
      xlab = "Body mass (g)",
-     ylab = " Metabolic rate (W)",      
+     ylab = " Metabolic rate (W)",
      axes = FALSE)
 
 box()
@@ -296,7 +297,7 @@ summary(anage)
 ## range of metabolic rate
 exp(seq(from = -4.3, to = 2, length.out = 6))
 
-yv <- c(0.01, 0.05, 0.15, 0.6, 2, 7) 
+yv <- c(0.01, 0.05, 0.15, 0.6, 2, 7)
 log(yv)
 
 axis(side = 2, at = log(yv), labels = yv)
@@ -410,7 +411,7 @@ for(att in names(attributes(anage3))) {
 
 lapply(names(attributes(anage3)),
        function(u) {
-           cat("\n attribute ", u, ": ", 
+           cat("\n attribute ", u, ": ",
                identical(attributes(anage3)[[u]],
                          attributes(anage.clean)[[u]]),
                "\n")
@@ -421,7 +422,7 @@ lapply(names(attributes(anage3)),
 ## sending to null (or whatever)
 null <- lapply(names(attributes(anage3)),
                function(u) {
-                   cat("\n attribute ", u, ": ", 
+                   cat("\n attribute ", u, ": ",
                        identical(attributes(anage3)[[u]],
                                  attributes(anage.clean)[[u]]),
                        "\n")
@@ -473,7 +474,7 @@ abline(mbirds, col = "salmon")
 abline(mrept, col = "turquoise")
 
 
-## Too much work. 
+## Too much work.
 ## A nicer, smarter way?
 
 ## I can certainly do this. split-apply(-combine)
@@ -529,6 +530,10 @@ sapply(i39b, summary)
 vapply(i39b, summary,
        c(Min. = 0, "1st Qu." = 0, Median = 0,
          mean = 0, "3rd Qu." = 0, Max. = 0))
+
+vapply(i39b, summary,
+       rep(0, 6))
+
 
 ## And replicate?
 replicate(1000, mean(rnorm(100)))

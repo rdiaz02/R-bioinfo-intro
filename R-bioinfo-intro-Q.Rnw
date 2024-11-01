@@ -1276,6 +1276,7 @@ offer ways of tidying your code, and there are tools that can help you here
 \item 80-column rule
   \end{itemize}
 
+  \subsubsection{Commenting code}\label{sec:code-comments}
 And what about comments? My preferences: signature and purpose right before the function, comments inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose.
 
 
@@ -4271,7 +4272,7 @@ for(i in 1:10)
 @
 
 (note that in the example above I could get away without using braces
----\code{``\{\}''}--- after the \code{for} because the complete expression
+---\verb@{}@--- after the \code{for} because the complete expression
 is only one function call, \code{abline}).
 
 \code{while} keeps repeating a set of instructions until a condition is
@@ -4372,7 +4373,7 @@ i
 @
 
 
-\texttt{if}, \texttt{if ... else}, and \texttt{switch} are also available, of course. Regarding \texttt{if}, \texttt{if ... else} and \texttt{for}: I find it worth to \textbf{always} (almost always) use braces (``{}''), even for statements in a single line: minimizes mistakes and hard-to-debugg errors and makes it easier to understand the code.
+\texttt{if}, \texttt{if ... else}, and \texttt{switch} are also available, of course. Regarding \texttt{if}, \texttt{if ... else} and \texttt{for}: I find it worth to \textbf{always} (almost always) use braces (\verb@{}@), even for statements in a single line: it minimizes mistakes and hard-to-debugg errors and makes it easier to understand the code.
 
 <<>>=
 aa <- 9
@@ -4451,7 +4452,8 @@ x <- rnorm(50)
 @
 
 (I won't be showing the output of plotAndSummary: but make sure you do it,
-and understand what is going on).
+and understand what is going on. Oh, what would change if the last statement were \verb@summary(x)@ instead of \verb@print(summary(x))@?).
+
 
 <<results="hide",fig.keep="none">>=
 plotAndSummary(x)
@@ -4535,7 +4537,7 @@ arguments are considered. Really: type the above code. Those are
 
 \subsection{Scoping, frames, environments, etc}\label{scoping}
 This is more advanced material. Do this when you are awake. For now, we
-will only scratch the surface.
+will only scratch the surface. But yes, the material of this section can be part of the exam.
 
 Suppose this:
 <<eval=TRUE>>=
@@ -4681,7 +4683,7 @@ Oh, do you know what ``c'' we just removed? (Yes that was an \activities
 
 If we have time, we will cover some of these issues in more detail in file \texttt{some-env-scoping-examples.R}.
 
-
+%% FIXME: here we should go over global environment, search(), and attach()/detach() and explain that we can attach(df1) and the associated problems.
 
 
 
@@ -4909,6 +4911,9 @@ f1A <- function(x){
 \clearpage
 
 
+\subsection{Commenting code}\label{sec:code-comments-2}
+Please, make sure to read again the short section about ``Commenting code'': \ref{sec:code-comments}.
+
 \section{Revisiting an example that brings a few things
   together}\label{example-multtest}
 
@@ -5044,10 +5049,10 @@ f1 <- function(x) 3 * x
 f2 <- function(x) 5 + f1(x)
 
 f3 <- function(z, u) {
-    v <- runif(z)
-    a <- f2(u)
-    b <- f2(3 * v)
-    return(a + b)
+  v <- runif(z)
+  a <- f2(u)
+  b <- f2(3 * v)
+  return(a + b)
 }
 
 f3(3, 7)
