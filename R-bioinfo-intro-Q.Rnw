@@ -1279,7 +1279,7 @@ offer ways of tidying your code, and there are tools that can help you here
   \subsubsection{Commenting code}\label{sec:code-comments}
 And what about comments? My preferences: signature and purpose right before the function, comments inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose.
 
-
+(For an awesome course, that uses Racket, see: \Burl{https://www.edx.org/course/how-to-code-simple-data})
 % is even a package that can help
 % you do it
 % (\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
@@ -5421,20 +5421,18 @@ trace(randomForest:::predict.randomForest, edit = TRUE)
 \clearpage
 \section{Object-oriented programming and classes S3 and S4}\label{oop}
 Is object-oriented programming possible in R? Yes. In fact, there are
-three different systems for OOP. But we will not cover any in this course
-and, in fact, nothing in these notes (except for a possibly cryptic
+four or five different systems for OOP. But  nothing in these notes (except for a possibly cryptic
 reference to \code{predict.randomForest}, in section \ref{selbias})
-requires you to understand any of this. But it can become
+requires you to understand any of this.
+
+Being aware of OOP  can become
 important when you write code and it will become relevant when you read
-code from others. Look at section 10.9 in ``An introduction to R''
-(\Burl{http://cran.r-project.org/doc/manuals/r-release/R-intro.html\#Object-orientation}),
-included with your R, which only covers S3, and chapter 7 of Wickham's
-``Advanced R'', \Burl{http://adv-r.had.co.nz/OO-essentials.html}, which
+code from others. For details, look at section 10.9 in ``An introduction to R'' (\Burl{http://cran.r-project.org/doc/manuals/r-release/R-intro.html\#Object-orientation}), included with your R, which only covers S3, and the part of Wickham's 2nd edition of
+``Advanced R'', \Burl{https://adv-r.hadley.nz/oo.html} (chapters 12 to 16), which
 covers S3, S4, and reference classes, for more details. S3 is a relatively
 simple approach, and is the one used by most CRAN packages (and the one
 used in base and stats in R); S4 is very popular in BioConductor, but is
 much more complicated (and, I'd say, cumbersome).
-
 
 We will go over file \texttt{S3-S4-notes-simplified.R} as an
 example. (That file is available from the repository).
