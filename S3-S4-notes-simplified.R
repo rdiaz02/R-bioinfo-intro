@@ -1,12 +1,23 @@
+## Examples of S3 and S4 OOP in R as kind of quick notes.
+
+
+
 ## Note the UseMethod. These are generics
 print
 plot
 summary
 
-## all methods for a generic
+## all methods for a generic (among those attached in search path)
 methods("plot")
-getAnywhere(plot.TukeyHSD)
+getAnywhere(plot.TukeyHSD) ## this is not exported: see the "*"
 
+## Compare this
+plot.ts
+stats::plot.ts
+## The first two fail, the third succeeds
+plot.TukeyHSD
+stats::plot.TukeyHSD ## Note what it says
+stats:::plot.TukeyHSD
 
 ## What is available changes depending on what packages we have loaded.
 library(OncoSimulR)
@@ -25,15 +36,16 @@ methods(class = "lm")
 methods(class = "fitnessEffects")
 methods(class = "genotype_fitness_matrix")
 
-?methods
-## print(methods(class = "lm"), byclass = TRUE)
-## print(methods(class = "lm"), byclass = FALSE)
 
-
+## Again, lm. Two ways of displaying
+methods(class = "lm")
+## Show with the class
+print(methods(class = "lm"), byclass = FALSE)
+## See ?methods for details
 
 ## Methods DO NOT belong to objects
 
-
+## We've seen this above. To repeat:
 ## Getting the source code. From the help of methods
 
      ## The source code for all functions is available.  For S3 functions
@@ -42,13 +54,15 @@ methods(class = "genotype_fitness_matrix")
      ## namespace, see ‘getAnywhere’ or ‘getS3method’.  For S4 methods,
      ## see ‘getMethod’.
 
+## Let us try that
+##   we know add1.lm exists, from the above call to methods(class = "lm")
 add1.lm
 getAnywhere("add1.lm")
 stats:::add1.lm
 getS3method("add1", "lm")
 ## This is exported. No problem here
 kappa.lm
-
+## What about packages
 getAnywhere("plot.fitnessEffects")
 getS3method("plot", "fitnessEffects")
 
@@ -60,30 +74,39 @@ getS3method("plot", "fitnessEffects")
 
 ## Let's pretend we want to deal with some very specific kinds of
 ## structures that have info about cholesterol, the expression of one
-## gene, and the kind of experiment this was measured
+## gene, and the kind of experiment this was measured.
 
 ## We want to convert data frames to that class, and produce some special
 ## plots and output when shown
 
+## Testing. We must test our code. Several approaches, I'll use testthat
 library(testthat) ## for testing
-
 
 ## Oh, notice the signature. See "How to design programs". https://htdp.org/
 ##  An Edx sequence of courses: https://www.edx.org/course/how-to-code-simple-data
 
 
+## We start writing the generic.
+## plot, print, summary, etc, are generics
+## and we now want a generic that will take different types of objects
+## and turn them into our new kinds of objects.
+## For example from data.frame to our object or from matrix to our object
+## Then, we will write to_CG.data.frame, etc. This will be
+## the implementation for the specific class (data.frame), the method.
+
+
 ## object -> Cholest_Gene object
 ## General converter to Cholest_Gene object.
 to_CG <- function(x, ...) {
-    UseMethod("to_CG")
+  UseMethod("to_CG")
 }
 
 
 ## data.frame -> Cholest_Gene object
 ## Take a data frame and return (if possible) a Cholest_Gene object.
 to_CG.data.frame <- function(x) {
-    cns <- c("Cholesterol", "Gene", "Kind")
-    if (!(all(colnames(x) %in% cns)))
+  cns <- c("Cholesterol", "Gene", "Kind")
+  if (!(all(colnames(x) %in% cns)))
         stop(paste("Column names are not ", cns))
     tmp <- x[, cns]
     ## Notice I do not set this to be of data.frame class
@@ -92,6 +115,7 @@ to_CG.data.frame <- function(x) {
 }
 
 
+## Try it
 uu <- to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                  Kind = "Cl1"))
 
@@ -103,6 +127,9 @@ str(uu)
 attributes(uu)
 
 ## Second attempt.
+
+## data.frame -> Cholest_Gene object
+## Take a data frame and return (if possible) a Cholest_Gene object.
 to_CG.data.frame <- function(x) {
     cns <- c("Cholesterol", "Gene", "Kind")
     if (!(all(colnames(x) %in% cns)))
@@ -124,6 +151,8 @@ uu
 
 ## Let's do something more sophisticated
 
+## Cholest_Gene object -> printed Cholest_Gene object
+## Print a Cholest_Gene object.
 print.Cholest_Gene <- function(x) {
     u <- x[, c(1, 2)]
     class(u) <- "data.frame"
@@ -144,6 +173,9 @@ to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
 ## But that was ugly? write a default that will fail gracefully
 ## And we can extend as needs arise.
 
+## arbitrary object -> failure message if no method
+## Return error message if there is no specific method
+## to convert from that class to Cholest_Gene class
 to_CG.default <- function(x) {
     stop("For now, only methods for data.frame are available.")
 }
@@ -160,7 +192,14 @@ to_CG(cbind(Cholesterol = 1:10, Gene = 11:20))
 
 library(testthat)
 
-## go step by step here?
+## go step by step here? this has too many newlines, just
+## to improve readability
+## What we will do:
+##   Run the block (and see it fails)
+##   Run each internal call (to debug)
+
+## Of course, we first had to write this code
+
 test_that("minimal conversions and failures", {
 
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
@@ -175,6 +214,12 @@ test_that("minimal conversions and failures", {
                                      Kind = "Cl1")),
                  "Column names are not ",
                  fixed = TRUE)
+
+    expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
+                                     Kind = "Cl1",
+                                     whatever = "abcd")),
+                    "Cholest_Gene")
+
 })
 
 ## eh? This fails! And the output is ugly!!
@@ -217,9 +262,8 @@ test_that("minimal conversions and failures", {
     expect_error(to_CG(cbind(Cholesterol = 1:10, Gene = 11:20)),
                  "For now, only methods for data.frame are available",
                  fixed = TRUE)
-    
     expect_error(to_CG(data.frame(Cholesterol = 1:10, Geni = 11:20,
-                                     Kind = "Cl1")),
+                                  Kind = "Cl1")),
                  "Column names are not",
                  fixed = TRUE)
     expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
@@ -229,22 +273,26 @@ test_that("minimal conversions and failures", {
 
 ## play with some plotting code
 
+## Cholest_Gene object -> ggplot object
+## Produce a ggplot of a Cholest_Gene object.
 plot.Cholest_Gene <- function(x, ...) {
-    class(x) <- "data.frame"
-    require(ggplot2)
-    ## FIXME: should I explicitly print? Hummm.. return, as orthodox?
-    if (nlevels(x$Kind) >= 2 )
-        p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Kind),
-                     data = x) +
-            facet_grid(~ Kind)
-    else
-        p1 <- ggplot(aes(y = Cholesterol, x = Gene), data = x)
-    p1 <- p1 + geom_point()
-    return(p1)
+  class(x) <- "data.frame"
+  require(ggplot2)
+  ## FIXME: should I explicitly print? Hummm.. return, as orthodox?
+  if (nlevels(x$Kind) >= 2)
+    p1 <- ggplot(aes(y = Cholesterol, x = Gene, col = Kind),
+                 data = x) +
+      facet_grid(~ Kind)
+  else
+    p1 <- ggplot(aes(y = Cholesterol, x = Gene), data = x)
+  p1 <- p1 + geom_point()
+  return(p1)
 }
 
 plot(uu)
 
+
+## Now, add levels to Kind. But note what happens
 uu2 <- uu
 uu2[1:3, "Kind"] <- "Cl2"
 ## notice the NA, but that ain't related to our class
@@ -253,7 +301,6 @@ uu2[1:3, "Kind"] <- "Cl2"
 uu2[, "Kind"] <- factor(uu2[, "Kind"])
 
 plot(uu2)
-
 
 ## Of course, this works
 methods("to_CG")
@@ -273,7 +320,7 @@ methods(class = "Cholest_Gene")
 ### A quick overview of S4
 
 
-## From Wickham's Advanced R:
+## From Wickham's Advanced R (1st ed)
 ## S4 works in a similar way to S3, but it adds formality and
 ## rigour. Methods still belong to functions, not classes, but:
 
@@ -295,7 +342,7 @@ showMethods(class = "Matrix")
 
 ## Compare these two between a session of R without loading Matrix
 showMethods("print")
-print 
+print
 
 
 ## Access to elements
@@ -313,7 +360,7 @@ print(fit1)
 stats:::print.lm(fit1)
 fit1
 names(fit1)
-fit1$coefficients 
+fit1$coefficients
 ## don't do that for real. Use coefficients
 coefficients(fit1)
 isS4(m1)
@@ -326,7 +373,7 @@ m1@Dim
 m1@x
 m2@Dim
 
-## From Wickham's Advanced R programming (section 7.5)
+## From Wickham's Advanced R programming (1st ed., section 7.5)
 
 ## Three OO systems is a lot for one language, but for most R programming,
 ## S3 suffices. In R you usually create fairly simple objects and methods
@@ -340,4 +387,17 @@ m2@Dim
 ## Bioconductor packages, which need to model complicated
 ## interrelationships between biological objects.
 
-## And there are other systems, like reference classes.
+
+## From Wickham's Advanced R programming (2nd ed., section 16.1)
+
+## Overall, when picking an OO system, I recommend that you default to S3. S3
+## is simple, and widely used throughout base R and CRAN. While it’s far from
+## perfect, its idiosyncrasies are well understood and there are known
+## approaches to overcome most shortcomings. If you have an existing
+## background in programming you are likely to lean towards R6, because it
+## will feel familiar. I think you should resist this tendency for two
+## reasons. Firstly, if you use R6 it’s very easy to create a non-idiomatic
+## API that will feel very odd to native R users, and will have surprising
+## pain points because of the reference semantics. Secondly, if you stick to
+## R6, you’ll lose out on learning a new way of thinking about OOP that gives
+## you a new set of tools for solving problems.
