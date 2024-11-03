@@ -3393,7 +3393,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 @
 
 \subsection{Recovering the data that produced the table}
-And what if we want to recover the data and we have a data frame that already contains the frequencies? The following code is something you should be able to understand:
+And what if we want to recover the data (in our case above, the dataframe \texttt{x}) and we have a data frame that already contains the frequencies? The following code is something you should be able to understand:
 
 <<>>=
 dfx[rep(1:nrow(dfx), dfx$Freq), c("a", "b", "c")]
@@ -3904,7 +3904,7 @@ with(one.dataframe,
 %% argument
 
 
-\subsubsection{\activities: \  aggregate, multiple columns, and xtabs.0s and NAs}
+\subsubsection{\activities: \  aggregate, multiple columns, and xtabs. 0s and NAs}
 \label{sec:activ-aggr-xtabs}
 
 \begin{enumerate}
