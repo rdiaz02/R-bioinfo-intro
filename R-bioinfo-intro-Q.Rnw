@@ -2500,6 +2500,16 @@ listB[[c(3, 11)]]
 listB[[3]][11]
 listB[[3]][3, 3]
 listB[[3]][c(3, 3)]
+## To re-emphasize that
+listB[[3]][3, 4]
+listB[[3]][c(3, 4)]
+
+listB[[3]][ , 4]
+listB[[3]][3, ]
+
+listB[[3]][ , 4, drop = FALSE]
+listB[[3]][3, , drop = FALSE]
+
 @
 
 
