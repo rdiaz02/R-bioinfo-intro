@@ -1,3 +1,4 @@
+
 %% ;;; -*- mode: Rnw; -*-
 \synctex=1
 \documentclass[a4paper,11pt]{article}
@@ -2473,7 +2474,7 @@ A more complex list, that includes another list inside:
 <<tidy=FALSE>>=
 
 (listB <- list(one.vector = 1:10,  hello = "Hola",
-               one.matrix = matrix(rnorm(20), ncol = 5),
+               one.matrix = matrix(111:125, ncol = 5),
                another.list =
                list(a = 5,
                     b = factor(c("male",
