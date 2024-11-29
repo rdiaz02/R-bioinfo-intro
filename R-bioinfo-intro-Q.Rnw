@@ -517,13 +517,24 @@ might not be able to help you.
 \item Take a loot at the documentation for ESS, ``Emacs Speaks Statistics'', the way we interact with R: \url{https://ess.r-project.org/Manual/ess.html}.
 \item To learn more about Emacs itself:
   \begin{itemize}
-  \item The book ``Mastering Emacs'', by Mickey Petersen, that you can purchase from \url{https://www.masteringemacs.org/}. It is not free, but if you are going to use Emacs, it is probably well worth it.
 
-  \item The book ``Use GNU Emacs. The Plain Text Computing Environment'', by Keith Waclena: \url{https://www2.lib.uchicago.edu/keith/emacs/}. (Freely available as HTML, PDF, Epub ---yeah, there are unfinished chapters, but it is very complete as it is now).
+    \item The short intro course ``Getting started with Emacs'', by
+      Marie-Hélène Burle, available from
+      \url{https://mint.westdri.ca/emacs/top_intro}.
+
+    \item The book ``Use GNU Emacs. The Plain Text Computing Environment'',
+      by Keith Waclena:
+      \url{https://www2.lib.uchicago.edu/keith/emacs/}. Freely available as
+      HTML, PDF, Epub ---yeah, there are unfinished chapters, but it is
+      very complete as it is now.
+
+    \item The book ``Mastering Emacs'', by Mickey Petersen, that you can purchase from \url{https://www.masteringemacs.org/}. It is not free, but if you are going to use Emacs, it is probably well worth it.
+
 
   \item The Emacs manual. It is long, but there are many things you can skip. It is a very well written and organized manual, with lots of cross-references, that allows you to choose what to read. I think it is the best manual I've ever read. Available as PDF, HTML, and Info.
 
-\item I'd start with one of Petersen's or Waclena's, or both. And I'd probably intersperse jumping to the Emacs manual to read specific chapters or sections of things that particularly interest you (e.g., read about Dired in Petersen or Waclena, then go to the Emacs Manual). Repeat as needed.
+\item I'd start with the short intro course to get a quick overview and
+  then dive into one of Petersen's or Waclena's, or both. And I'd probably intersperse jumping to the Emacs manual to read specific chapters or sections of things that particularly interest you (e.g., read about Dired in Petersen or Waclena, then go to the Emacs Manual). Repeat as needed.
   \end{itemize}
 \item Continue the journey on your own.
   \end{enumerate}
