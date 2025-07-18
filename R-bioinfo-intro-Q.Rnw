@@ -1284,7 +1284,8 @@ offer ways of tidying your code, and there are tools that can help you here
   \subsubsection{Commenting code}\label{sec:code-comments}
 And what about comments? My preferences: signature and purpose right before the function, comments inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose.
 
-(For an awesome course, that uses Racket, see: \Burl{https://www.edx.org/course/how-to-code-simple-data})
+(For an awesome course, that uses Racket, by Gregor Kiczales, see: \Burl{https://www.edx.org/course/how-to-code-simple-data})
+%% Gregor Kiczales
 % is even a package that can help
 % you do it
 % (\Burl{http://cran.r-project.org/web/packages/formatR/index.html},
