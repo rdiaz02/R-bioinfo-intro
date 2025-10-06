@@ -1,7 +1,7 @@
 ## For me: recall to  (setq ess-eval-visibly-p t)
 
 ## This is a reordered version of Metabolic-rate-example.R,
-## It is order by importance of the ideas introduced
+## It is ordered by importance of the ideas introduced
 ## (but it breaks the natural flow of the original file)
 
 ## PURPOSE of this:
