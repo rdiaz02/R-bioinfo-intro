@@ -175,8 +175,7 @@ computing and graphics'' that will allow you to carry out each of the above.
 
 \section{This document and how to use it}
 
-This document is to be used a crash and relatively quick introduction to
-R, with a clear Bioinformatics bias\footnote{OK, there is an example with
+This document is to be used as a crash and relatively quick introduction to R, with a clear Bioinformatics bias\footnote{OK, there is an example with
 birds, reptiles, metabolic rates, body size, etc, that is not really
 bioinformatics but \ldots it is a neat data set and matches with some of
 my early scientific loves.}.
@@ -196,7 +195,7 @@ The structure and logic is as follows:
   detail what are the main objects of R (vectors, data frames, matrices),
   how to manipulate them and some plotting. This can be boring, and this
   used to be after section \ref{crashex} but some students argued strongly
-  that they'd rather see this first, so this comes now first.
+  that they'd rather see this first, so this comes first now.
 \item After that, we jump into \R\ with three longer examples (section
   \ref{crashex}). Again, on first reading you might not understand
   all of what is done, but we will go over it in class.
@@ -511,7 +510,7 @@ might not be able to help you.
 
 \begin{enumerate}
 \item Install Emacs, a recent version (try for it to be at least version 28 or above). Most Linux distributions have a recent enough Emacs. For Windows and macOS a good option might be Vincent Goulet's binaries, which also include additional packages such as ESS: \url{https://gitlab.com/emacs-modified}.
-\item Do the Emacs tutorial: start Emacs, and type \texttt{C-h t} (that is: press the Control key and, while holding it, press ``h''; release and press ``t''). This will give you a basic understanding of Emacs keybindings and common terminology. \textbf{Do not skip this}.
+\item Do the Emacs tutorial: start Emacs, and type \texttt{C-h t} (that is: press the Control key and, while holding it, press ``h''; release and press ``t''). This will give you a basic understanding of Emacs keybindings and common terminology. \textbf{Do not skip this ---if you want to use Emacs, that is; skip if you use lesser editors}.
 \item All you have now is bare bones Emacs. What about starter kits? In  other words, ``Emacs bundles of packages + config with all batteries  included''? I do not generally recommend them. Some people (mainly ex-Vim  users) enjoy Emacs Doom or Spacemacs, but they might later get in the  way.   If I had to recommend one, I'd try ``Emacs Bedrock'':  \url{https://sr.ht/~ashton314/emacs-bedrock/}; it uses some settings and  packages I do not use, but seems very minimal, and it looks like it would  easily allow modifying the configuration ``as the user grows in knowledge  and power''. An even more minimal approach is Protesilaos Stavrou's  ``Emacs: a basic and capable configuration'':  \url{https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/}.
 
 
@@ -621,7 +620,7 @@ And a few details about the criteria above, and why they matter (at least to me)
 
 Finally, and although this is not a complete editor, for quick and dirty console
 use of R you might want to use radian (\Burl{https://github.com/randy3k/radian});
-this is what I use in my scratchpads.
+this is what I sometimes use in my scratchpads.
 
 \subsubsection{tidyverse}\label{sec:tidyverse}
 
