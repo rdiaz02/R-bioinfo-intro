@@ -33,6 +33,8 @@
 
 \newcommand{\activities}{{\textcolor {red} {Activities}}}
 
+\newcommand{\optactivities}{{\textcolor {green} {Optional activities}}}
+
 % \newcommand{\R}{{something or other R}} but this gets to be a mess. And
 % ugly.
 \newcommand{\R}{R}
@@ -229,6 +231,8 @@ this will allow you to understand the material better, connect it with
 other pieces, and retain it for longer.
 
 
+
+Some sections are marked as ``\activities''. Please make sure to do them. Some others as ``\optactivities'': we rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam).
 
 
 \subsection{The PDF and the code}
@@ -4215,8 +4219,8 @@ Look at package \texttt{parallel} (which is part of the basic packages) and
 its function \texttt{mclapply}. (Under POSIX systems using forking is trivial;
 under Windows you'll need something different).
 
-\section{(Optional: two handy packages \texttt{readr} and \texttt{dplyr})}
-We won't get into details about this: Hadley Wickham has two packages,
+\section{(Optional: three handy packages \texttt{readr} and \texttt{dplyr} and \texttt{data.table})}
+We won't get into details about this: Hadley Wickham is the author of  two packages,
 \texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
 data manipulation (dplyr) and reading large flat files (readr). Both are
 explained, in addition to the documentation of each of the packages, in
@@ -4227,6 +4231,8 @@ This link has a handy summary of \texttt{dplyr}:
 
 As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}; for very large data, I prefer \texttt{read\_table}.
 
+
+But do not forget to look at package \texttt{data.table} for many big data manipulations. It is often my favorite.
 \clearpage
 
 
@@ -4801,7 +4807,7 @@ checkUsageEnv(env = .GlobalEnv)
 
 
 
-\subsection{\activities \ Functions that return NULL and invisible}
+\subsection{\optactivities \ Functions that return NULL and invisible}
 \label{sec:null}
 
 Note: unless we have plenty of  time, we will skip this in class.
@@ -4840,7 +4846,7 @@ cc
 
 
 
-\subsection{\activities \ Using return explicitly and invisible}
+\subsection{\optactivities \ Using return explicitly and invisible}
 \label{sec:invisible_ret}
 
 Note: unless we have plenty of  time, we will skip this in class.
@@ -6899,7 +6905,7 @@ one remote repository of a package.
 
 \section{A few things to practice}
 These are some miscellaneous things that we have mentioned, but maybe not
-emphatically enough:
+emphatically enough. \textbf{Make sure you try the following!!!}:
 
 
 \begin{itemize}
@@ -7041,14 +7047,26 @@ info[as.character(grades), ]
 
 \section{If time permits}
 
+\subsection{do.call, rbind, rbindlist}
+\label{sec:do.c-rbind-rbindl}
+
+Here we comment on why we might want to do things like \texttt{do.call(rbind, something)}; then, why, with large data, we might want instead \texttt{data.table::rbindlist} or \texttt{dplyr::bind\_rows}.
+
+We saw a call to \texttt{do.call(rbind, something)} in section \ref{sec:texttt-suppl-deta}. \red{To be written, as need arises}. In the mean time, you can check these posts (I do not necessarily endorse them, and some of the use the pipe which, as is widely known, I dislike 😉): \Burl{https://stackoverflow.com/questions/10801750/whats-the-difference-between-lapply-and-do-call}, \Burl{https://rstudio-pubs-static.s3.amazonaws.com/886639_d5edefc1d5b341a4ab3aa2b2c37289cb.html}, \Burl{https://rstudio-pubs-static.s3.amazonaws.com/406521_7fc7b6c1dc374e9b8860e15a699d8bb0.html}.
+
+%% Locate the examples
+
+\subsection{Reshaping data: moving between long and wide formats}
+\label{sec:resh-data:-moving}
+See \texttt{reshape-long-wide.R}
+
+
 \subsection{More scoping and lexical scope}
 \label{sec:scoping-more}
 See \texttt{some-env-scoping-examples.R}
 
 
-\subsection{Reshaping data: moving between long and wide formats}
-\label{sec:resh-data:-moving}
-See \texttt{reshape-long-wide.R}
+
 
 \section{Session info}
 <<>>=
