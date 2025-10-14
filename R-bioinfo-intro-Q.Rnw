@@ -918,7 +918,8 @@ hist(c(1, 2, 7, 7, 7, 8, 8))
 
 <<activ1_b, eval=TRUE, echo=TRUE, results=FALSE>>=
 
-## For ease
+## For the sake of the example, use only the first 10 rows
+## of randomdata
 rd2 <- randomdata[1:10, ]
 
 ## Where we will store results
@@ -956,6 +957,24 @@ apply(rd2, 1, myfunction)
   passing a function (our anonymous function or \texttt{myfunction} as above) to
   another function. This is something very common and easy in R: passing
   functions to other functions.
+
+
+\item Try this on your own. What is happening here?
+<<difffx12>>=
+
+f1x <- function(v, theclass) t.test(v ~ theclass)$p.value
+
+apply(rd2, 1, function(z) f1x(z, theclass = class))
+
+apply(rd2, 1, f1x, theclass = class)
+
+## And this?
+f2x <- function(clase, w) t.test(w ~ clase)$p.value
+
+apply(rd2, 1, f2x, clase = class)
+
+@
+
 
 \end{enumerate}
 
@@ -7052,7 +7071,7 @@ info[as.character(grades), ]
 
 Here we comment on why we might want to do things like \texttt{do.call(rbind, something)}; then, why, with large data, we might want instead \texttt{data.table::rbindlist} or \texttt{dplyr::bind\_rows}.
 
-We saw a call to \texttt{do.call(rbind, something)} in section \ref{sec:texttt-suppl-deta}. \red{To be written, as need arises}. In the mean time, you can check these posts (I do not necessarily endorse them, and some of the use the pipe which, as is widely known, I dislike 😉): \Burl{https://stackoverflow.com/questions/10801750/whats-the-difference-between-lapply-and-do-call}, \Burl{https://rstudio-pubs-static.s3.amazonaws.com/886639_d5edefc1d5b341a4ab3aa2b2c37289cb.html}, \Burl{https://rstudio-pubs-static.s3.amazonaws.com/406521_7fc7b6c1dc374e9b8860e15a699d8bb0.html}.
+We saw a call to \texttt{do.call(rbind, something)} in section \ref{sec:texttt-suppl-deta}. \red{To be written, as need arises}. In the mean time, you can check these posts (I do not necessarily endorse them, and some of the use the pipe which, as is widely known, I dislike): \Burl{https://stackoverflow.com/questions/10801750/whats-the-difference-between-lapply-and-do-call}, \Burl{https://rstudio-pubs-static.s3.amazonaws.com/886639_d5edefc1d5b341a4ab3aa2b2c37289cb.html}, \Burl{https://rstudio-pubs-static.s3.amazonaws.com/406521_7fc7b6c1dc374e9b8860e15a699d8bb0.html}.
 
 %% Locate the examples
 
