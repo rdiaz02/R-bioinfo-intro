@@ -18,7 +18,7 @@
 \usepackage[small]{caption}
 \usepackage{hyperref}
 
-\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
 \newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
 \newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
 \newcommand{\Burl}[1]{\blu{\url{#1}}}
@@ -33,7 +33,7 @@
 
 \newcommand{\activities}{{\textcolor {red} {Activities}}}
 
-\newcommand{\optactivities}{{\textcolor {green} {Optional activities}}}
+\newcommand{\optactivities}{{\textcolor {Green} {Optional activities}}}
 
 % \newcommand{\R}{{something or other R}} but this gets to be a mess. And
 % ugly.
@@ -2054,7 +2054,7 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 Try to run the above with a \code{\&} instead of \code{\&\&}.
 
 % Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).''
-In R-4.4.1 this is now an error: ``Using vectors of more than one element in '\&\&' or '||' will give an error.''
+From R-4.4.1 this is now an error: ``Using vectors of more than one element in '\&\&' or '||' will give an error.''
 
 
 (From the help).
@@ -2517,7 +2517,7 @@ listB[[c(3, 4)]]
 @
 though I tend to find the last one confusing. I'd rather do
 <<>>=
-listB[[3]][4, 1]
+listB[[3]][1, 2]
 @
 
 To make sure we see this more clearly, do:
@@ -4792,7 +4792,7 @@ try(vv)
 @
 
 
-\subsubsection{\activities \ local}
+\subsubsection{\activities \ : local}
 \label{sec:activities--local}
 When could you think of using \texttt{local}?
 
