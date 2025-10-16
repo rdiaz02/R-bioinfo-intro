@@ -246,16 +246,16 @@ other pieces, and retain it for longer.
 
 
 
-Some sections are marked as ``\activities''. Please make sure to do them. Some others as ``\optactivities'': we rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam).
+Some sections are marked as ``\activities''. Please make sure to do them.
+
+Some others are marked as ``\optactivities'': we rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam). Other sections/subsections/whatever that we will not cover in class (nor would be in an exam) are indicated in  \textcolor{Green}{green}.
 
 
 \subsubsection{Changes starting on 2025-10-16: moving material to \skipinclass{whatever}}
 \label{sec:chang-start-2025}
 
-As we are (2025-2026) going too slow, I try to concentrate only the \textbf{absolutely, nonnegotiable, essential stuff} and move lots to subsections (or subsubsubsections, or whatever). The material moved out indicated as ``\skipinclass{Whatever (subsub)section title}''. \textbf{Do NOT skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material.
-(This will, at least for now, introduce some redundancy.)
-We'll see how it goes.
-
+As we are (course 2025-2026) going too slow, I try to concentrate only the \textbf{absolutely, nonnegotiable, essential stuff} and move lots to subsections (or subsubsubsections, or whatever). The material moved out is indicated as ``\skipinclass{Whatever (subsub)section title}''. \textbf{I would NOT skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material. (It is just material that introduces some redundancy.)  The optional material (the material that will not be in the exam), is indicated as \optactivities\  or has section (subsection, or whatever) in \textcolor{Green}{green}.
+%% We'll see how it goes.
 
 \subsection{The PDF and the code}
 
