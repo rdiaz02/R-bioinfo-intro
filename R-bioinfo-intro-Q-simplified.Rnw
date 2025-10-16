@@ -1,4 +1,6 @@
 %% ;;; -*- mode: Rnw; -*-
+
+%% From R-bioinfo-intro-Q.Rnw, but I experiment with leaving only the most important, and moving the rest as subsection, as we are going too slow.
 \synctex=1
 \documentclass[a4paper,11pt]{article}
 \usepackage{graphics}
@@ -19,6 +21,7 @@
 \usepackage{hyperref}
 
 \usepackage[dvipsnames]{xcolor}
+\newcommand{\Gray}[1]{{\textcolor {Gray} {#1}}}
 \newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
 \newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
 \newcommand{\Burl}[1]{\blu{\url{#1}}}
@@ -34,6 +37,9 @@
 \newcommand{\activities}{{\textcolor {red} {Activities}}}
 
 \newcommand{\optactivities}{{\textcolor {Green} {Optional activities}}}
+
+\newcommand{\skipinclass}[1]{{\textcolor {Periwinkle} {Skip in class #1}}}
+
 
 % \newcommand{\R}{{something or other R}} but this gets to be a mess. And
 % ugly.
@@ -58,7 +64,15 @@
 
 \usepackage{gitinfo2}
 
-
+%% Have paragraphs show as subsubsubsections
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
+\setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
 
 
 %% For using listings, so as to later produce HTML
@@ -233,6 +247,14 @@ other pieces, and retain it for longer.
 
 
 Some sections are marked as ``\activities''. Please make sure to do them. Some others as ``\optactivities'': we rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam).
+
+
+\subsubsection{Changes starting on 2025-10-16: moving material to \skipinclass{whatever}}
+\label{sec:chang-start-2025}
+
+As we are (2025-2026) going too slow, I try to concentrate only the \textbf{absolutely, nonnegotiable, essential stuff} and move lots to subsections (or subsubsubsections, or whatever). The material moved out indicated as ``\skipinclass{Whatever (subsub)section title}''. \textbf{Do NOT skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material.
+(This will, at least for now, introduce some redundancy.)
+We'll see how it goes.
 
 
 \subsection{The PDF and the code}
@@ -1894,10 +1916,28 @@ rep(1:3, 2:4)
 @
 
 
-\subsection{Creating vectors from other vectors}
+\subsection{Creating vectors from other vectors and the recycling rule}
 \label{sec:creat-vect-from}
 
+<<recycling1>>=
+v1 <- 11:16
+v2 <- 1:6
+v1 + v2
 
+v3 <- 1:4
+v1 + v3
+
+v4 <- 1:7
+v1 + v4
+
+v5 <- 1:2
+v1 + v5
+
+v1 + 9
+@
+
+
+\subsubsection{\skipinclass{:\ Slower going examples}}
 You can concatenate two vectors:
 <<>>=
 v1 <- 1:4
@@ -1959,27 +1999,45 @@ A few examples:
 <<>>=
 v1 <- 1:5
 v1 < 3
-(v2 <- (v1 < 3))
+(v1 < 3)
+
 v11 <- c(1, 1, 3, 5, 4)
 v1 == v11
 v1 != v11
-!(v1 == v11)
 identical(v1, v11)
 v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
 !v3
 v2 & v3
 v2 | v3
-(v1 > 3) & (v11 >= 2)
-(v1 > 3) | (v11 >= 2)
 xor(v2, v3)
 @
 
+\subsubsection{\skipinclass{:\ Additional examples}}
+<<>>=
+v1 == v11
+v1 != v11
+!(v1 == v11)
+identical(v1, v11)
+(v1 > 3) & (v11 >= 2)
+(v1 > 3) | (v11 >= 2)
+@
 
-\subsubsection{Logical values as 0, 1\label{log01}}
+
+
+\subsubsection{Logical values as 0, 1\label{log01} and \texttt{which}}
 In \R\ (as in many other languages) we can use logical values as if they
 were numeric: we can treat \code{TRUE} as 1 and \code{FALSE} as 0. (Note
 that we can also treat anything larger than 0 as TRUE). This can be very
 handy to find out how many elements fulfill a condition.
+
+
+<<wlog>>=
+vv <- 2:9
+which(vv < 5)
+sum(vv < 5)
+@
+
+\paragraph{\skipinclass{:\ Additional examples}}
 
 <<>>=
 vv <- c(1, 3, 10, 2, 9, 5, 4, 6:8)
@@ -2033,13 +2091,34 @@ Why did that work? What is \code{vv < 5} returning?
 
 \subsubsection{Do not use \code{T} for \code{TRUE} or \code{F} for
   \texttt{FALSE}}\label{no_t_for_true}
-\activities \  Can you think why? Try to come up with some examples or google
-around. Really. We will show a few examples in class.
-
-This is a short section: Please, please, please, never, ever, use \code{T} for
-\code{TRUE} or \code{F} for \texttt{FALSE}.
+\activities \  Can you think why? Try to come up with some examples or google around. Really.
+This is a short section: Please, please, please, never, ever, use \code{T} for \code{TRUE} or \code{F} for \texttt{FALSE}. You can count on at least one exam question about this.
 
 %% https://stat.ethz.ch/pipermail/r-help/2008-November/180085.html
+
+
+<<ltftf>>=
+
+T <- 0
+F <- -1
+
+if (T) cat("This should be printed\n")
+if (F) cat("This should NOT be printed\n")
+
+(x1 <- c(1, 2, NA))
+
+mean(x1, na.rm = TRUE)
+## This can be a VERY HARD to debugg bug
+mean(x1, na.rm = T)
+
+## TRUE and FALSE cannot be overwritten
+TRUE <- 0
+FALSE <- 1
+
+## Remove the aberration above
+rm(T, F)
+
+@
 
 
 \subsubsection{Shortcircuit logical operations}
@@ -2055,12 +2134,12 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 
 Try to run the above with a \code{\&} instead of \code{\&\&}.
 
+
+\paragraph{\skipinclass{:\ Additional examples}}
 % Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).''
 From R-4.4.1 this is now an error: ``Using vectors of more than one element in '\&\&' or '||' will give an error.''
 
-
 (From the help).
-
 
 <<>>=
 a1 <- c(TRUE, FALSE)
@@ -2109,29 +2188,15 @@ Positions or names will be given in between \code{[]}.
 Specifying positions you want:
 <<>>=
 (w <- 9:18)
-w[1]
 w[2]
 w[c(4, 3, 2)]
 @
 
-<<>>=
-w[c(1, 3)] ## not the same as
-w[c(3, 1)]
-@
 
-<<>>=
-w[1:2]
-w[3:6]
-w[seq(1, 8, by = 3)]
-vv <- seq(1, 8, by = 3)
-w[vv]
-@
 
 
 Specifying positions you do not want (original vector is NOT modified)
 <<>>=
-w[-1]
-w[-c(1, 3)] ## of course, the same as following
 w[-c(3, 1)]
 @
 
@@ -2140,7 +2205,6 @@ Using names
 <<>>=
 
 ages <- c(Juan = 23, Maria = 35, Irene = 12, Ana = 93)
-ages["Irene"]
 ages[c("Irene", "Juan", "Irene")]
 @
 
@@ -2148,17 +2212,13 @@ ages[c("Irene", "Juan", "Irene")]
 Using a logical vector \ldots
 <<>>=
 ages[c(FALSE, TRUE, TRUE, FALSE)]
-## what are thes doing? Avoid these things
-ages[c(FALSE, TRUE)]
-ages[c(TRUE, TRUE, FALSE)]
+
 @
 
 \ldots or something that implicitly is a logical vector
 <<>>=
 ## All less than 12
 w[w < 12]
-## same, but more confusing (here, not always)
-w[!(w >= 12)]
 
 ## All less than the median
 w[w < median(w)]
@@ -2185,9 +2245,53 @@ w <- 17:55
 
 
 
+\paragraph{\skipinclass{:\ Additional examples}}
+<<>>=
+w[c(1, 3)] ## not the same as
+w[c(3, 1)]
+
+
+## Of course, these two ways of removing are equivalent
+w[-c(1, 3)]
+w[-c(3, 1)]
+@
+
+
+<<>>=
+w[1:2]
+w[3:6]
+w[seq(1, 8, by = 3)]
+vv <- seq(1, 8, by = 3)
+w[vv]
+
+
+
+
+
+w[w < 12]
+## same, but more confusing (here, not always)
+w[!(w >= 12)]
+
+## What are these doing? Avoid these things
+ages[c(FALSE, TRUE)]
+ages[c(TRUE, TRUE, FALSE)]
+@
 
 \subsection{Interlude: comparing floats}
 
+<<>>=
+0.1 + 0.2 == 0.3
+(0.1 + 0.2) - 0.3
+@
+
+Be suspicious whenever you see an
+equality comparison of two floating-point numbers; that is unlikely to do
+what you want. If you know what you are doing, take a look at
+\texttt{all.equal} for near equality comparisons of objects.
+
+
+
+\subsubsection{\skipinclass{:\ Additional examples and info}}
 Comparing very similar numeric values can be tricky: rounding can happen,
 and some numbers cannot be represented exactly in binary (computer)
 notation.  By default \R\ displays 7~significant digits
@@ -2229,8 +2333,7 @@ the FAQ (question 7.31):
 \end{quote}
 
 
-This might be an even simpler example (taken from an example I saw from
-Ivo Balbaert in his book ``Julia 1.0 Programming'')
+This might be an even simpler example:
 
 <<>>=
 0.1 + 0.2 == 0.3
@@ -2250,6 +2353,24 @@ different depths (from simple and intuitive to more detailed):
 
 
 \subsection{Factors}
+
+<<factorsfactors>>=
+gr <- c("B", "A", "A", "B", "A")
+group <- factor(gr)
+
+gr
+group
+
+c("red", "blue")[gr]
+c("red", "blue")[group]
+
+## "unfactor"
+nr <- factor(4:10)
+nn <- as.numeric(as.character(nr))
+@
+
+
+\subsubsection{\skipinclass{:\ Additional examples and info}}
 Factors are a special type of vectors. We need them to differentiate
 between a vector of characters and a vector that represents categorical
 variables. The vector \code{char.vec <- c(``abc'', ``de'', ``fghi'')} contains
@@ -2315,7 +2436,7 @@ as.character(y)
 @
 
 
-\subsubsection{Factors and symbols, colors, etc, in plots}
+\subsubsection{\skipinclass{:\ Factors and symbols, colors, etc, in plots}}
 You often see code as follows:
 
 <<eval=FALSE>>=
@@ -2355,7 +2476,7 @@ matrix or of an array are of the same type.
 (The vector, below, is that vector that we create on the fly with \code{1:10})
 <<>>=
 matrix(1:10, ncol = 2)
-matrix(1:10, nrow = 5)
+matrix(1:10, nrow = 5, ncol = 2)
 matrix(1:10, ncol = 2, byrow = TRUE)
 @
 
@@ -2387,8 +2508,27 @@ rbind(A, B)
 
 A matrix has two dimensions, but otherwise things are very similar to what
 happened with vectors. The first dimension are rows, the second are
-columns. If you specify nothing for that dimension, it is returned completely.
+columns. If you specify nothing for that dimension, it is returned completely. We've seen this already.
 
+
+You can use a matrix to index another matrix.
+
+<<>>=
+A <- matrix(1:15, nrow = 5)
+(m1 <- cbind(c(1, 3), c(2, 1)))
+A[m1]
+## compare with
+A[c(1, 3), c(2, 1)]
+
+## And notice this
+(mm2 <- which(A < 5, arr.ind = TRUE))
+A[mm2]
+
+## cf with
+which(A < 5, arr.ind = FALSE) ## this is the default
+@
+
+\paragraph{\skipinclass{:\ Additional examples}}
 <<>>=
 A <- matrix(1:15, nrow = 5)
 A[1, ] ## first row
@@ -2420,22 +2560,6 @@ B["c", ]
 @
 
 
-Beware: you can use a matrix to index another matrix. This is slightly
-more advanced, but extremely handy:
-
-<<>>=
-(m1 <- cbind(c(1, 3), c(2, 1)))
-A[m1]
-## compare with
-A[c(1, 3), c(2, 1)]
-@
-
-If you go back to the argument \texttt{arr.ind} this should make sense:
-
-<<>>=
-(mm2 <- which(A < 5, arr.ind = TRUE))
-A[mm2]
-@
 
 
 \subsubsection{Operations with matrices}
@@ -2447,15 +2571,16 @@ operate directly, by default, on the whole matrix, or on rows/columns of
 the matrix:
 
 <<>>=
-sum(B)
-mean(B)
-colSums(B)
-rowMeans(B)
+A <- matrix(1:15, nrow = 5)
+sum(A)
+mean(A)
+colSums(A)
+rowMeans(A)
 @
 
 And, of course, we can subset/select rows and columns using those:
 <<>>=
-B[rowMeans(B) > 9, ]
+A[rowMeans(A) > 9, ]
 @
 
 
@@ -2478,15 +2603,51 @@ What is going on? When could this matter? What is the default behavior?
 
 \subsection{Lists}
 A list is a more general container, where we can mix pieces of different
-types. In fact, there need not be any rectangular-like structure:
+types. In fact, there need not be any rectangular-like structure. Many functions in R  return lists.
+
+<<tidy=FALSE>>=
+
+(listB <- list(one.vector = 1:10,
+               hello = "Hola",
+               one.matrix = matrix(111:125, ncol = 5),
+               another.list =
+               list(a = 5,
+                    b = factor(c("male",
+                      "female", "female")))))
+
+@
+
+<<eval=TRUE,echo=TRUE,results='hide'>>=
+
+listB[1]
+listB["one.vector"]
+
+listB[[1]]
+listB[["one.vector"]]
+listB$one.vector
+
+listB[[3]][3, 3]
+listB[["one.matrix"]][3, 3]
+listB$one.matrix[3, 3]
+
+
+## Two elements of the list
+listB[c(1, 3)]
+@
+
+
+\subsubsection{\skipinclass{:\ Additional examples}}
 
 <<>>=
 listA <- list(a = 1:5, b = letters[1:3])
+listA[1]
+listA["a"] ## different from the ones below
+
 listA[[1]]
 listA[["a"]]
 listA$a
 @
-\noindent so those are three basic ways of getting access to list
+\noindent so those are the basic ways of getting access to list
 components. And of course
 <<>>=
 listA[[1]][2]
@@ -2510,8 +2671,6 @@ A more complex list, that includes another list inside:
                       "female", "female")))))
 
 @
-
-Note that many functions in R  return lists.
 
 And what did we do here?
 <<>>=
@@ -2548,6 +2707,7 @@ That is very different from
 listB[c(3, 4)]
 @
 
+So, recommendation: do not try to be too smart when dealing with lists. Access each type of element, and then subset that element as needed.
 
 
 \subsection{Data frames}
@@ -2616,14 +2776,14 @@ AB2$status <- rep(c("Z", "V"), 5)
 
 
 
-\subsection{Odds and ends}
+\subsection{\skipinclass:\ Odds and ends}
 
 Reshaping data: Sometimes you will need to go from a ``wide'' to a
 ``long'' format in your data, or viceversa (e.g., repeated measures of the
 same individuals over time). Look at \code{?reshape}, although I find that
 the ``reshape2'' package (and possibly also the ``tidyr'' package with its
 function \texttt{dcast}) tends
-to make life much easier for this task.
+to make life much easier for this task. This is expanded in section \ref{sec:resh-data:-moving}
 
 Data table: For dealing efficiently with large data sets, and other
 niceties, the ``datatable'' package (with its datatables) can really make
@@ -2701,9 +2861,10 @@ additional practice from the exercises.
 
 \subsection{The very basics}\label{plot-basics}
 
-The basic plot function is \code{plot}. It's help can be slightly
-misleading and many additional arguments are explained in \code{par}. A
-good analogy to begin with is that of a canvas where you go adding
+The basic plot function is \code{plot}. It's \textbf{help} can be slightly
+misleading and many additional arguments are explained in \code{par}.
+
+A good analogy to begin with is that of a canvas where you go adding
 elements. Let's look at this simple example:
 
 
@@ -2720,6 +2881,23 @@ abline(h = 5, lty = 2)
 
 There are many, many other types of plots. We will see some later.
 
+
+This shows a few common elements. Again, this is just a very tiny set of what is available..
+
+<<plotssimple>>=
+plot(x, y, xlab = "This is the label for the x axis",
+     ylab = "Label for the y axis",
+     main = "A title", pch = c(19, 1:9),
+     cex = 1:10,
+     col = rainbow(10))
+text(2, 3, "Some text", srt = 45)
+abline(a = 3, b = 2.5, lty = 2, col = "blue")
+abline(a = 13, b = -5, lty = 4, col = "salmon", lwd = 4)
+
+@
+
+
+
 \subsubsection{\activities}
 \label{sec:activp1}
 
@@ -2730,7 +2908,7 @@ need to show it?
 
 
 
-\subsection{Plots: Can we change colors, line types, point types, etc?}
+\subsection{\skipinclass:\ Plots: Can we change colors, line types, point types, etc?}
 
 Of course. Look at \code{?par} and then look for \code{pch}, \code{cex},
 \code{lty}, \code{col}. This code produces two figures (\ref{fig:pchcol}
@@ -2779,6 +2957,14 @@ things such as size, it is better to directly use functions such as
 second approach (explicitly calling, say, \code{pdf} from my scripts) is
 what I use.
 
+
+<<>>=
+pdf(file = "one-plot.pdf", height = 4, width = 3)
+plot(1:15, main = "a plot", col = rainbow(15))
+dev.off()
+@
+
+
 \subsubsection{\activities}
 \label{sec:activities-8}
 
@@ -2801,7 +2987,7 @@ what I use.
   pdf, with multiple pages. What about the png?
 \end{enumerate}
 
-\subsection{Plots, plots, plots. Many types of plots}
+\subsection{\skipinclass:\ Plots, plots, plots. Many types of plots}
 
 We have used a variety of plots. But this is only scratching the
 surface. Plotting is a big thing in \R. We have used a few, but there are
@@ -2851,71 +3037,95 @@ An example where we use ggplot is provided in section \nameref{sec:metab-rate-lo
 \section{Three examples with data manipulation and plots}\label{crashex}
 
 
-\subsection{Example of reading data and plotting: Plotting the results from
-  BLAST}\label{blast}
+\subsection{Example of reading data and plotting: Plotting the results from BLAST}\label{blast}
 
 
 This is a quick example of something that is not really just a mere toy
-example.  We will use output from alignment statistics from BLAST.  Let's take a
-quick look at a couple of things:
+example.  We will use output from alignment statistics from BLAST.  Let's take a quick look at a couple of things:
 \begin{itemize}
 \item The relationship between percentage identity and score.
 \item The distribution of the alignment length.
 \end{itemize}
 
 
-
-We will read the data and then do a couple of plots. Remember that the
-data are in ``hit-table-500-text.txt'' (we covered reading
-data in section \ref{readingr}).
+The quick code. Please, make sure to look at the original data. I know (from the metadata) what columns 5 and 13 are.
 
 <<>>=
 hit <- read.table("hit-table-500-text.txt")
-## We know, from the header of the file, that
-## alignment length is the fifth column,
-## score is the 13th and percent identity the 3rd
-hist(hit[, 5]) ## the histogram
-plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
-@
-
-But that can be easily improved
-
-% \setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
-%\begin{figure}[h!]
-%\begin{center}
-<<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
 par(mfrow = c(1, 2)) ## two figures side by side
 hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
 plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity",
-     ylab = "Bit score")
+     ylab = "Bit score", main = "Bit score vs. % identity")
 @
 
-And, for symmetry, you might want to add a main title to the second
-plot. How?
 
-% \end{center}
-%\label{fig-blast}
-%\caption{A quick look at the alignment results}
-%\end{figure}
-
-%\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
-
-These are five lines of code. We will now deal with a few things in a
-little more detail.
-
-And if you want to play around, you can find the best fitting plane of
-score on alignment length and identity\footnote{This is not a great, or
+A 3D plot\footnote{This is not a great, or
   even a decent, model of the relationship, which we can see, for
   instance, from the pattern of the deviations of the points from the
-  plane. But the key for now is the ease of plotting.} , and move it at
-will!. You will need to install two packages (section \ref{packages}):
-\code{car} and \code{rgl}.
-<<eval=FALSE>>=
-library(car)
-scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
-          zlab = "Length", ylab = "Score")
+  plane. But the key for now is the ease of plotting.}
+<<>>=
+## I comment it out, so I can generate the notes without it stopping
+if (FALSE) {
+    library(car)
+    scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
+              zlab = "Length", ylab = "Score")
+}
 @
 
+
+% We will read the data and then do a couple of plots. Remember that the
+% data are in ``hit-table-500-text.txt'' (we covered reading
+% data in section \ref{readingr}).
+
+% <<>>=
+% hit <- read.table("hit-table-500-text.txt")
+% ## We know, from the header of the file, that
+% ## alignment length is the fifth column,
+% ## score is the 13th and percent identity the 3rd
+% hist(hit[, 5]) ## the histogram
+% plot(hit[, 13] ~ hit[, 3]) ## the scatterplot
+% @
+
+% But that can be easily improved
+
+% % \setkeys{Gin}{width=1.05\textwidth} %% for Sweave figs.
+% %\begin{figure}[h!]
+% %\begin{center}
+% <<fig-blast,fig.height=4,fig.width=6, fig.cap="A quick look at the alignment results",fig.lp=''>>=
+% par(mfrow = c(1, 2)) ## two figures side by side
+% hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
+% plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity",
+%      ylab = "Bit score")
+% @
+
+% And, for symmetry, you might want to add a main title to the second
+% plot. How?
+
+% % \end{center}
+% %\label{fig-blast}
+% %\caption{A quick look at the alignment results}
+% %\end{figure}
+
+% %\setkeys{Gin}{width=0.85\textwidth} %% for Sweave figs.
+
+% These are five lines of code. We will now deal with a few things in a
+% little more detail.
+
+% And if you want to play around, you can find the best fitting plane of
+% score on alignment length and identity\footnote{This is not a great, or
+%   even a decent, model of the relationship, which we can see, for
+%   instance, from the pattern of the deviations of the points from the
+%   plane. But the key for now is the ease of plotting.} , and move it at
+% will!. You will need to install two packages (section \ref{packages}):
+% \code{car} and \code{rgl}.
+% <<eval=FALSE>>=
+% library(car)
+% scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
+%           zlab = "Length", ylab = "Score")
+% @
+
+
+\subsubsection{\skipinclass{:\ More details}}
 By the way, some questions/answers arise from the figures. For instance:
 why does the distribution of alignment lengths seems to have three
 distinct modes? Or how can you explain the plot of score vs.\ percent
@@ -2988,22 +3198,53 @@ those many ``NA''.
 \subsubsection{A plot with changed scale}
 I want to plot metabolic rate vs.\ body mass. But I know (from theory and
 previous experience) that I probably want to use the log. And I want to
-get a quick idea of the spread of the points, etc. So I will use a
-function from the package \code{car} (for this to work, thus, you need to
-install that package).
+get a quick idea of the spread of the points, etc. I want to do it only for the birds.
+
+% <<mrateplotx1,fig.width=6, fig.height=6>>=
+% library(car) ## make the car package available; this is NOT
+%              ## installing it. It is making it available
+% scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
+%             data = anage)
+% @
+
+% Look at the axes, etc.
+
+% \vspace*{20pt}
 
 
+Finally, do a regression of log-transformed variables and plot data and line, but just for the birds:
 
-<<mrateplotx1,fig.width=6, fig.height=6>>=
-library(car) ## make the car package available; this is NOT
-             ## installing it. It is making it available
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., log="xy",
+<<plotjustbirds>>=
+anage$logMetab <- log(anage$Metabolic.rate..W.)
+anage$logBodyMass <- log(anage$Body.mass..g.)
+
+
+birds <- anage[anage$Class == "Aves", ]
+## or
+birds <- subset(anage, Class == "Aves")
+
+## Fit a line by OLS, show intercept and slope
+summary(lm1 <- lm(logMetab ~ logBodyMass, data = birds))
+
+## Note I reuse the expression!
+plot(logMetab ~ logBodyMass, data = birds)
+abline(lm1)
+
+## Though we could have done (using package car)
+
+library(car)
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
+            log = "xy",
+            subset = (Class == "Aves"),
             data = anage)
+
+## But the procedure above is a general one that will work
+## even if John Fox had not written scatterplot.
+
+
+## And many other variations
 @
 
-Look at the axes, etc.
-
-\vspace*{20pt}
 
 \paragraph{\activities} Redo the previous plot but remove the
 smooth lines (the smoothed line and associated conditional variance). Now
@@ -3013,9 +3254,9 @@ mass).
 \vspace*{20pt}
 
 
+\subsubsection{\skipinclass{:\ More examples}}
 
-
-You could do something very similar with the basic plot function, but it
+You could do something very similar to what we did with the \texttt{car} function \texttt{scatterplot} starting with the basic plot function, but it
 would not add the extra lines, boxplots, etc.
 
 <<fig.width=6, fig.height=6>>=
@@ -3062,92 +3303,92 @@ scatterplot(Metabolic.rate..W. ~ Body.mass..g.|Class, log="xy",
 
 
 
-\subsubsection{Transforming variables}
+% \paragraph{\skipinclass{: Transforming variables}}
 
-It is actually simpler, for the regression later, to log-transform the
-variables and add them to the data set:
+% It is actually simpler, for the regression later, to log-transform the
+% variables and add them to the data set:
 
-<<>>=
-anage$logMetab <- log(anage$Metabolic.rate..W.)
-anage$logBodyMass <- log(anage$Body.mass..g.)
-@
+% <<>>=
+% anage$logMetab <- log(anage$Metabolic.rate..W.)
+% anage$logBodyMass <- log(anage$Body.mass..g.)
+% @
 
-We just created two variables, and added them to \code{anage}.
-
-
-\subsubsection{Only the birds! Selecting specific cases}
-
-Eh, but I want only the birds. Let's select only the birds using function
-\code{subset}
-
-<<>>=
-birds <- subset(anage, Class == "Aves")
-@
-
-Alternatively, we could have done
-
-<<>>=
-birds <- anage[anage$Class == "Aves", ]
-@
+% We just created two variables, and added them to \code{anage}.
 
 
+% \paragraph{\skipinclass{: Only the birds! Selecting specific cases}}
 
-\subsubsection{The regression only for the birds}
-\label{sec:regression}
+% Eh, but I want only the birds. Let's select only the birds using function
+% \code{subset}
 
-<<>>=
-(lm1 <- lm(logMetab ~ logBodyMass, data = birds))
-@
+% <<>>=
+% birds <- subset(anage, Class == "Aves")
+% @
 
+% Alternatively, we could have done
 
-A little bit more detail:
-<<>>=
-summary(lm1)
-@
-We will explain what the output from that table is, if you do not remember
-your statistics classes.
-
-Note that, as with the t-test, we can access the elements of \code{lm1}:
-<<>>=
-names(lm1)
-lm1$coefficients
-@
-
-but, in general, it often makes more sense (when they are available) to
-use the specific accessor functions:
-<<>>=
-coef(lm1)
-@
-
-
-Now, do a plot and add the fitted line:
-
-<<>>=
-plot(logMetab ~ logBodyMass, data = birds)
-abline(lm1)
-@
-
-
-Note that the above is actually the same as doing (except the one below
-adds more stuff):
-<<>>=
-scatterplot(logMetab ~ logBodyMass, data = birds)
-@
-
-or, better yet,
-
-<<>>=
-scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = birds,
-            log = "xy")
-
-@
-
-But the procedure above is a general one that will work even if John Fox
-had not written \code{scatterplot}.
+% <<>>=
+% birds <- anage[anage$Class == "Aves", ]
+% @
 
 
 
-\subsubsection{How I read and saved the data?}\label{readanage}
+% \paragraph{\skipinclass{: The regression only for the birds}}
+% \label{sec:regression}
+
+% <<>>=
+% (lm1 <- lm(logMetab ~ logBodyMass, data = birds))
+% @
+
+
+% A little bit more detail:
+% <<>>=
+% summary(lm1)
+% @
+% We will explain what the output from that table is, if you do not remember
+% your statistics classes.
+
+% Note that, as with the t-test, we can access the elements of \code{lm1}:
+% <<>>=
+% names(lm1)
+% lm1$coefficients
+% @
+
+% but, in general, it often makes more sense (when they are available) to
+% use the specific accessor functions:
+% <<>>=
+% coef(lm1)
+% @
+
+
+% Now, do a plot and add the fitted line:
+
+% <<>>=
+% plot(logMetab ~ logBodyMass, data = birds)
+% abline(lm1)
+% @
+
+
+% Note that the above is actually the same as doing (except the one below
+% adds more stuff):
+% <<>>=
+% scatterplot(logMetab ~ logBodyMass, data = birds)
+% @
+
+% or, better yet,
+
+% <<>>=
+% scatterplot(Metabolic.rate..W. ~ Body.mass..g., data = birds,
+%             log = "xy")
+
+% @
+
+% But the procedure above is a general one that will work even if John Fox
+% had not written \code{scatterplot}.
+
+
+
+\paragraph{\skipinclass{: How I read and saved the data?}\label{readanage}}
 This is all I did: %% (the \code{save} thing will become clearer below
 %% ---section \ref{saveRData}):
 <<eval=FALSE>>=
@@ -3162,6 +3403,10 @@ The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downl
 
 
 \subsection{Simulations and plots. A simple hypothesis test: the \textit{t-}test}\label{ttest}
+
+
+
+\skipinclass{We will skip all of this for now. I will only briefly explain random number generators and using the seed.}
 
 Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
 have lung cancer. And we have expression data for one gen (say GenA). We
@@ -3398,9 +3643,9 @@ table(AB2[, c("Sex", "status")])
 \subsection{More than two dimensions and \texttt{ftable}}
 
 <<ftable0>>=
-(x <-  data.frame(a = c(1,2,2,1,2,2,1),
-                 b = c(1,2,2,1,1,2,1),
-                 c = c(1,1,2,1,2,2,1)))
+(x <-  data.frame(a = c("A1","A2","A2","A1","A2","A2","A1"),
+                  b = c("B1","B2","B2","B1","B1","B2","B1"),
+                  c = c("C1","C1","C2","C1","C2","C2","C1")))
 ## Equivalent
 table(x)
 xtabs(~ a + b + c, data = x)
@@ -3418,7 +3663,44 @@ ftable(xtabs(~ c + a + b, data = x))
 @
 
 
-\subsection{Recovering a table from a data frame}
+\subsection{Tables and missing values}
+\label{sec:tabl-miss-valu0}
+(This is examined in more detail below; what follows is basically a warning)
+
+<<tabna0>>=
+X <- c("X1", "X1", "X2", "X2", "X2", NA)
+Y <- c("X1", "X1", "X2", "X2", "X2", 3)
+which(is.na(X))
+table(X)
+table(X, useNA = "ifany")
+table(Y, useNA = "ifany")
+table(Y, useNA = "always")
+
+## with xtabs
+xtabs(data = data.frame(X), addNA = FALSE)
+xtabs(data = data.frame(X), addNA = TRUE)
+
+
+(x4 <-  data.frame(U = c("A","B","B","A","B","B",NA),
+                   W = c("d","e","e","d","d","e","d")))
+table(x4)
+table(x4, useNA = "ifany")
+table(x4, useNA = "always")
+xtabs(data = x4, addNA = FALSE)
+xtabs(data = x4, addNA = TRUE)
+@
+
+
+\subsection{\textcolor {Green} {Tables II}}
+\label{tablesII}
+Unless we have a lot of time:
+\begin{itemize}
+\item We will skip this in class
+\item This will not be in the exam
+\end{itemize}
+
+
+\subsubsection{\textcolor {Green}  {Recovering a table from a data frame}}
 <<>>=
 ## create a data frame with a "Freq" column:
 ## put the table in a data frame
@@ -3432,7 +3714,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 
 @
 
-\subsection{Recovering the data that produced the table}
+\subsubsection{\textcolor {Green} {Recovering the data that produced the table}}
 And what if we want to recover the data (in our case above, the dataframe \texttt{x}) and we have a data frame that already contains the frequencies? The following code is something you should be able to understand:
 
 <<>>=
@@ -3444,10 +3726,16 @@ The order of the data are not the same as in \texttt{x} and the rownames look st
 
 %% FIXME: what if we do not use all variables for indexing?
 %% Dealt with in the activities of aggregate + xtabs
-\subsection{xtabs and ftable: summarizing arbitrary stuff}\label{xtabs-arbitrary}
+\subsection{\textcolor {Green} {xtabs and ftable: summarizing arbitrary stuff}}\label{xtabs-arbitrary}
 
 
-(This is here for completeness, but we are unlikely to cover this in class. Specially the examples with NAs are tricky.)
+Unless we have a lot of time:
+\begin{itemize}
+\item We will skip this in class.
+\item This will not be in the exam.
+\end{itemize}
+
+(Specially the examples with NAs are tricky.)
 
 
 Suppose we have a data frame with values of some arbitrary variable for (some of) the
@@ -3520,7 +3808,7 @@ been considered when we created \texttt{dfx4}.
 
 
 
-\activities And what happens if you do
+\activities \ And what happens if you do
 
 <<xtabs_arbitr_5>>=
 ftable(xtabs(Vx ~ Age + Loc, data = dfx3))
@@ -3536,8 +3824,15 @@ toLatex(ftable(xtabs(Vx ~ ., data = dfx3)))
 
 
 
-\subsection{Tables and missing values}
+\subsection{\textcolor {Green} {Tables and missing values, more examples and details}}
 \label{tablena}
+
+Unless we have a lot of time:
+\begin{itemize}
+\item We will skip this in class.
+\item This will not be in the exam.
+\end{itemize}
+
 
 Let us go back to tables and missing values
 
@@ -3588,7 +3883,7 @@ report:
 \Burl{https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17770}).
 
 
-\subsection{\activities}
+\subsection{\optactivities}
 \label{sec:activities-11}
 Make sure you type all of the examples above. Also, if LaTeX is anything
 that interests you, do the last example using \texttt{toLatex}.
@@ -3597,12 +3892,22 @@ that interests you, do the last example using \texttt{toLatex}.
 %% FIXME: from a xtab to a data.frame of individual cases
 %% https://stackoverflow.com/a/36499608
 
-\subsection{Tables, II}
-Tabulating data is a very common operation. The following are slightly
-more advanced exercises. Run them, and see if you understand them, but
-skip this is if you do not care for now. (We will skip this in class)
+\subsection{\textcolor {Green}{Tables, III}}\label{tablesIII}
+Unless we have a lot of time:
+\begin{itemize}
+\item We will skip this in class.
+\item This will not be in the exam.
+\end{itemize}
+
+% Tabulating data is a very common operation. The following are slightly
+% more advanced exercises. Run them, and see if you understand them, but
+% skip this is if you do not care for now. We will skip this in class.
 
 <<>>=
+(x <-  data.frame(a = c(1,2,2,1,2,2,1),
+                  b = c(1,2,2,1,1,2,1),
+                  c = c(1,1,2,1,2,2,1)))
+
 y <- x
 y$d <- y$a + 1
 
@@ -3700,7 +4005,7 @@ lapply(listB, function(x) class(x))
 
 
 
-\subsection{tapply and by}\label{sec:tapply-by}
+\subsection{tapply (and by)}\label{sec:tapply-by}
 
 When we have data (a column or several columns) that can be used to stratify or select other data (generally a vector), we often use \code{tapply}.
 
@@ -3728,6 +4033,9 @@ tapply(one.dataframe$age,
        mean)
 @
 
+
+\subsubsection{\textcolor {Green} {More tapply and \texttt{by}}}
+
 We can also use a function that returns more than one summary statistic:
 
 <<tapp2>>=
@@ -3735,6 +4043,8 @@ tapply(one.dataframe$age,
        one.dataframe$sex,
        function(x) c(Mean = mean(x), SD = sd(x)))
 @
+
+
 
 But this, though it works, is probably not what we want:
 
@@ -3746,6 +4056,7 @@ tapply(one.dataframe$age,
 % $
 
 \texttt{aggregate} (below) is probably what we'll want to use.
+
 
 \texttt{by} will also work; \texttt{by} is related to \texttt{tapply}, but works on complete data frames and the look of the output is different:
 
@@ -3874,7 +4185,7 @@ aggregate(one.dataframe[, c("age", "Y")],
 
 @
 
-\subsubsection{\texttt{aggregate}: supplementary details}
+\subsubsection{\textcolor {Green} {\texttt{aggregate}: supplementary details}}
 \label{sec:texttt-suppl-deta}
 
 (What follows are supplementary details:)
@@ -3944,7 +4255,7 @@ with(one.dataframe,
 %% argument
 
 
-\subsubsection{\activities: \  aggregate, multiple columns, and xtabs. 0s and NAs}
+\subsubsection{\optactivities: \  aggregate, multiple columns, and xtabs. 0s and NAs}
 \label{sec:activ-aggr-xtabs}
 
 \begin{enumerate}
@@ -4037,7 +4348,7 @@ output from \texttt{aggregate}. But combining \texttt{xtabs} and
 
 
 
-\subsubsection{More on aggregate and xtabs}
+\subsubsection{\textcolor {Green} {More on aggregate and xtabs}}
 (This is supplementary material)
 
 Some additional explorations of the combination of \texttt{xtabs} and \texttt{aggregate}. Using only one variable for aggregate or xtabs. What is the  difference? Compare carefully what is happening here
@@ -4088,23 +4399,8 @@ lapply(split(one.dataframe,
                   one.dataframe$country)),
        function(x) lm(Y ~ age, data = x))
 
-## How is this different or similar?
-## (hint: how are we telling lm where Y and age come from?)
-lapply(split(one.dataframe,
-             list(one.dataframe$sex,
-                  one.dataframe$country)),
-       function(x) lm(x$Y ~ x$age))
 
 
-## And this is similar to some operations we did before
-## with aggregate. Though I think aggregate's output
-## and syntax is more convenient
-
-lapply(split(one.dataframe, one.dataframe$sex),
-       function(x) return(
-                       c(mean_age = mean(x$age),
-                         mean_y = mean(x$Y),
-                         sd_age = sd(x$age))))
 @
 
 The above procedure is related to the split-apply-combine and the
@@ -4114,7 +4410,7 @@ can be regarded as specially handy ways of doing the above combination of
 function(s).  A long example of ``split-apply-combine'' is provided in
 section \nameref{sec:metab-rate-long}.
 
-=======
+
 
 Since the need for these operations is very common (getting summaries or
 applying functions to subsets of the data), there are a variety of ways of
@@ -4124,6 +4420,25 @@ approaches/syntax. Here is a blog with some examples and links:
 \Burl{https://www.r-bloggers.com/say-it-in-r-with-by-apply-and-friends/}
 (the original entry at \Burl{https://www.magesblog.com/post/2012-01-28-say-it-in-r-with-by-apply-and-friends/}).
 For instance, the \code{doBy} package is really nice.
+
+\subsubsection{\skipinclass{\ Further elaboration}}
+<<>>=
+## How is this different or similar from the call above?
+## (hint: how are we telling lm where Y and age come from?)
+lapply(split(one.dataframe,
+             list(one.dataframe$sex,
+                  one.dataframe$country)),
+       function(x) lm(x$Y ~ x$age))
+
+## And this is similar to some operations we did before
+## with aggregate. Though I think aggregate's output
+## and syntax is more convenient
+lapply(split(one.dataframe, one.dataframe$sex),
+       function(x) return(
+                       c(mean_age = mean(x$age),
+                         mean_y = mean(x$Y),
+                         sd_age = sd(x$age))))
+@
 
 
 
@@ -4240,7 +4555,15 @@ Look at package \texttt{parallel} (which is part of the basic packages) and
 its function \texttt{mclapply}. (Under POSIX systems using forking is trivial;
 under Windows you'll need something different).
 
-\section{(Optional: three handy packages \texttt{readr} and \texttt{dplyr} and \texttt{data.table})}
+\section{\textcolor {Green} {(Optional: three handy packages: \texttt{readr}, \texttt{dplyr},  \texttt{data.table})}}
+
+
+\begin{itemize}
+\item We will skip this in class.
+\item This will not be in the exam.
+\end{itemize}
+
+
 We won't get into details about this: Hadley Wickham is the author of  two packages,
 \texttt{readr} and \texttt{dplyr} that can ease considerably some tasks of
 data manipulation (dplyr) and reading large flat files (readr). Both are
