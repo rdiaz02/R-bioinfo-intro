@@ -1999,13 +1999,13 @@ A few examples:
 <<>>=
 v1 <- 1:5
 v1 < 3
-(v1 < 3)
 
 v11 <- c(1, 1, 3, 5, 4)
 v1 == v11
 v1 != v11
 identical(v1, v11)
 v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
+v2 <- (v1 < 3)
 !v3
 v2 & v3
 v2 | v3
@@ -2115,7 +2115,7 @@ mean(x1, na.rm = T)
 TRUE <- 0
 FALSE <- 1
 
-## Remove the aberration above
+## Remove T, F
 rm(T, F)
 
 @
@@ -2132,7 +2132,7 @@ a <- "hola"
 if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 @
 
-Try to run the above with a \code{\&} instead of \code{\&\&}.
+\activities : Try to run the above with a \code{\&} instead of \code{\&\&}.
 
 
 \paragraph{\skipinclass{:\ Additional examples}}
@@ -2364,9 +2364,14 @@ group
 c("red", "blue")[gr]
 c("red", "blue")[group]
 
-## "unfactor"
-nr <- factor(4:10)
-nn <- as.numeric(as.character(nr))
+## "unfactor" a factor of some numbers
+
+(nr <- factor(c(4, 2, 8, 4, 1)))
+as.numeric(as.character(nr))
+
+## Though there is a slightly better way?
+## From ?factor
+as.numeric(levels(nr))[nr]
 @
 
 
@@ -2727,12 +2732,11 @@ structure, where different columns can have objects of different types
 
 @
 
-Data frames are extremely handy for data analysis, and you will see them
-used extensively there.
+Data frames are extremely handy for data analysis, and you will see them used extensively there.
 
 
 We can access elements of data frames as if they were matrices and as
-if they were lists (where the list elements are the columns):
+if they were lists (where the list elements are the columns) (we could \skipinclass{ the next code block}, but this is so absolutely essential, that we will go over it once again ---but there is nothing new in the next code block):
 
 <<>>=
 AB[2, 3]
@@ -2774,25 +2778,26 @@ Data frames make it particularly easy to add new variables to the data frame.
 AB2$status <- rep(c("Z", "V"), 5)
 @
 
+\activities : Try adding a new variable to a matrix. How would you do it?
 
 
-\subsection{\skipinclass:\ Odds and ends}
+% \subsection{\skipinclass:\ Odds and ends}
 
-Reshaping data: Sometimes you will need to go from a ``wide'' to a
-``long'' format in your data, or viceversa (e.g., repeated measures of the
-same individuals over time). Look at \code{?reshape}, although I find that
-the ``reshape2'' package (and possibly also the ``tidyr'' package with its
-function \texttt{dcast}) tends
-to make life much easier for this task. This is expanded in section \ref{sec:resh-data:-moving}
+% Reshaping data: Sometimes you will need to go from a ``wide'' to a
+% ``long'' format in your data, or viceversa (e.g., repeated measures of the
+% same individuals over time). Look at \code{?reshape}, although I find that
+% the ``reshape2'' package (and possibly also the ``tidyr'' package with its
+% function \texttt{dcast}) tends
+% to make life much easier for this task. This is expanded in section \ref{sec:resh-data:-moving}
 
-Data table: For dealing efficiently with large data sets, and other
-niceties, the ``datatable'' package (with its datatables) can really make
-a difference.
+% Data table: For dealing efficiently with large data sets, and other
+% niceties, the ``datatable'' package (with its datatables) can really make
+% a difference.
 
 
 \subsection{\activities: matrices indexing matrices}
 
-Play with the following and make sure you understand (at least
+Play with the following and make sure you understand it (at least
 the first part)
 
 <<matinmat>>=
@@ -2871,7 +2876,7 @@ elements. Let's look at this simple example:
 <<>>=
 set.seed(2) ## for reproducibility
 x <- 1:10
-y <- 2 * x + rnorm(length(x))
+y <- sample(seq(from = 2, to = 20, length.out = 10))
 plot(x, y, xlab = "This is the label for the x axis",
      ylab = "Label for the y axis")
 ## And now, we add a horizontal line:
@@ -2925,7 +2930,7 @@ text(11, 1.5, "pch", cex = 1.3)
 
 ## show colors for rainbow palette
 points(1:20, rep(2, 20), pch = 16, col = rainbow(20))
-text(11, 2.2, "col", cex = 1.3)
+text(11, 2.2, "col (from rainbow)", cex = 1.3)
 @
 <<ltytype,fig.width=4,fig.height=4, fig.cap='lty for values 1 to 6', fig.lp='fig:'>>=
 plot(c(0.2, 5), c(0.2, 5), type = "n", ann = FALSE, axes = FALSE)
@@ -3198,7 +3203,7 @@ those many ``NA''.
 \subsubsection{A plot with changed scale}
 I want to plot metabolic rate vs.\ body mass. But I know (from theory and
 previous experience) that I probably want to use the log. And I want to
-get a quick idea of the spread of the points, etc. I want to do it only for the birds.
+get a quick idea of the spread of the points, etc. And I want to do it only for the birds. Oh, and I want to add the best fitting least-squares line.
 
 % <<mrateplotx1,fig.width=6, fig.height=6>>=
 % library(car) ## make the car package available; this is NOT
@@ -3212,7 +3217,6 @@ get a quick idea of the spread of the points, etc. I want to do it only for the 
 % \vspace*{20pt}
 
 
-Finally, do a regression of log-transformed variables and plot data and line, but just for the birds:
 
 <<plotjustbirds>>=
 anage$logMetab <- log(anage$Metabolic.rate..W.)
@@ -3553,7 +3557,8 @@ ggplot(dftt,
     geom_boxplot(notch = TRUE) +
     geom_jitter(shape = 16, width = 0.1, height = 0)
 
-## And something probably silly
+## And something probably silly and the yellow colour is a terrible
+## choice
 ggplot(dftt,
        aes(x = type, y = gene_A, color = type)) +
     geom_boxplot(notch = TRUE) +
@@ -3987,6 +3992,7 @@ function on the fly):
 lapply(listA, function(x) x[1])
 @
 
+\subsubsection{\skipinclass{: lapply, more examples}}
 Now, look at this, which is very similar, but here we access the second element:
 
 <<>>=
@@ -4011,6 +4017,7 @@ When we have data (a column or several columns) that can be used to stratify or 
 
 
 <<tidy=FALSE>>=
+## Creeate some data
 (one.dataframe <- data.frame(age = c(12, 13, 16, 25, 28),
                             sex = factor(c("male", "female",
                                            "female", "male", "male")))
@@ -4109,12 +4116,13 @@ by(one.dataframe,
 <<tidy=FALSE>>=
 aggregate(one.dataframe$age, list(one.dataframe$sex), mean)
 
-## make the aggregating variable explicit,
+## Make the aggregating variable explicit,
 ## and give it another name
 aggregate(one.dataframe$age,
           list(Sexo = one.dataframe$sex), mean)
 
-## or use the name of the column/variable
+## or use the name of the column/variable;
+## as we are using [], the second argument is already a list
 aggregate(one.dataframe$age,
           one.dataframe[2], mean)
 @
@@ -4190,7 +4198,7 @@ aggregate(one.dataframe[, c("age", "Y")],
 
 (What follows are supplementary details:)
 
-Note, though, that the output from the last calls is not a dataframe of five columns: the output for Sex is a single dataframe column (that comprises a two-column matrix), and likewise for Country.
+Note, though, that the output from the last calls is not a dataframe of six columns: the output for age is a single dataframe column (that comprises a two-column matrix), and likewise for Y.
 
 <<>>=
 dim(ag1)
@@ -4550,10 +4558,11 @@ arguments. We will use it in the examples discussed in
 It is also possible to use apply over environments: \texttt{eapply}. We will not
 use it in this course.
 
-\subsection{Easy parallelized \texttt{apply} operations}
+\subsection{Easily parallelized \texttt{apply} operations}
 Look at package \texttt{parallel} (which is part of the basic packages) and
 its function \texttt{mclapply}. (Under POSIX systems using forking is trivial;
-under Windows you'll need something different).
+under Windows you'll need only a little bit more work).
+
 
 \section{\textcolor {Green} {(Optional: three handy packages: \texttt{readr}, \texttt{dplyr},  \texttt{data.table})}}
 
@@ -4576,7 +4585,17 @@ This link has a handy summary of \texttt{dplyr}:
 As for \texttt{readr}, check out \texttt{read\_table} and \texttt{read\_csv}; for very large data, I prefer \texttt{read\_table}.
 
 
-But do not forget to look at package \texttt{data.table} for many big data manipulations. It is often my favorite.
+Do not forget to look at package \texttt{data.table} for many big data manipulations. It is often my favorite for these tasks.
+
+
+
+Reshaping data: Sometimes you will need to go from a ``wide'' to a
+``long'' format in your data, or viceversa (e.g., repeated measures of the
+same individuals over time). Look at \code{?reshape}, although I find that
+the ``reshape2'' package (and possibly also the ``tidyr'' package with its
+function \texttt{dcast}) tends
+to make life much easier for this task. This is expanded in section \ref{sec:resh-data:-moving}
+
 \clearpage
 
 
