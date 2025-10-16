@@ -4560,8 +4560,7 @@ use it in this course.
 
 \subsection{Easily parallelized \texttt{apply} operations}
 Look at package \texttt{parallel} (which is part of the basic packages) and
-its function \texttt{mclapply}. (Under POSIX systems using forking is trivial;
-under Windows you'll need only a little bit more work).
+its function \texttt{mclapply}. (Under POSIX systems using forking is trivial; under Windows you'll need only a little more work).
 
 
 \section{\textcolor {Green} {(Optional: three handy packages: \texttt{readr}, \texttt{dplyr},  \texttt{data.table})}}
