@@ -5125,7 +5125,7 @@ c + 8
 ## This is NOT a good idea!!
 c <- function(u) 2 * u
 c(8)
-try(c(8, 9))
+c(8, 9)
 @
 
 Which, of course, is asking questions about where (and how) R searches for
@@ -5216,10 +5216,10 @@ i <- 2
 local({cat("i ", i); i <- 99; cat(";  i = ", i)})
 i
 
-try(rm(vv))
+rm(vv)
 local({vv <- 99; cat("vv = ", vv)})
-try(vv)
 
+vv
 @
 
 
