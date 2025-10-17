@@ -246,7 +246,7 @@ other pieces, and retain it for longer.
 
 
 
-Some sections are marked as ``\activities''. Please make sure to do them.
+Some sections are marked as ``\activities''. Please make sure to do them. Some exam questions will come from the \activities.
 
 Some others are marked as ``\optactivities'': we rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam). Other sections/subsections/whatever that we will not cover in class (nor would be in an exam) are indicated in  \textcolor{Green}{green}.
 
@@ -254,7 +254,7 @@ Some others are marked as ``\optactivities'': we rarely have time to cover or di
 \subsubsection{Changes starting on 2025-10-16: moving material to \skipinclass{whatever}}
 \label{sec:chang-start-2025}
 
-As we are (course 2025-2026) going too slow, I try to concentrate only the \textbf{absolutely, nonnegotiable, essential stuff} and move lots to subsections (or subsubsubsections, or whatever). The material moved out is indicated as ``\skipinclass{Whatever (subsub)section title}''. \textbf{I would NOT skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material. (It is just material that introduces some redundancy.)  The optional material (the material that will not be in the exam), is indicated as \optactivities\  or has section (subsection, or whatever) in \textcolor{Green}{green}.
+As we are (course 2025-2026) going too slow, I try to concentrate only the \textbf{absolutely, nonnegotiable, essential stuff} and move lots to subsections (or subsubsubsections, or whatever). The material moved out is indicated as ``\skipinclass{Whatever (subsub)section title}''. \textbf{I would NOT skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material; it is just material that introduces some redundancy. You can expect that some exam questions will come from the \skipinclass{skipped in class material}. (Again: the only optional material (the material that will not be in the exam), is indicated as \optactivities\  or has section (subsection, or whatever) in \textcolor{Green}{green}.)
 %% We'll see how it goes.
 
 \subsection{The PDF and the code}
@@ -351,7 +351,8 @@ shoulders of millions of lines of free software.
 
 \subsection{Some references}
 When you download \R\ you also download ``An introduction to R'', which is
-an excellent intro. There are many freely available documents (of variable
+an \textbf{excellent intro}. This document is available with your installation of R, and you want to take a look at it.
+There are many freely available documents (of variable
 quality, of course) here:
 \Burl{http://cran.r-project.org/other-docs.html}. Many books are listed
 (and some briefly commented) here: \Burl{http://www.r-project.org/doc/bib/R-books.html}.
@@ -1922,6 +1923,9 @@ rep(1:3, 2:4)
 <<recycling1>>=
 v1 <- 11:16
 v2 <- 1:6
+## one on top of each other, so we can see what v1 + v2 does
+rbind(v1, v2)
+
 v1 + v2
 
 v3 <- 1:4
@@ -1935,6 +1939,8 @@ v1 + v5
 
 v1 + 9
 @
+
+\activities: Use \texttt{rbind} in each one of the examples above.
 
 
 \subsubsection{\skipinclass{:\ Slower going examples}}
@@ -2089,45 +2095,21 @@ sum(vv < 5)
 Why did that work? What is \code{vv < 5} returning?
 
 
-\subsubsection{Do not use \code{T} for \code{TRUE} or \code{F} for
-  \texttt{FALSE}}\label{no_t_for_true}
-\activities \  Can you think why? Try to come up with some examples or google around. Really.
-This is a short section: Please, please, please, never, ever, use \code{T} for \code{TRUE} or \code{F} for \texttt{FALSE}. You can count on at least one exam question about this.
-
-%% https://stat.ethz.ch/pipermail/r-help/2008-November/180085.html
-
-
-<<ltftf>>=
-
-T <- 0
-F <- -1
-
-if (T) cat("This should be printed\n")
-if (F) cat("This should NOT be printed\n")
-
-(x1 <- c(1, 2, NA))
-
-mean(x1, na.rm = TRUE)
-## This can be a VERY HARD to debugg bug
-mean(x1, na.rm = T)
-
-## TRUE and FALSE cannot be overwritten
-TRUE <- 0
-FALSE <- 1
-
-## Remove T, F
-rm(T, F)
-
-@
-
-
-\subsubsection{Shortcircuit logical operations}
+\subsubsection{Short-circuit logical operations}
 \label{sec:shortc-logic-oper}
 
 \code{\&\&} and \code{||} are short-circuit.
 
 
 <<>>=
+
+## FALSE short-circuits the AND
+FALSE && log("a")
+
+## TRUE short-circuits the OR
+TRUE || log("a")
+
+
 a <- "hola"
 if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 @
@@ -2135,11 +2117,11 @@ if (is.numeric(a) && log(a)) cat("\n we entered in the if")
 \activities : Try to run the above with a \code{\&} instead of \code{\&\&}.
 
 
-\paragraph{\skipinclass{:\ Additional examples}}
-% Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).''
-From R-4.4.1 this is now an error: ``Using vectors of more than one element in '\&\&' or '||' will give an error.''
+\paragraph{\skipinclass{:\ Additional short-circuit examples and details}}
 
-(From the help).
+
+% Note, though, that ``Using vectors of more than one element in '\&\&' or '||' will give a warning (as from R 4.2.0), or an error if the environment variable '\_R\_CHECK\_LENGTH\_1\_LOGIC2\_' is set to a true value (this is intended to become the default in future).''
+From R-4.4.1 this is now an error: ``Using vectors of more than one element in '\&\&' or '||' will give an error.'' (From the help).
 
 <<>>=
 a1 <- c(TRUE, FALSE)
@@ -2150,7 +2132,44 @@ a1 && b1
 a1 || b1
 @
 
-Notice the warning. And notice that the returned value has length 1. Wait, was that a warning or was that an error?
+Notice the error.
+
+\subsubsection{Do not use \code{T} for \code{TRUE} or \code{F} for
+  \texttt{FALSE}}\label{no_t_for_true}
+\activities \  Can you think why?
+
+This is a short section: Never, ever, use \code{T} for \code{TRUE} or \code{F} for \texttt{FALSE}. You can count on at least one exam question about this.
+
+%% https://stat.ethz.ch/pipermail/r-help/2008-November/180085.html
+
+
+<<ltftf>>=
+## Lots of other code before here
+
+## This is not a bad idea per se.
+T <- 0
+F <- -1
+
+## Using T and F as TRUE and FALSE are the bad ideas
+
+## In explicit if
+if (T) cat("This should be printed\n")
+if (F) cat("This should NOT be printed\n")
+
+## As arguments to functions
+(x1 <- c(1, 2, NA))
+
+mean(x1, na.rm = TRUE)
+## This can be a VERY HARD to debugg bug
+mean(x1, na.rm = T)
+
+## In contrast, TRUE and FALSE cannot be overwritten
+TRUE <- 0
+FALSE <- 1
+
+## For safety, remove them
+rm(T, F)
+@
 
 
 
@@ -2272,7 +2291,9 @@ w[w < 12]
 ## same, but more confusing (here, not always)
 w[!(w >= 12)]
 
-## What are these doing? Avoid these things
+## What are these doing? I would avoid these things
+## (by having code fail if the length of the logical vector
+## differs from the vector being indexed)
 ages[c(FALSE, TRUE)]
 ages[c(TRUE, TRUE, FALSE)]
 @
@@ -2291,7 +2312,7 @@ what you want. If you know what you are doing, take a look at
 
 
 
-\subsubsection{\skipinclass{:\ Additional examples and info}}
+\subsubsection{\skipinclass{:\ Additional examples and info of float equality et al.}}
 Comparing very similar numeric values can be tricky: rounding can happen,
 and some numbers cannot be represented exactly in binary (computer)
 notation.  By default \R\ displays 7~significant digits
@@ -2478,15 +2499,16 @@ matrix or of an array are of the same type.
 
 \subsubsection{Creating matrices from a vector}
 
-(The vector, below, is that vector that we create on the fly with \code{1:10})
+(In the code below, the vector we create the matrix from is  the vector we create on the fly with \code{1:10})
 <<>>=
 matrix(1:10, ncol = 2)
+## More explicit, better in code
 matrix(1:10, nrow = 5, ncol = 2)
 matrix(1:10, ncol = 2, byrow = TRUE)
 @
 
 
-\subsubsection{Combining vector to create a matrix: \code{cbind, rbind}}
+\subsubsection{Combining vectors to create a matrix: \code{cbind, rbind}}
 \label{sec:comb-vect-create}
 You can glue vectors horizontally or vertically to create a matrix.
 
@@ -2497,8 +2519,10 @@ rbind(v1, v2)
 cbind(v1, v2)
 @
 
-And you can do the same with matrices (if they are of the appropriate
-dimensions, of course)
+
+\paragraph{\skipinclass{:\ \texttt{rbind, cbind} also work  with matrices (if they are of the appropriate dimensions, of course)}}
+
+
 <<>>=
 A <- matrix(1:10, nrow = 5)
 B <- matrix(11:20, nrow = 5)
@@ -2506,7 +2530,7 @@ cbind(A, B)
 rbind(A, B)
 @
 
-
+\activities:\ Try to use \texttt{rbind} and \texttt{cbind} in matrices that are not of the appropriate dimensions. What happens?
 
 \subsubsection{Matrix indexing and subsetting}
 \label{sec:matr-index-subs}
@@ -2533,7 +2557,7 @@ A[mm2]
 which(A < 5, arr.ind = FALSE) ## this is the default
 @
 
-\paragraph{\skipinclass{:\ Additional examples}}
+\paragraph{\skipinclass{:\ Additional examples of accessing matrix by row/column indices and names}}
 <<>>=
 A <- matrix(1:15, nrow = 5)
 A[1, ] ## first row
@@ -2562,9 +2586,10 @@ colnames(B) <- c("A", "E", "I")
 rownames(B) <- letters[1:nrow(B)]
 B[, "E"]
 B["c", ]
+
 @
 
-
+\activities: What are \texttt{nrow} and \texttt{ncol} doing? Look at their help.
 
 
 \subsubsection{Operations with matrices}
@@ -2587,6 +2612,26 @@ And, of course, we can subset/select rows and columns using those:
 <<>>=
 A[rowMeans(A) > 9, ]
 @
+
+
+\activities: Use \texttt{apply} instead of \texttt{rowMeans, rowSums, colMeans, colSums} and verify they give the same solution for some matrices. Make sure you try this and understand what is happening.
+
+<<rowmeapply>>=
+A1 <- matrix(1:15, nrow = 5)
+
+colSums(A1) == apply(A1, 2, sum)
+
+## eh?
+identical(colSums(A1), apply(A1, 2, sum))
+
+class(colSums(A1))
+class(apply(A1, 2, sum))
+
+## We mentioned all.equal before
+all.equal(colSums(A1), apply(A1, 2, sum))
+
+@
+
 
 
 \subsubsection{Matrices: dropping dimensions (or not)}
@@ -2641,7 +2686,7 @@ listB[c(1, 3)]
 @
 
 
-\subsubsection{\skipinclass{:\ Additional examples}}
+\subsubsection{\skipinclass{:\ Additional list examples}}
 
 <<>>=
 listA <- list(a = 1:5, b = letters[1:3])
@@ -2681,13 +2726,18 @@ And what did we do here?
 <<>>=
 listB[[c(3, 4)]]
 @
-though I tend to find the last one confusing. I'd rather do
+though I tend to find the last one confusing, even if it is well documented in the help (\texttt{?"[["})\footnote{We are not alone if we are surprised by this: \Burl{https://kbroman.org/blog/2013/04/02/xc53/}.}
+
+I'd rather do
 <<>>=
 listB[[3]][1, 2]
 @
+so first access the matrix, and then the element that occupies first row and second column.
+
+\vspace*{15pt}
 
 To make sure we see this more clearly, do:
-
+%""
 <<eval=TRUE,echo=TRUE,results='hide'>>=
 listB[[c(3, 11)]]
 listB[[3]][11]
@@ -2712,7 +2762,7 @@ That is very different from
 listB[c(3, 4)]
 @
 
-So, recommendation: do not try to be too smart when dealing with lists. Access each type of element, and then subset that element as needed.
+My recommendation, at least initially: do not try to be too smart when dealing with lists. Access each type of element, and then subset that element as needed.
 
 
 \subsection{Data frames}
@@ -2732,7 +2782,7 @@ structure, where different columns can have objects of different types
 
 @
 
-Data frames are extremely handy for data analysis, and you will see them used extensively there.
+Data frames are very common and handy for data analysis.
 
 
 We can access elements of data frames as if they were matrices and as
@@ -2749,27 +2799,15 @@ AB["Age"]
 AB[3, 4] <- 97
 @
 
-We can go from data frames from matrices, in two different ways (each of
-which does, therefore, a different thing):
-<<>>=
-data.matrix(AB)
-as.matrix(AB)
-@
-
-Many matrix operations, in particular \code{rbind} and \code{cbind} will
-also work with data frames.%%  (though care is needed with \code{rbind} when
-%% there are factors)
 
 
-<<>>=
-AB2 <- rbind(AB, AB)
-@
-\noindent (yes, the above is somewhat silly, but you get the point).
-
-Of course, creating a data frame is easy:
+Creating a data frame is easy:
 <<>>=
 (AC <- data.frame(ID = "a9", Age = 14, Sex = "M", Y = 17))
+
+## And rbind and cbind also work with data frames
 rbind(AB, AC)
+AB2 <- rbind(AB, AB)
 @
 
 Data frames make it particularly easy to add new variables to the data frame.
@@ -2779,6 +2817,32 @@ AB2$status <- rep(c("Z", "V"), 5)
 @
 
 \activities : Try adding a new variable to a matrix. How would you do it?
+
+
+
+
+We can go from data frames from matrices, in two different ways (each of
+which does a different thing):
+<<>>=
+data.matrix(AB)
+as.matrix(AB)
+@
+
+\activities:\ Carefully look at the output from \texttt{data.matrix} and \texttt{as.matrix}: what is each one doing? When could each be useful?
+
+
+% \subsubsection{\skipinclass\ \texttt{rbind, cbind} and data frames}
+
+% Many matrix operations, in particular \code{rbind} and \code{cbind} will
+% also work with data frames.%%  (though care is needed with \code{rbind} when
+% %% there are factors)
+
+
+% <<>>=
+% AB2 <- rbind(AB, AB)
+% @
+% \noindent (yes, the above is somewhat silly, but you get the point).
+
 
 
 % \subsection{\skipinclass:\ Odds and ends}
@@ -2795,10 +2859,9 @@ AB2$status <- rep(c("Z", "V"), 5)
 % a difference.
 
 
-\subsection{\activities: matrices indexing matrices}
+\subsubsection{\activities: More practice with matrices indexing matrices}
 
-Play with the following and make sure you understand it (at least
-the first part)
+Play with the following and make sure you understand it
 
 <<matinmat>>=
 ## Examples of indexing a matrix with a matrix
@@ -2820,7 +2883,10 @@ A[c(3, 1, 5, 5), c(3, 2, 1, 2)]
 
 A[m2]
 
+@
 
+\subsubsection{\optactivities: Matrices indexing matrices, II (more advanced, possibly counterintuitive)}
+<<matmatnoint>>=
 ## The above should be cristal clear. Now for something not
 ## intuitive (for me) ......
 
@@ -2852,6 +2918,7 @@ A[as.vector(m22)]
 
 @
 
+
 \clearpage
 
 
@@ -2866,14 +2933,20 @@ additional practice from the exercises.
 
 \subsection{The very basics}\label{plot-basics}
 
-The basic plot function is \code{plot}. It's \textbf{help} can be slightly
-misleading and many additional arguments are explained in \code{par}.
+The basic plot function is \code{plot}. It's \textbf{help} can be slightly misleading and many additional arguments are explained in \code{par}.
+
+\activities: Look at the help for \texttt{plot} and \texttt{par}:
+<<helpplotpar, eval=FALSE>>=
+?plot
+?par
+@
+
 
 A good analogy to begin with is that of a canvas where you go adding
 elements. Let's look at this simple example:
 
 
-<<>>=
+<<fig.width=4, fig.height=4>>=
 set.seed(2) ## for reproducibility
 x <- 1:10
 y <- sample(seq(from = 2, to = 20, length.out = 10))
@@ -2887,17 +2960,20 @@ abline(h = 5, lty = 2)
 There are many, many other types of plots. We will see some later.
 
 
-This shows a few common elements. Again, this is just a very tiny set of what is available..
+This shows a few common elements (and some math and LaTeX\footnote{I am using package \texttt{latex2exp}; you might also want to check the xdivr package: \Burl{https://cran.r-project.org/web/packages/xdvir/index.html}}). Again, this is just a very tiny set of what is available:
 
-<<plotssimple>>=
-plot(x, y, xlab = "This is the label for the x axis",
+<<plotssimple,fig.width=4, fig.height=4>>=
+library(latex2exp) ## For "TeX", to use LaTeX
+plot(x, y,
+     main = TeX(r"(The title with some LaTeX: \frac{\bar{x}}{\gamma} = 3)"),
      ylab = "Label for the y axis",
-     main = "A title", pch = c(19, 1:9),
-     cex = 1:10,
+     xlab = expression(paste("The x lab with some math: ", alpha = sqrt(beta))),
+     pch = c(19, 1:9),
+     cex = seq(from = 0.6, to = 3, length.out = 10),
      col = rainbow(10))
-text(2, 3, "Some text", srt = 45)
+text(7, 9, "Some text", srt = 35)
 abline(a = 3, b = 2.5, lty = 2, col = "blue")
-abline(a = 13, b = -5, lty = 4, col = "salmon", lwd = 4)
+abline(a = 13, b = -1.5, lty = 4, col = "salmon", lwd = 4)
 
 @
 
@@ -3055,7 +3131,7 @@ example.  We will use output from alignment statistics from BLAST.  Let's take a
 
 The quick code. Please, make sure to look at the original data. I know (from the metadata) what columns 5 and 13 are.
 
-<<>>=
+<<fig.width=7, fig.height=4>>=
 hit <- read.table("hit-table-500-text.txt")
 par(mfrow = c(1, 2)) ## two figures side by side
 hist(hit[, 5], breaks = 50, xlab = "", main = "Alignment length")
@@ -3063,19 +3139,6 @@ plot(hit[, 13] ~ hit[, 3], xlab = "Percent. identity",
      ylab = "Bit score", main = "Bit score vs. % identity")
 @
 
-
-A 3D plot\footnote{This is not a great, or
-  even a decent, model of the relationship, which we can see, for
-  instance, from the pattern of the deviations of the points from the
-  plane. But the key for now is the ease of plotting.}
-<<>>=
-## I comment it out, so I can generate the notes without it stopping
-if (FALSE) {
-    library(car)
-    scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
-              zlab = "Length", ylab = "Score")
-}
-@
 
 
 % We will read the data and then do a couple of plots. Remember that the
@@ -3130,7 +3193,23 @@ if (FALSE) {
 % @
 
 
-\subsubsection{\skipinclass{:\ More details}}
+\subsubsection{\skipinclass{:\ A 3D plot and more details}}
+
+
+A 3D plot\footnote{This is not a great, or
+  even a decent, model of the relationship, which we can see, for
+  instance, from the pattern of the deviations of the points from the
+  plane. But the key for now is the ease of plotting.}
+<<>>=
+## I comment it out, so I can generate the notes without it stopping
+if (FALSE) {
+    library(car)
+    scatter3d(hit[, 13] ~ hit[, 3] + hit[, 5], xlab = "Ident",
+              zlab = "Length", ylab = "Score")
+}
+@
+
+
 By the way, some questions/answers arise from the figures. For instance:
 why does the distribution of alignment lengths seems to have three
 distinct modes? Or how can you explain the plot of score vs.\ percent
@@ -3218,7 +3297,7 @@ get a quick idea of the spread of the points, etc. And I want to do it only for 
 
 
 
-<<plotjustbirds>>=
+<<plotjustbirds,fig.width=4, fig.height=4>>=
 anage$logMetab <- log(anage$Metabolic.rate..W.)
 anage$logBodyMass <- log(anage$Body.mass..g.)
 
@@ -3263,7 +3342,7 @@ mass).
 You could do something very similar to what we did with the \texttt{car} function \texttt{scatterplot} starting with the basic plot function, but it
 would not add the extra lines, boxplots, etc.
 
-<<fig.width=6, fig.height=6>>=
+<<fig.width=4, fig.height=4>>=
 plot(Metabolic.rate..W. ~ Body.mass..g., log="xy", data = anage)
 @
 
@@ -3410,7 +3489,7 @@ The file ``AnAge\_birds\_reptiles.txt'' is a subset of the original data I downl
 
 
 
-\skipinclass{We will skip all of this for now. I will only briefly explain random number generators and using the seed.}
+\skipinclass{:\ We will skip all of this. I will only briefly explain random number generators and using their seed.}
 
 Suppose we have 50 patients, 30 of which have colon cancer and 20 of which
 have lung cancer. And we have expression data for one gen (say GenA). We
@@ -3534,7 +3613,7 @@ dftt <- data.frame(gene_A = GeneA,
 
 Now, plot:
 
-<<ggplot_x2hj4>>=
+<<ggplot_x2hj4, fig.width=6, fig.height=4>>=
 library(ggplot2)
 
 p1 <- ggplot(dftt,
@@ -3592,7 +3671,7 @@ xo <- c(xo, 2 * xo, xo + rnorm(length(xo)))
 class <- factor(rep(c("A", "B", "C"), rep(length(xo)/3, 3)))
 @
 
-<<eval=TRUE,echo=FALSE,results=FALSE>>=
+<<eval=TRUE,echo=FALSE,results=FALSE, fig.width=7, fig.height=4>=
 stripchart(xo ~ class, method = "jitter", vertical = TRUE)
 @
 
@@ -3813,7 +3892,7 @@ been considered when we created \texttt{dfx4}.
 
 
 
-\activities \ And what happens if you do
+\optactivities \ And what happens if you do
 
 <<xtabs_arbitr_5>>=
 ftable(xtabs(Vx ~ Age + Loc, data = dfx3))
@@ -4011,7 +4090,7 @@ lapply(listB, function(x) class(x))
 
 
 
-\subsection{tapply (and by)}\label{sec:tapply-by}
+\subsection{tapply}\label{sec:tapply-by}
 
 When we have data (a column or several columns) that can be used to stratify or select other data (generally a vector), we often use \code{tapply}.
 
@@ -4193,12 +4272,37 @@ aggregate(one.dataframe[, c("age", "Y")],
 
 @
 
+
+\subsubsection{\skipinclass{:\ \texttt{aggregate}, \texttt{with}, and being explicit about \texttt{FUN}}}
+Sometimes, using \texttt{with} can be handy, but watch out: we need to be
+explicit about \texttt{FUN} (what would happen if we did not?). % Actually,
+% there are a couple of things happening here at the same time:
+<<>>=
+with(one.dataframe,
+     aggregate(age ~ sex,
+               FUN = function(x) c(Mean = mean(x), SD = sd(x)))
+     )
+@
+
+\activities: \ Repeat the above not being explicit about \texttt{FUN}
+(i.e., passing the function but not explicitly passing it as explicit
+argument to \texttt{FUN}). What
+happens and why?
+
+<<nofunaggregate,eval=FALSE>>=
+with(one.dataframe,
+     aggregate(age ~ sex,
+               function(x) c(Mean = mean(x), SD = sd(x)))
+     )
+@
+%% FUN is not passed, and it takes the function(x) as the data
+%% argument
+
+
 \subsubsection{\textcolor {Green} {\texttt{aggregate}: supplementary details}}
 \label{sec:texttt-suppl-deta}
 
-(What follows are supplementary details:)
-
-Note, though, that the output from the last calls is not a dataframe of six columns: the output for age is a single dataframe column (that comprises a two-column matrix), and likewise for Y.
+(What follows are supplementary details.) Note, though, that the output from the last calls is not a dataframe of six columns: the output for age is a single dataframe column (that comprises a two-column matrix), and likewise for Y.
 
 <<>>=
 dim(ag1)
@@ -4238,33 +4342,11 @@ Incidentally, this issue comes up from time to time in forums\footnote{\Burl{htt
 
 
 
-Sometimes, using \texttt{with} can be handy, but watch out: we need to be
-explicit about \texttt{FUN} (what would happen if we did not?). % Actually,
-% there are a couple of things happening here at the same time:
-<<>>=
-with(one.dataframe,
-     aggregate(age ~ sex,
-               FUN = function(x) c(Mean = mean(x), SD = sd(x)))
-     )
-@
-
-\activities \ Repeat the above not being explicit about \texttt{FUN}
-(i.e., passing the function but not explicitly passing it as explicit
-argument to \texttt{FUN}). What
-happens and why?
-
-<<nofunaggregate,eval=FALSE>>=
-with(one.dataframe,
-     aggregate(age ~ sex,
-               function(x) c(Mean = mean(x), SD = sd(x)))
-     )
-@
-%% FUN is not passed, and it takes the function(x) as the data
-%% argument
-
 
 \subsubsection{\optactivities: \  aggregate, multiple columns, and xtabs. 0s and NAs}
 \label{sec:activ-aggr-xtabs}
+
+You can skip this; it will definitely not be in the exam. This can be useful, however, for more advanced uses where you combine \texttt{xtabs} and \texttt{aggregate} and you have 0s and/or NAs.
 
 \begin{enumerate}
 \item Create a data frame as follows:
@@ -4350,14 +4432,14 @@ ftable(xtabs(Y ~ age + sex,
 
 
 
-(Note: some people are surprised by the use of \texttt{xtabs} on the
+Note: some people are surprised by the use of \texttt{xtabs} on the
 output from \texttt{aggregate}. But combining \texttt{xtabs} and
-\texttt{aggregate} is an orthodox procedure: it is mentioned in the help page for \texttt{aggregate}.)
+\texttt{aggregate} is an orthodox procedure: it is mentioned in the help page for \texttt{aggregate}.
 
 
 
 \subsubsection{\textcolor {Green} {More on aggregate and xtabs}}
-(This is supplementary material)
+(This is also supplementary material will not be in the exam, etc).
 
 Some additional explorations of the combination of \texttt{xtabs} and \texttt{aggregate}. Using only one variable for aggregate or xtabs. What is the  difference? Compare carefully what is happening here
 
@@ -5094,7 +5176,7 @@ If we have time, we will cover some of these issues in more detail in file \text
 The $\ldots$ allows you to pass further arguments that some function
 inside your function will take care of:
 
-<<>>=
+<<fig.width=4, fig.height=4>>=
 f0 <- function(x, pch = 3, ...) {plot(x, pch = pch, ...)}
 
 f0(1:5, col = "red", type = "b")
