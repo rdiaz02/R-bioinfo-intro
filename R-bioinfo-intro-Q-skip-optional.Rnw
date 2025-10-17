@@ -244,17 +244,20 @@ repeatedly, and repeating and going deeper on some key ideas. Hopefully,
 this will allow you to understand the material better, connect it with
 other pieces, and retain it for longer.
 
+Some parts are marked as ``\activities''. Please make sure to do them. \textbf{Some exam questions will come from the \activities.}
 
 
-Some sections are marked as ``\activities''. Please make sure to do them. Some exam questions will come from the \activities.
-
-Some others are marked as ``\optactivities'': we rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam). Other sections/subsections/whatever that we will not cover in class (nor would be in an exam) are indicated in  \textcolor{Green}{green}.
+Some sections/subsections/subsubsections/whatever that we will not cover in class (nor would be in an exam) are indicated in  \textcolor{Green}{green, and should have a descriptive text that clearly labels them as optional}.  Often associated to the \textcolor{Green}{optional sections} are some activities marked as ``\optactivities''. We rarely have time to cover or discuss them; you are encouraged to try them, but unless explicitly stated, we won't cover this in class (nor, if there is an exam, will they be part of an exam).
 
 
 \subsubsection{Changes starting on 2025-10-16: moving material to \skipinclass{whatever}}
 \label{sec:chang-start-2025}
 
-As we are (course 2025-2026) going too slow, I try to concentrate only the \textbf{absolutely, nonnegotiable, essential stuff} and move lots to subsections (or subsubsubsections, or whatever). The material moved out is indicated as ``\skipinclass{Whatever (subsub)section title}''. \textbf{I would NOT skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material; it is just material that introduces some redundancy. You can expect that some exam questions will come from the \skipinclass{skipped in class material}. (Again: the only optional material (the material that will not be in the exam), is indicated as \optactivities\  or has section (subsection, or whatever) in \textcolor{Green}{green}.)
+As we are (course 2025-2026) going too slow, I will concentrate the boring syntax part only on the \textbf{absolutely, nonnegotiable, essential stuff}, so that we have time to discuss more interesting and larger programming examples. Thus, I will move material that we will not cover in class to their own subsections (or subsubsubsections, or whatever), indicated as ``\skipinclass{Whatever (subsub)section title}''.
+
+
+\textbf{You probably do not want to skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material; it is just material that introduces some redundancy and can help you understand/remember the material better.
+You can expect that some exam questions will come from the \skipinclass{material}. (Again: the only optional material (the material that will not be in the exam), is indicated as \optactivities\  or has section (subsection, or whatever) in \textcolor{Green}{green and has text that indicates that it is optional}.)
 %% We'll see how it goes.
 
 \subsection{The PDF and the code}
@@ -3775,7 +3778,7 @@ xtabs(data = x4, addNA = TRUE)
 @
 
 
-\subsection{\textcolor {Green} {Tables II}}
+\subsection{\textcolor {Green} {(Optional) Tables II}}
 \label{tablesII}
 Unless we have a lot of time:
 \begin{itemize}
@@ -3784,7 +3787,7 @@ Unless we have a lot of time:
 \end{itemize}
 
 
-\subsubsection{\textcolor {Green}  {Recovering a table from a data frame}}
+\subsubsection{\textcolor {Green}  {(Optional) Recovering a table from a data frame}}
 <<>>=
 ## create a data frame with a "Freq" column:
 ## put the table in a data frame
@@ -3798,7 +3801,7 @@ xtabs(Freq ~ a + b + c, data = dfx)
 
 @
 
-\subsubsection{\textcolor {Green} {Recovering the data that produced the table}}
+\subsubsection{\textcolor {Green} {(Optional) Recovering the data that produced the table}}
 And what if we want to recover the data (in our case above, the dataframe \texttt{x}) and we have a data frame that already contains the frequencies? The following code is something you should be able to understand:
 
 <<>>=
@@ -3810,7 +3813,7 @@ The order of the data are not the same as in \texttt{x} and the rownames look st
 
 %% FIXME: what if we do not use all variables for indexing?
 %% Dealt with in the activities of aggregate + xtabs
-\subsection{\textcolor {Green} {xtabs and ftable: summarizing arbitrary stuff}}\label{xtabs-arbitrary}
+\subsection{\textcolor {Green} {(Optional) xtabs and ftable: summarizing arbitrary stuff}}\label{xtabs-arbitrary}
 
 
 Unless we have a lot of time:
@@ -3908,7 +3911,7 @@ toLatex(ftable(xtabs(Vx ~ ., data = dfx3)))
 
 
 
-\subsection{\textcolor {Green} {Tables and missing values, more examples and details}}
+\subsection{\textcolor {Green} {(Optional) Tables and missing values, more examples and details}}
 \label{tablena}
 
 Unless we have a lot of time:
@@ -3976,7 +3979,7 @@ that interests you, do the last example using \texttt{toLatex}.
 %% FIXME: from a xtab to a data.frame of individual cases
 %% https://stackoverflow.com/a/36499608
 
-\subsection{\textcolor {Green}{Tables, III}}\label{tablesIII}
+\subsection{\textcolor {Green}{(Optional) Tables, III}}\label{tablesIII}
 Unless we have a lot of time:
 \begin{itemize}
 \item We will skip this in class.
@@ -4120,7 +4123,7 @@ tapply(one.dataframe$age,
 @
 
 
-\subsubsection{\textcolor {Green} {More tapply and \texttt{by}}}
+\subsubsection{\textcolor {Green} {(Optional) More tapply and \texttt{by}}}
 
 We can also use a function that returns more than one summary statistic:
 
@@ -4299,7 +4302,7 @@ with(one.dataframe,
 %% argument
 
 
-\subsubsection{\textcolor {Green} {\texttt{aggregate}: supplementary details}}
+\subsubsection{\textcolor {Green} {(Optional) \texttt{aggregate}: supplementary details}}
 \label{sec:texttt-suppl-deta}
 
 (What follows are supplementary details.) Note, though, that the output from the last calls is not a dataframe of six columns: the output for age is a single dataframe column (that comprises a two-column matrix), and likewise for Y.
@@ -4438,7 +4441,7 @@ output from \texttt{aggregate}. But combining \texttt{xtabs} and
 
 
 
-\subsubsection{\textcolor {Green} {More on aggregate and xtabs}}
+\subsubsection{\textcolor {Green} {(Optional) More on aggregate and xtabs}}
 (This is also supplementary material will not be in the exam, etc).
 
 Some additional explorations of the combination of \texttt{xtabs} and \texttt{aggregate}. Using only one variable for aggregate or xtabs. What is the  difference? Compare carefully what is happening here
@@ -4684,27 +4687,23 @@ to make life much easier for this task. This is expanded in section \ref{sec:res
 
 \section{\R\  programming}\label{rprog}
 
-\R\  is a programming language. Comprehensive coverage is given in the books
-by Chambers ``Software for Data Analysis: Programming with R'',
+\R\  is a programming language. Comprehensive coverage is given in the books by Chambers ``Software for Data Analysis: Programming with R'',
 Matloff's ``The art of R programming'', Wickham's ``Advanced R'', and
 Venables and Ripley ``S Programming'' (see details in
 \Burl{http://www.r-project.org/doc/bib/R-books.html}). Chapters 9 and 10
 of ``An Introduction to R''
 (\Burl{http://cran.r-project.org/doc/manuals/R-intro.html}) provide a fast
-but thorough introduction of the main concepts of programming in \R.
+but thorough introduction of the main concepts of programming in \R (as we said, this is a highly recommended document, which is part of every R installation).
 
 It is important to emphasize that the ease of combining programming with
-``canned'' statistical procedures gives \R\  a definite advantage over other
-languages in Bioinformatics (and explains its fast adoption).
-
+``canned'' statistical procedures gives \R\  a definite advantage over other languages in Bioinformatics (and explains its fast adoption).
 
 
 \subsection{Flow control}
 \R\  has the usual constructions for flow control and conditional
 execution: \code{if, ifelse, for, while, repeat, switch, break}. Before
 continuing, please note that \code{for} loops are rarely the best
-solution: the \code{apply} family of functions ---see below--- is often a better
-approach.
+solution: the \code{apply} family of functions ---see below--- is often a better approach.
 
 A few examples follow. Make sure you understand them.
 
@@ -4791,8 +4790,29 @@ different place, and we initialize it with a value of 0?
 %% > ifelse(x > y, "larger", "smaller")
 
 
-You can do confusing things. It is better to avoid them, and to avoid
-using the loop index (though this is all explained in the help):
+
+\texttt{if}, \texttt{if ... else}, and \texttt{switch} are also available, of course. Regarding \texttt{if}, \texttt{if ... else} and \texttt{for}: I find it worth to \textbf{always} (almost always) use braces (\verb@{}@), even for statements in a single line: it minimizes mistakes and hard-to-debugg errors and makes it easier to understand the code.
+
+<<>>=
+aa <- 9
+
+if (aa < 95) {
+  cat("\n aa is < 95\n")
+} else if (aa > 100) {
+  cat("\n hummm.... larger than a 100\n")
+} else {
+  cat("\n between 95 and a 100\n")
+}
+
+@
+
+
+
+\subsubsection{\skipinclass{: Confusing fun with loops }}
+
+You can do confusing things. It is better to avoid them, and to avoid manipulation and using the loop index (though this is all explained in the help):
+
+So the loop variable changes its value and takes the last value in the loop (or so it seems):
 
 <<>>=
 
@@ -4801,10 +4821,11 @@ rm(i)
 for(i in 1:10) { x <- i}
 
 i
-
+x
 @
 
 
+This, I would argue, is asking for trouble. I would always avoid this:
 <<>>=
 
 rm(i)
@@ -4819,7 +4840,7 @@ i
 
 @
 
-This is OK, though (but I would not name that variable as \texttt{i})
+This is OK, though (but I would not name that variable as \texttt{i}, because things like \texttt{i,j,k} are often used as loop variables):
 
 <<>>=
 
@@ -4830,26 +4851,10 @@ i <- 0
 repeat {
     i <- runif(1, -1, 0.5)
     cat(".")
-    if(i > 0.2) break
+    if (i > 0.2) break
 }
 
 i
-
-@
-
-
-\texttt{if}, \texttt{if ... else}, and \texttt{switch} are also available, of course. Regarding \texttt{if}, \texttt{if ... else} and \texttt{for}: I find it worth to \textbf{always} (almost always) use braces (\verb@{}@), even for statements in a single line: it minimizes mistakes and hard-to-debugg errors and makes it easier to understand the code.
-
-<<>>=
-aa <- 9
-
-if (aa < 95) {
-  cat("\n aa is < 95\n")
-} else if (aa > 100) {
-  cat("\n hummm.... larger than a 100\n")
-} else {
-  cat("\n between 95 and a 100\n")
-}
 
 @
 
@@ -4901,11 +4906,12 @@ multByTwo <- function(x) {
 
 a <- 3
 multByTwo(a)
-multByTwo(45)
 @
 
 
-Another example
+\subsubsection{\skipinclass{: Extra function examples, mixing plotting and ouput to the screen }}
+
+Another example, that mixes plotting and a statistical function
 <<>>=
 
 plotAndSummary <- function(x) {
@@ -5001,7 +5007,7 @@ arguments are considered. Really: type the above code. Those are
 
 
 \subsection{Scoping, frames, environments, etc}\label{scoping}
-This is more advanced material. Do this when you are awake. For now, we
+Understanding scoping is essential. Do this when you are awake. For now, we
 will only scratch the surface. But yes, the material of this section can be part of the exam.
 
 Suppose this:
@@ -5146,7 +5152,7 @@ Oh, do you know what ``c'' we just removed? (Yes that was an \activities
 
 
 
-If we have time, we will cover some of these issues in more detail in file \texttt{some-env-scoping-examples.R}.
+If we have time, at the end of the course,  in section \ref{sec:scoping-more}, we will cover some of these issues in more detail using file \texttt{some-env-scoping-examples.R}.
 
 %% FIXME: here we should go over global environment, search(), and attach()/detach() and explain that we can attach(df1) and the associated problems.
 
@@ -5233,8 +5239,7 @@ Are you surprised? Regardless of it working, I would not do those things
 routinely just for the fun of it.
 
 
-(I have to confess, though, that I am surprised by \texttt{codetools} not saying
-anything about it)
+(I have to confess, though, that I am surprised by \texttt{codetools} not saying anything about it)
 
 
 <<eval=FALSE>>=
@@ -5243,7 +5248,7 @@ checkUsageEnv(env = .GlobalEnv)
 @
 
 
-(This is an awkward place to mention codetools. But we will use it again later)
+(This is an awkward place to mention codetools. But we will use it again later. Moral for now: use \texttt{codetools} generously with your own code; in addition to things like \texttt{lintr} it will help you catch errors and bugs.)
 
 
 
@@ -5251,7 +5256,7 @@ checkUsageEnv(env = .GlobalEnv)
 
 
 
-\subsection{\optactivities \ Functions that return NULL and invisible}
+\subsection{\textcolor {Green}{(Optional) Functions that return NULL and invisible}}
 \label{sec:null}
 
 Note: unless we have plenty of  time, we will skip this in class.
@@ -5290,7 +5295,7 @@ cc
 
 
 
-\subsection{\optactivities \ Using return explicitly and invisible}
+\subsection{\textcolor {Green}{(Optional) \ Using return explicitly and invisible}}
 \label{sec:invisible_ret}
 
 Note: unless we have plenty of  time, we will skip this in class.
@@ -5373,11 +5378,12 @@ f1A <- function(x){
 
 
 
-\clearpage
 
 
 \subsection{Commenting code}\label{sec:code-comments-2}
 Please, make sure to read again the short section about ``Commenting code'': \ref{sec:code-comments}.
+
+\clearpage
 
 \section{Revisiting an example that brings a few things
   together}\label{example-multtest}
