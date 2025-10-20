@@ -2006,15 +2006,25 @@ and \code{|} and, likewise, \code{\&\&} and \code{\&}).
 
 A few examples:
 <<>>=
-v1 <- 1:5
-v1 < 3
+v1 <- 1:4
 
-v11 <- c(1, 1, 3, 5, 4)
-v1 == v11
-v1 != v11
-identical(v1, v11)
-v3 <- c(TRUE, FALSE, TRUE, FALSE, TRUE)
+## A vector with TRUE/FALSE
+v1 < 3
+## ... that we can explicitly assign
 v2 <- (v1 < 3)
+
+v11 <- c(1, 1, 3, 5)
+## Equality, element-wise
+v1 == v11
+## ... or non-equality, element-wise
+v1 != v11
+
+## Very different question: are the the objects identical?
+identical(v1, v11)
+
+## Logical operations: negation, AND, OR, XOR
+v3 <- c(TRUE, FALSE, TRUE, FALSE)
+
 !v3
 v2 & v3
 v2 | v3
@@ -2209,17 +2219,19 @@ Positions or names will be given in between \code{[]}.
 
 Specifying positions you want:
 <<>>=
-(w <- 9:18)
+(w <- 9:13)
 w[2]
 w[c(4, 3, 2)]
+
+(w2 <- letters[6:8])
+w2[3]
 @
-
-
 
 
 Specifying positions you do not want (original vector is NOT modified)
 <<>>=
 w[-c(3, 1)]
+w2[-2]
 @
 
 
@@ -2261,8 +2273,8 @@ w
 But compare this:
 <<>>=
 w[] <- 77
-w[] <- 17:55
-w <- 17:55
+w[] <- 1:40
+w <- 1:40
 @
 
 
@@ -2280,14 +2292,12 @@ w[-c(3, 1)]
 
 
 <<>>=
-w[1:2]
-w[3:6]
-w[seq(1, 8, by = 3)]
+
+letters[1:2]
+letters[3:6]
+letters[seq(1, 8, by = 3)]
 vv <- seq(1, 8, by = 3)
-w[vv]
-
-
-
+letters[vv]
 
 
 w[w < 12]
@@ -2308,7 +2318,7 @@ ages[c(TRUE, TRUE, FALSE)]
 (0.1 + 0.2) - 0.3
 @
 
-Be suspicious whenever you see an
+Moral: Be suspicious whenever you see an
 equality comparison of two floating-point numbers; that is unlikely to do
 what you want. If you know what you are doing, take a look at
 \texttt{all.equal} for near equality comparisons of objects.
@@ -2393,13 +2403,11 @@ c("red", "blue")[group]
 (nr <- factor(c(4, 2, 8, 4, 1)))
 as.numeric(as.character(nr))
 
-## Though there is a slightly better way?
-## From ?factor
-as.numeric(levels(nr))[nr]
 @
 
 
 \subsubsection{\skipinclass{:\ Additional examples and info}}
+
 Factors are a special type of vectors. We need them to differentiate
 between a vector of characters and a vector that represents categorical
 variables. The vector \code{char.vec <- c(``abc'', ``de'', ``fghi'')} contains
@@ -2462,6 +2470,14 @@ as.numeric(as.character(y))
 
 <<>>=
 as.character(y)
+@
+
+
+<<unfact2>>=
+## Though there is a slightly better way?
+## From ?factor
+as.numeric(levels(y))[y]
+
 @
 
 
@@ -2546,29 +2562,29 @@ columns. If you specify nothing for that dimension, it is returned completely. W
 You can use a matrix to index another matrix.
 
 <<>>=
-A <- matrix(1:15, nrow = 5)
+A <- matrix(11:25, nrow = 5)
 (m1 <- cbind(c(1, 3), c(2, 1)))
 A[m1]
 ## compare with
 A[c(1, 3), c(2, 1)]
 
 ## And notice this
-(mm2 <- which(A < 5, arr.ind = TRUE))
+(mm2 <- which(A < 15, arr.ind = TRUE))
 A[mm2]
 
 ## cf with
-which(A < 5, arr.ind = FALSE) ## this is the default
+which(A < 15, arr.ind = FALSE) ## this is the default
 @
 
 \paragraph{\skipinclass{:\ Additional examples of accessing matrix by row/column indices and names}}
 <<>>=
-A <- matrix(1:15, nrow = 5)
+A <- matrix(11:25, nrow = 5)
 A[1, ] ## first row
 A[, 2] ## second column
 A[4, 2] ## fourth row, second column
 A[3, 2] <- 999
 A[1, ] <- c(90, 91, 92)
-A < 4
+A < 14
 @
 
 Note that \code{which}, by default, might not do what you expect:
@@ -2589,7 +2605,6 @@ colnames(B) <- c("A", "E", "I")
 rownames(B) <- letters[1:nrow(B)]
 B[, "E"]
 B["c", ]
-
 @
 
 \activities: What are \texttt{nrow} and \texttt{ncol} doing? Look at their help.
@@ -2656,7 +2671,7 @@ What is going on? When could this matter? What is the default behavior?
 
 \subsection{Lists}
 A list is a more general container, where we can mix pieces of different
-types. In fact, there need not be any rectangular-like structure. Many functions in R  return lists.
+types. No need for any rectangular-like structure. Many functions in R  return lists.
 
 <<tidy=FALSE>>=
 
@@ -2799,6 +2814,11 @@ AB[, "Age"]
 AB$Age
 AB[["Age"]]
 AB["Age"]
+
+class(AB["Age"])
+class(AB[["Age"]])
+class(AB[2, ])
+
 AB[3, 4] <- 97
 @
 
@@ -2957,13 +2977,15 @@ plot(x, y, xlab = "This is the label for the x axis",
      ylab = "Label for the y axis")
 ## And now, we add a horizontal line:
 abline(h = 5, lty = 2)
+
+set.seed(NULL) ## reset seed
 @
 
 
 There are many, many other types of plots. We will see some later.
 
 
-This shows a few common elements (and some math and LaTeX\footnote{I am using package \texttt{latex2exp}; you might also want to check the xdivr package: \Burl{https://cran.r-project.org/web/packages/xdvir/index.html}}). Again, this is just a very tiny set of what is available:
+This shows a few common elements (and some math and \LaTeX\footnote{I am using package \texttt{latex2exp}; you might also want to check the xdivr package: \Burl{https://cran.r-project.org/web/packages/xdvir/index.html}}). Again, this is just a very tiny set of what is available (and using \LaTeX will NOT be part of the exam):
 
 <<plotssimple,fig.width=4, fig.height=4>>=
 library(latex2exp) ## For "TeX", to use LaTeX
@@ -3274,6 +3296,7 @@ Now, look at the data
 <<>>=
 str(anage)
 head(anage)
+tail(anage)
 summary(anage)
 @
 
