@@ -2669,6 +2669,71 @@ is.matrix(A[2, , drop = FALSE])
 
 What is going on? When could this matter? What is the default behavior?
 
+
+
+
+\subsubsection{\activities: More practice with matrices indexing matrices}
+
+Play with the following and make sure you understand it
+
+<<matinmat>>=
+## Examples of indexing a matrix with a matrix
+
+A <- matrix(1:15, ncol = 3) + 3
+
+m2 <- rbind(
+    c(3, 3)
+  , c(1, 2)
+  , c(5, 1)
+  , c(5, 2)
+)
+
+A[c(3, 1, 5, 5), ]
+
+A[, c(3, 2, 1, 2)]
+
+A[c(3, 1, 5, 5), c(3, 2, 1, 2)]
+
+A[m2]
+
+@
+
+\subsubsection{\optactivities: Matrices indexing matrices, II (more advanced, possibly counterintuitive)}
+<<matmatnoint>>=
+## The above should be cristal clear. Now for something not
+## intuitive (for me) ......
+
+## What if we index a matrix with a matrix with
+## more than 2 columns?
+
+(m11 <- cbind(1, 2, 3))
+A[m11]
+
+(m22 <- rbind(1:5, 11:15))
+A[m22]
+
+## Humm... it seems R uses the entries in m22 as just the
+## position in the matrix (as if it were a vector).
+## Let's check
+
+## Two ways to turn a matrix into a vector
+avv <- A
+dim(avv) <- NULL
+av <- as.vector(A)
+
+identical(av, avv)
+
+
+av[as.vector(m22)]
+
+## In fact, no need to turn matrix into vector
+A[as.vector(m22)]
+
+@
+
+
+
+
 \subsection{Lists}
 A list is a more general container, where we can mix pieces of different
 types. No need for any rectangular-like structure. Many functions in R  return lists.
@@ -2880,66 +2945,6 @@ as.matrix(AB)
 % Data table: For dealing efficiently with large data sets, and other
 % niceties, the ``datatable'' package (with its datatables) can really make
 % a difference.
-
-
-\subsubsection{\activities: More practice with matrices indexing matrices}
-
-Play with the following and make sure you understand it
-
-<<matinmat>>=
-## Examples of indexing a matrix with a matrix
-
-A <- matrix(1:15, ncol = 3) + 3
-
-m2 <- rbind(
-    c(3, 3)
-  , c(1, 2)
-  , c(5, 1)
-  , c(5, 2)
-)
-
-A[c(3, 1, 5, 5), ]
-
-A[, c(3, 2, 1, 2)]
-
-A[c(3, 1, 5, 5), c(3, 2, 1, 2)]
-
-A[m2]
-
-@
-
-\subsubsection{\optactivities: Matrices indexing matrices, II (more advanced, possibly counterintuitive)}
-<<matmatnoint>>=
-## The above should be cristal clear. Now for something not
-## intuitive (for me) ......
-
-## What if we index a matrix with a matrix with
-## more than 2 columns?
-
-(m11 <- cbind(1, 2, 3))
-A[m11]
-
-(m22 <- rbind(1:5, 11:15))
-A[m22]
-
-## Humm... it seems R uses the entries in m22 as just the
-## position in the matrix (as if it were a vector).
-## Let's check
-
-## Two ways to turn a matrix into a vector
-avv <- A
-dim(avv) <- NULL
-av <- as.vector(A)
-
-identical(av, avv)
-
-
-av[as.vector(m22)]
-
-## In fact, no need to turn matrix into vector
-A[as.vector(m22)]
-
-@
 
 
 \clearpage
@@ -4066,9 +4071,11 @@ apply(Z, 2, median)
 apply(Z, 2, min)
 @
 
+Recall that \texttt{apply} can take other arguments, as we see in the \activities\ after section \ref{mistery}.
+
 For those of you who have programmed before: using the ``apply'' family is
-often much, much, much more efficient (and elegant, and easy to
-understand) than using explicit loops.
+often more efficient, and elegant, and easy to
+understand, than using explicit loops.
 
 
 \subsection{\activities}
