@@ -1,11 +1,11 @@
-## For me: recall to  (setq ess-eval-visibly-p t)
-
 ### PURPOSE
 ## PURPOSE of this:
 ## Use different types of plot for same data
 ## Illustrate split-apply-combine
 ## Illustrate dealing with errors and incremental building of code
 ## Illustrate reading of help
+
+## For me: recall to  (setq ess-eval-visibly-p t)
 
 ### Clean workspace and load data
 ## What is in the workspace? I want it clean
@@ -25,6 +25,7 @@ anage$logmet <- log(anage$Metabolic.rate..W.)
 anage$logbm <- log(anage$Body.mass..g)
 
 
+### Class has to be a factor
 ## Humm??
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
@@ -44,91 +45,27 @@ scatterplot(Metabolic.rate..W. ~
 ## This used not to be necessary
 anage$Class <- factor(anage$Class)
 
+## Alternatively
+anage <-  read.table("AnAge_birds_reptiles.txt",
+                     header = TRUE, na.strings = "NA",
+                     stringsAsFactors = TRUE)
+
+
+
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
      col = c("red", "blue")[anage$Class],
      log = "xy")
 
-
-
-### skip
-
-## We did this already, so skip
-## Did you notice the naming of columns?
-
-library(car)
-
-scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
-            data = anage,
-            log = "xy")
-
-## too many lines; what are we getting rid of?
-scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
-            data = anage,
-            log = "xy",
-            smooth = FALSE)
-
-## But I have birds and reptiles. What is smooth doing?
+## Notice the "|"
 scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
             data = anage,
             log = "xy",
-            smooth = FALSE)
+            cex = c(1, 8)[anage$Class])
 
-scatterplot(Metabolic.rate..W. ~
-                Body.mass..g. | Class,
-            data = anage,
-            log = "xy", smooth = TRUE)
+### An unsolved problem with cex?
 
-## smooth each and add variance
-scatterplot(Metabolic.rate..W. ~
-                Body.mass..g. | Class,
-            data = anage,
-            log = "xy",
-            smooth = list(smoother = loessLine,
-                          var = TRUE))
-
-## smooth explicitly, and remove variance envelope
-scatterplot(Metabolic.rate..W. ~
-                Body.mass..g. | Class,
-            data = anage,
-            log = "xy",
-            smooth = list(smoother = loessLine
-                        ## , var = FALSE ## uncomment if you don't want var.
-                        ## , var = TRUE  ## uncomment if you want variance.
-                          ))
-
-## Notice colors. Working as expected
-scatterplot(Metabolic.rate..W. ~
-                Body.mass..g. | Class,
-            data = anage,
-            log = "xy",
-            col = c("orange", "green"))
-
-## But nope, not everything is changeable that way: e.g., cex
-scatterplot(Metabolic.rate..W. ~
-                Body.mass..g. | Class,
-            data = anage,
-            log = "xy",
-            cex = c(1, 8))
-
-## Oooops
-scatterplot(Metabolic.rate..W. ~
-                Body.mass..g. | Class,
-            data = anage,
-            log = "xy",
-            cex = c(1, 8)[Class])
-
-
-
-## This is no longer relevant as it works
-## What is happening here?? (For details of stringsAsFactors: https://developer.r-project.org/Blog/public/2020/02/16/stringsasfactors/index.html)
-
-## Yes, it is a factor
-anage$Class
-
-
-## Now
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
      log = "xy",
@@ -142,7 +79,6 @@ scatterplot(Metabolic.rate..W. ~
             cex = c(1, 3)[anage$Class])
 
 
-
 ## let's try again.
 dx <- na.omit(anage[, c("Metabolic.rate..W.",
                         "Body.mass..g.",
@@ -154,28 +90,28 @@ scatterplot(Metabolic.rate..W. ~
             log = "xy",
             cex = c(1, 3))
 
-cexo <- c(1,3)[dx$Class]
+cexo <- c(1, 3)[dx$Class]
 
 scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
             data = dx,
             log = "xy",
-            cex = cexo) ## OK, I give up
+            cex = cexo)
+
+## Humm... it looks like it is something about
+## conditioning
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g.,
+            data = anage,
+            log = "xy",
+            cex = c(1, 3)[anage$Class])
+## Solution? If we had time
 
 
-## continue with plot
 
-######################################################################
-## /skip
-
-## ## This would break if Class is not a factor
-plot(Metabolic.rate..W. ~ Body.mass..g.,
-     data = anage,
-     col = c("red", "blue")[anage$Class],
-     log = "xy")
+### Legends and using op for par changes
 
 
-## legend?
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
      col = c("salmon", "darkgreen")[Class],
@@ -206,73 +142,6 @@ legend(10, 2, legend = levels(anage$Class),
 
 par(op)
 
-
-## adding lines more of a pain here. We will continue below. Detour for
-## now to using ggplot2
-
-###############################################################
-## /skip
-
-
-## ggplot
-
-library(ggplot2)
-
-p1 <- ggplot(aes(x = Body.mass..g.,
-                 y = Metabolic.rate..W.),
-             data = anage) + geom_point()
-
-
-p1
-
-## how can I use log?
-
-p1 + scale_x_log10() + scale_y_log10()
-
-## conditioning (using facet_wrap; there is also facet_grid)
-p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class)
-
-p1 + scale_x_log10() + scale_y_log10() +
-    facet_wrap( ~ Class) +
-    geom_smooth(method = "lm")
-
-p1 + scale_x_log10() + scale_y_log10() +
-    facet_wrap( ~ Class) +
-    geom_smooth(method = "lm", se = FALSE )
-
-## Using color per class. Not using facet_wrap
-p2 <- ggplot(aes(x = Body.mass..g.,
-                 y = Metabolic.rate..W.,
-                 color = Class),
-             data = anage) +
-    geom_point()
-p2
-
-p2 + scale_x_log10() + scale_y_log10() +
-    facet_wrap( ~ Class) +
-    geom_smooth(method = "lm", se = FALSE )
-
-## single panel
-p2 + scale_x_log10() + scale_y_log10() +
-    geom_smooth(method = "lm", se = FALSE )
-
-## single panel, use other colors (which are much worse!)
-
-p2 + scale_x_log10() + scale_y_log10() +
-    geom_smooth(method = "lm", se = FALSE ) +
-    scale_color_manual(values = c("red", "blue"))
-
-library(cowplot)
-
-## selection
-
-birds <- anage[anage$Class == "Aves", ]
-
-library(dplyr)
-birds2 <- dplyr::filter(anage, Class == "Aves")
-
-
-
 ## adding a legend interactively
 plot(Metabolic.rate..W. ~ Body.mass..g.,
      data = anage,
@@ -286,64 +155,9 @@ legend(locator(1), legend = levels(anage$Class),
        pch = c(1, 2))
 
 
-## some more manual work
 
-## todo
-## - labels with at to use custom tick marks
-## complete cases and table without NAs
-## abline for plot for reptiles and aves
 
-plot(logmet ~ logbm, data = anage,
-     xlab = "Body mass (g)",
-     ylab = " Metabolic rate (W)",
-     axes = FALSE)
-
-box()
-
-## help for labels is not very helpful?
-## where should we place the labels?
-
-summary(anage)
-## range of metabolic rate
-exp(seq(from = -4.3, to = 2, length.out = 6))
-
-yv <- c(0.01, 0.05, 0.15, 0.6, 2, 7)
-log(yv)
-
-axis(side = 2, at = log(yv), labels = yv)
-
-## Hummm, ugly for several reasons
-
-plot(logmet ~ logbm, data = anage,
-     xlab = "Body mass (g)",
-     ylab = "Metabolic rate (W)",
-     axes = FALSE,
-     ylim = c(log(0.01),
-              max(anage$logmet)))  ## what happened?
-
-plot(logmet ~ logbm, data = anage,
-     xlab = "body mass (g)",
-     ylab = " metabolic rate (W)",
-     axes = FALSE,
-     ylim = c(log(0.01),
-              max(anage$logmet, na.rm = TRUE)))
-
-box()
-axis(side = 2, at = log(yv), labels = yv)
-
-dev.off()
-
-## changing par
-op <- par(las = 1)
-
-plot(logmet ~ logbm, data = anage,
-     xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
-     axes = FALSE, ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
-box()
-axis(side = 2, at = log(yv), labels = yv)
-
-par(op)
-
+### complete.cases vs. filter: solving a poltergeist. mapply, stopifnot
 
 anage.clean <- anage[
     complete.cases(
@@ -401,7 +215,7 @@ length(attributes(anage.clean))
 length(attributes(anage3))
 
 
-## Possibly misleading. Not anymore
+## Interesting!
 Map(identical, attributes(anage.clean), attributes(anage3))
 
 names(attributes(anage3))
@@ -409,7 +223,7 @@ names(attributes(anage.clean))
 
 stopifnot(all(names(attributes(anage.clean)) == names(attributes(anage3))))
 
-for(att in names(attributes(anage3))) {
+for (att in names(attributes(anage3))) {
     cat("\n attribute ", att, "\n")
     print(identical(attributes(anage3)[[att]],
                     attributes(anage.clean)[[att]]))
@@ -438,6 +252,9 @@ null <- lapply(names(attributes(anage3)),
                        "\n")
                })
 
+## Anyway, poltergeist solved
+row.names(anage3)
+row.names(anage.clean)
 
 ## Notes:
 ##  - check Map vs mapply: where?
@@ -447,8 +264,10 @@ null <- lapply(names(attributes(anage3)),
 
 ## Back to the plot
 
-### ablines and regression
-birds <- dplyr::filter(anage, Class == "Aves")
+
+### ablines and regression: split, apply, and vapply
+
+birds <- anage[anage$Class == "Aves", ]
 
 summary(lm(logmet ~ logbm, birds))
 
@@ -500,8 +319,9 @@ lapply(split(anage, anage$Class),
            abline(lm(logmet ~ logbm, data = dd)))
 ## OK, looks doable. A few minor tweaks and we are done
 
-############### A tangent
-## What about sapply?
+
+#### What about sapply? (a tangent)
+
 ## Not a natural thing to do here ?
 sapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd))
@@ -548,9 +368,9 @@ vapply(i39b, summary,
 ## And replicate?
 replicate(1000, mean(rnorm(100)))
 
-####### End tangent
+## End tangent
 
-
+#### Continue with split and abline
 colores <- c("salmon", "turquoise")
 
 ## OK, promising?
@@ -581,3 +401,207 @@ lapply(dddd, function(u) u$Class)
 
 ## see help of "by" for another example
 ## of extracting coefficients by group
+
+
+
+
+
+### Manually placing labels in axes
+
+## todo
+## - labels with "at" to use custom tick marks
+## complete cases and table without NAs
+## abline for plot for reptiles and aves
+
+plot(logmet ~ logbm, data = anage,
+     xlab = "Body mass (g)",
+     ylab = " Metabolic rate (W)",
+     axes = FALSE)
+
+box()
+
+## help for labels is not very helpful?
+## where should we place the labels?
+
+summary(anage)
+## range of metabolic rate
+exp(seq(from = -4.3, to = 2, length.out = 6))
+
+yv <- c(0.01, 0.05, 0.15, 0.6, 2, 7)
+log(yv)
+
+axis(side = 2, at = log(yv), labels = yv)
+
+## Hummm, ugly for several reasons
+
+plot(logmet ~ logbm, data = anage,
+     xlab = "Body mass (g)",
+     ylab = "Metabolic rate (W)",
+     axes = FALSE,
+     ylim = c(log(0.01),
+              max(anage$logmet)))  ## what happened?
+
+plot(logmet ~ logbm, data = anage,
+     xlab = "body mass (g)",
+     ylab = " metabolic rate (W)",
+     axes = FALSE,
+     ylim = c(log(0.01),
+              max(anage$logmet, na.rm = TRUE)))
+
+box()
+axis(side = 2, at = log(yv), labels = yv)
+
+dev.off()
+
+## changing par
+op <- par(las = 1)
+
+plot(logmet ~ logbm, data = anage,
+     xlab = "Log body mass (g)", ylab = "Log metabolic rate (W)",
+     axes = FALSE, ylim = c(log(0.01), max(anage$logmet, na.rm = TRUE)))
+box()
+axis(side = 2, at = log(yv), labels = yv)
+
+par(op)
+
+
+
+### ggplot
+
+library(ggplot2)
+
+p1 <- ggplot(aes(x = Body.mass..g.,
+                 y = Metabolic.rate..W.),
+             data = anage) + geom_point()
+
+
+p1
+
+## how can I use log?
+
+p1 + scale_x_log10() + scale_y_log10()
+
+## conditioning (using facet_wrap; there is also facet_grid)
+p1 + scale_x_log10() + scale_y_log10() + facet_wrap( ~ Class)
+
+p1 + scale_x_log10() + scale_y_log10() +
+    facet_wrap( ~ Class) +
+    geom_smooth(method = "lm")
+
+p1 + scale_x_log10() + scale_y_log10() +
+    facet_wrap( ~ Class) +
+    geom_smooth(method = "lm", se = FALSE )
+
+## Using color per class. Not using facet_wrap
+p2 <- ggplot(aes(x = Body.mass..g.,
+                 y = Metabolic.rate..W.,
+                 color = Class),
+             data = anage) +
+    geom_point()
+p2
+
+p2 + scale_x_log10() + scale_y_log10() +
+    facet_wrap( ~ Class) +
+    geom_smooth(method = "lm", se = FALSE )
+
+## single panel
+p2 + scale_x_log10() + scale_y_log10() +
+    geom_smooth(method = "lm", se = FALSE )
+
+## single panel, use other colors (which are much worse!)
+
+p2 + scale_x_log10() + scale_y_log10() +
+    geom_smooth(method = "lm", se = FALSE ) +
+    scale_color_manual(values = c("red", "blue"))
+
+## Check library cowplot for other themes
+library(cowplot)
+
+p2 + scale_x_log10() + scale_y_log10() +
+    geom_smooth(method = "lm", se = FALSE ) +
+    scale_color_manual(values = c("red", "blue")) + theme_cowplot()
+
+p2 + scale_x_log10() + scale_y_log10() +
+    geom_smooth(method = "lm", se = FALSE ) +
+    scale_color_manual(values = c("red", "blue")) + theme_minimal_grid(16)
+
+## selection
+
+birds <- anage[anage$Class == "Aves", ]
+## recall also using subset
+
+## How is this any better than the above?
+library(dplyr)
+birds2 <- dplyr::filter(anage, Class == "Aves")
+
+### If we had more time: playing with scatterplot
+
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
+            data = anage,
+            log = "xy")
+
+## too many lines; what are we getting rid of?
+scatterplot(Metabolic.rate..W. ~ Body.mass..g.,
+            data = anage,
+            log = "xy",
+            smooth = FALSE)
+
+## But I have birds and reptiles. What is smooth doing?
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            smooth = FALSE)
+
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy", smooth = TRUE)
+
+## smooth each and add variance
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            smooth = list(smoother = loessLine,
+                          var = TRUE))
+
+## smooth explicitly, and remove variance envelope
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            smooth = list(smoother = loessLine
+                          ## , var = FALSE ## uncomment if you don't want var.
+                          ## , var = TRUE  ## uncomment if you want variance.
+                          ))
+
+## Notice colors. Working as expected
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            col = c("orange", "green"))
+
+## But nope, not everything is changeable that way: e.g., cex
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            cex = c(1, 8))
+
+## Oooops
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+            data = anage,
+            log = "xy",
+            cex = c(1, 8)[Class])
+
+## Nope. See above: it is the conditioning
+scatterplot(Metabolic.rate..W. ~
+                Body.mass..g. | Class,
+           data = anage,
+           log = "xy",
+           cex = c(1, 8)[anage$Class])
+
+## Solution? If we had time.
