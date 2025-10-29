@@ -79,7 +79,7 @@ scatterplot(Metabolic.rate..W. ~
             cex = c(1, 3)[anage$Class])
 
 
-## let's try again.
+## Let's try again. Are the NAs to blame?
 dx <- na.omit(anage[, c("Metabolic.rate..W.",
                         "Body.mass..g.",
                         "Class")])
@@ -90,7 +90,8 @@ scatterplot(Metabolic.rate..W. ~
             log = "xy",
             cex = c(1, 3))
 
-cexo <- c(1, 3)[dx$Class]
+## Something about the vector of point sizes?
+(cexo <- c(1, 3)[dx$Class])
 
 scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
@@ -128,6 +129,8 @@ legend(10, 2, legend = levels(anage$Class),
 ## change settings as needed and surround by pdf() and dev.off()
 
 ## Also, notice labels of y axis
+
+## Why are we using op <- par? Explain in class
 op <- par(las = 1)
 
 plot(Metabolic.rate..W. ~ Body.mass..g.,
@@ -149,7 +152,8 @@ plot(Metabolic.rate..W. ~ Body.mass..g.,
      pch = c(1, 2)[Class],
      log = "xy")
 
-## Emacs: does not work with xwidget
+## For me. Emacs,  does not work with xwidget or EAF
+## (dev.new and then dev.off)
 legend(locator(1), legend = levels(anage$Class),
        col = c("salmon", "darkgreen"),
        pch = c(1, 2))
@@ -175,6 +179,7 @@ summary(anage.clean2)
 nrow(anage.clean)
 nrow(anage.clean2)
 
+## In code, probably used testing packages, like testthat
 stopifnot(nrow(anage.clean) == nrow(anage.clean2))
 
 anage3 <- dplyr::filter(anage,
@@ -232,7 +237,7 @@ for (att in names(attributes(anage3))) {
 
 ## here:
 ## let's use lapply, just to practice
-
+## though here a for is arguably simpler
 lapply(names(attributes(anage3)),
        function(u) {
            cat("\n attribute ", u, ": ",
@@ -285,6 +290,7 @@ mbirds0 <- lm(logmet ~ logbm,
               data = anage,
               subset = (Class == "Aves"))
 
+## Again, for code, prepare files with tests!
 stopifnot(
     identical(
         coefficients(mbirds0), coefficients(mbirds)))
@@ -297,10 +303,10 @@ colors() ## yes, we have a few choices . How do I choose?
 
 ## Now, plot the points and then add regression lines
 plot(logmet ~ logbm, anage,
-     col = c("salmon", "turquoise")[Class])
+     col = c("salmon", "steelblue")[Class])
 
 abline(mbirds, col = "salmon")
-abline(mrept, col = "turquoise")
+abline(mrept, col = "steelblue")
 
 
 ## Too much work.
@@ -312,7 +318,7 @@ lapply(split(anage, anage$Class),
 
 
 plot(logmet ~ logbm, anage,
-     col = c("salmon", "turquoise")[Class])
+     col = c("salmon", "steelblue")[Class])
 
 lapply(split(anage, anage$Class),
        function(dd)
@@ -323,14 +329,16 @@ lapply(split(anage, anage$Class),
 #### What about sapply? (a tangent)
 
 ## Not a natural thing to do here ?
+## oops, not easy to read
 sapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd))
 
 sapply(split(anage, anage$Class),
        function(dd) lm(logmet ~ logbm, data = dd),
        simplify = FALSE)
+
 plot(logmet ~ logbm, anage,
-     col = c("salmon", "turquoise")[Class])
+     col = c("salmon", "steelblue")[Class])
 
 sapply(split(anage, anage$Class),
        function(dd) abline(lm(logmet ~ logbm, data = dd)))
@@ -352,6 +360,13 @@ vapply(i39, summary,
        c(Min. = 0, "1st Qu." = 0, Median = 0,
          mean = 0, "3rd Qu." = 0, Max. = 0))
 
+vapply(i39, summary,
+       numeric(6))
+
+vapply(i39, summary,
+       numeric(2))
+
+
 i39b <- i39
 i39b[[2]] <- factor(letters[1:5])
 
@@ -371,7 +386,8 @@ replicate(1000, mean(rnorm(100)))
 ## End tangent
 
 #### Continue with split and abline
-colores <- c("salmon", "turquoise")
+
+colores <- c("salmon", "steelblue")
 
 ## OK, promising?
 plot(logmet ~ logbm, anage, col = colores[Class])
@@ -432,8 +448,9 @@ log(yv)
 
 axis(side = 2, at = log(yv), labels = yv)
 
-## Hummm, ugly for several reasons
-
+## Hummm, fails (verify doing)
+plot(1)
+## see no plot
 plot(logmet ~ logbm, data = anage,
      xlab = "Body mass (g)",
      ylab = "Metabolic rate (W)",
@@ -451,7 +468,7 @@ plot(logmet ~ logbm, data = anage,
 box()
 axis(side = 2, at = log(yv), labels = yv)
 
-dev.off()
+## dev.off()
 
 ## changing par
 op <- par(las = 1)
@@ -490,7 +507,7 @@ p1 + scale_x_log10() + scale_y_log10() +
 
 p1 + scale_x_log10() + scale_y_log10() +
     facet_wrap( ~ Class) +
-    geom_smooth(method = "lm", se = FALSE )
+    geom_smooth(method = "lm", se = FALSE)
 
 ## Using color per class. Not using facet_wrap
 p2 <- ggplot(aes(x = Body.mass..g.,
@@ -502,27 +519,27 @@ p2
 
 p2 + scale_x_log10() + scale_y_log10() +
     facet_wrap( ~ Class) +
-    geom_smooth(method = "lm", se = FALSE )
+    geom_smooth(method = "lm", se = FALSE)
 
 ## single panel
 p2 + scale_x_log10() + scale_y_log10() +
-    geom_smooth(method = "lm", se = FALSE )
+    geom_smooth(method = "lm", se = FALSE)
 
 ## single panel, use other colors (which are much worse!)
 
 p2 + scale_x_log10() + scale_y_log10() +
-    geom_smooth(method = "lm", se = FALSE ) +
+    geom_smooth(method = "lm", se = FALSE) +
     scale_color_manual(values = c("red", "blue"))
 
 ## Check library cowplot for other themes
 library(cowplot)
 
 p2 + scale_x_log10() + scale_y_log10() +
-    geom_smooth(method = "lm", se = FALSE ) +
+    geom_smooth(method = "lm", se = FALSE) +
     scale_color_manual(values = c("red", "blue")) + theme_cowplot()
 
 p2 + scale_x_log10() + scale_y_log10() +
-    geom_smooth(method = "lm", se = FALSE ) +
+    geom_smooth(method = "lm", se = FALSE) +
     scale_color_manual(values = c("red", "blue")) + theme_minimal_grid(16)
 
 ## selection
@@ -600,8 +617,8 @@ scatterplot(Metabolic.rate..W. ~
 ## Nope. See above: it is the conditioning
 scatterplot(Metabolic.rate..W. ~
                 Body.mass..g. | Class,
-           data = anage,
-           log = "xy",
-           cex = c(1, 8)[anage$Class])
+            data = anage,
+            log = "xy",
+            cex = c(1, 8)[anage$Class])
 
 ## Solution? If we had time.
