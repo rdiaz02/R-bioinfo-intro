@@ -6171,11 +6171,8 @@ statistics). This is just for the sake of writing a quick and dirty
 permutation test and gaining some programming practice. Note also that you
 have code readily available for this and similar tasks in several R
 packages.  Permutation tests are extremely powerful, but also misleadingly
-simple; using them correctly is often more subtle than some ``data
-scientists'' who've never taken a stats course would lead you to believe
-(e.g., are you really testing what you think you are testing?), and there
-are many scenarios/questions that might be hard to fit in them (i.e., they
-are not \textbf{the} solution to the world's problems); \textit{caveat
+simple; using them correctly is often subtle (e.g., are you really testing what you think you are testing? is the test sensitive to several different issues and could you end up rejecting the null for reasons that do not matter to you?), and there
+are many scenarios/questions that might be hard to fit in them; \textit{caveat
   emptor}.
 
 
@@ -6188,10 +6185,10 @@ meaningful, smaller, self-contained, problems is a key part of programming).
 Now, after thinking, this is what we need to do:
 \begin{enumerate}
 \item Compute our statistic (the difference in means here).
-\item Generate data distributions according to the null hypothesis.
+\item Generate data distributions according to the null hypothesis (\(H_0\)).
 \item Compute the statistic for each new data configuration.
 \item Compare what we compute from our original data with what we obtain
-  under the null ($H_o$).
+  under the null ($H_0$).
 \end{enumerate}
 
 
@@ -6202,14 +6199,14 @@ done. (As you move through the list, some items might get redefined).
 
 
 <<>>=
-## - Compute our statistic (the difference in means here).
+## - Compute our statistic (here it is the difference in means).
 ##
 ## - Generate data distributions according to the null hypothesis.
 ##
 ## - Compute the statistic for each new data configuration.
 ##
 ## - Compare what we compute from our original data with what we obtain
-##   under the null ($H_o$).
+##   under the null ($H_0$).
 ##
 @
 
@@ -6245,13 +6242,14 @@ mean_d(d11, d12)
 %% FIXME: function signatures
 
 
-For step 3 we will examine two ways of doing it. Make sure you understand
+For steps 2 and 3 we will examine two ways of doing it. Make sure you understand
 the differences
 <<>>=
 ## numeric vector, numeric vector -> double (difference of means)
 ## Given two vectors, create two new vectors as random combination
-##  of the set of observations into two groups, and return mean difference
-##  of those two groups. [This description could be improved!!]
+##  of the set of observations into two groups, and return
+##  the mean difference between those two groups.
+##  [FIXME This description could be improved!!]
 permut_and_mean1 <- function(x1, x2) {
     tmp <- sample(c(x1, x2))
     g1 <- tmp[seq(x1)]
@@ -6262,8 +6260,8 @@ permut_and_mean1 <- function(x1, x2) {
 
 ## numeric vector, numeric vector -> double (difference of means)
 ## Given two vectors, create two new vectors as random combination
-##  of the set of observations into two groups, and return mean difference
-##  of those two groups.
+##  of the set of observations into two groups, and return
+##  the mean difference between those two groups.
 permut_and_mean2 <- function(x1, x2) {
     indices <- seq(from = 1,
                    to = length(x1) + length(x2))
@@ -6286,7 +6284,9 @@ permut_and_mean2(d11, d12)
 permut_and_mean2(d11, d12)
 @
 Make sure you understand what happened. (Hint: are both functions
-implicitly calling the random number generator the same number of times?)
+implicitly calling the random number generator the same number of times?).
+
+We will probably \skipinclass{understanding the difference between the two ``permut\_and\_mean''}
 
 
 
@@ -6414,9 +6414,10 @@ runif(1)
 % @
 
 
-Now, wrap the above, and create a single function:
+
+After we are done understanding the differences between the two \texttt{permut\_and\_mean}, let us come back to writing a single  function:
 <<>>=
-## FIXME!! A Function signature!!!
+## FIXME!! A Function signature is missing!!!
 
 permut_testA <- function(data1, data2,
                          fsample = permut_and_mean1,
@@ -6440,9 +6441,8 @@ passing a function as an argument\footnote{As for the denominator and
   numerator (the \code{+ 1}): that is a minor technical
   detail, and it is true that it makes little difference as $n \rightarrow
   \infty$. However, that is the correct way of doing it (even if many
-  implementations get it wrong and do not include it). Some of the popular
-  classics, such as Edgington, or Noreen, etc, already mention it very
-  clearly. Think about it: why should you add that 1?}
+  implementations get it wrong and do not include it). Why to do this is explained in, for example,
+Manly, B. F. J. (2007). Randomization, bootstrap and monte carlo methods in biology, 3rd ed. Chapman \& Hall; Noreen, E. W. (1989). Computer-intensive methods for testing hypotheses : An introduction. Wiley; Edgington, E., \& Onghena, P. (2007). Randomization tests (4th ed.). Chapman and Hall/CRC; Phipson, B., \& Smyth, G. K. (2010). Permutation p-values should never be zero: Calculating exact p-values when permutations are randomly drawn. Stat Appl Genet Mol Biol, 9, Article39. }
 
 
 Is it working?
@@ -6532,26 +6532,25 @@ Much better:
 library(testthat)
 @
 
-<<>>=
-
-test_that("p-value = 1 when the two vectors identical", {
-    n <- 10
-    for(i in 1:n) {
-       xr <- rnorm(10)
-       stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1)
-    }
-})
-
-@
-Oooops, not quite. Improve that:
+% <<>>=
+% test_that("p-value = 1 when the two vectors identical", {
+%     n <- 10
+%     for(i in 1:n) {
+%         xr <- rnorm(10)
+%         stopifnot(suppressMessages(permut_testB(xr, xr))$pv == 1)
+%     }
+% })
+% @
+% Oooops, not quite. Improve that:
 
 
 <<eval=FALSE>>=
 
 test_that("p-value = 1 when the two vectors identical", {
     ntests <- 100
-    for(i in 1:ntests) {
+    for (i in 1:ntests) {
         xr <- rnorm(10)
+        ## Or should we use expect_equal?
         expect_identical(permut_testB(xr, xr)$pv, 1)
     }
 })
