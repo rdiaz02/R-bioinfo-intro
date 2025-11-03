@@ -292,7 +292,7 @@ plot.Cholest_Gene <- function(x, ...) {
 plot(uu)
 
 
-## Now, add levels to Kind. But note what happens
+## skip : Now, add levels to Kind. But note what happens
 uu2 <- uu
 uu2[1:3, "Kind"] <- "Cl2"
 ## notice the NA, but that ain't related to our class
@@ -301,6 +301,7 @@ uu2[1:3, "Kind"] <- "Cl2"
 uu2[, "Kind"] <- factor(uu2[, "Kind"])
 
 plot(uu2)
+## </skip
 
 ## Of course, this works
 methods("to_CG")
