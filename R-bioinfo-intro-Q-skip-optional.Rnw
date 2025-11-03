@@ -2768,6 +2768,13 @@ listB$one.matrix[3, 3]
 listB[c(1, 3)]
 @
 
+Removing elements from a list? Assign null to it:
+<<listnull>>=
+listB$one.vector <- NULL
+names(listB)
+@
+
+
 
 \subsubsection{\skipinclass{:\ Additional list examples}}
 
