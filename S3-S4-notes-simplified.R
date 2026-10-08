@@ -105,8 +105,8 @@ to_CG <- function(x, ...) {
 ## data.frame -> Cholest_Gene object
 ## Take a data frame and return (if possible) a Cholest_Gene object.
 to_CG.data.frame <- function(x) {
-    cns <- c("Cholesterol", "Gene", "Kind")
-    if (!(all(colnames(x) %in% cns)))
+  cns <- c("Cholesterol", "Gene", "Kind")
+  if (!(all(colnames(x) %in% cns)))
         stop(paste("Column names are not ", cns))
     tmp <- x[, cns]
     ## Notice I do not set this to be of data.frame class
@@ -221,7 +221,7 @@ test_that("minimal conversions and failures", {
                     "Cholest_Gene")
 
 })
-## NOS QUEDAMOS AQUI! FIXME
+
 ## eh? This fails! And the output is ugly!!
 expect_s3_class(to_CG(data.frame(Cholesterol = 1:10, Gene = 11:20,
                                  Kind = "Cl1",
@@ -292,7 +292,7 @@ plot.Cholest_Gene <- function(x, ...) {
 plot(uu)
 
 
-## skip : Now, add levels to Kind. But note what happens
+## Now, add levels to Kind. But note what happens
 uu2 <- uu
 uu2[1:3, "Kind"] <- "Cl2"
 ## notice the NA, but that ain't related to our class
@@ -301,7 +301,6 @@ uu2[1:3, "Kind"] <- "Cl2"
 uu2[, "Kind"] <- factor(uu2[, "Kind"])
 
 plot(uu2)
-## </skip
 
 ## Of course, this works
 methods("to_CG")
