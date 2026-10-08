@@ -253,7 +253,7 @@ Some sections/subsections/subsubsections/whatever that we will not cover in clas
 \subsubsection{Changes starting on 2025-10-16: moving material to \skipinclass{whatever}}
 \label{sec:chang-start-2025}
 
-As we are (course 2025-2026) going too slow, I will concentrate the boring syntax part only on the \textbf{absolutely, nonnegotiable, essential stuff}, so that we have time to discuss more interesting and larger programming examples. Thus, I will move material that we will not cover in class to their own subsections (or subsubsubsections, or whatever), indicated as ``\skipinclass{Whatever (subsub)section title}''.
+During course 2025-2026 we were going too slowly. So I decided to concentrate the boring syntax part only on the \textbf{absolutely, nonnegotiable, essential stuff}, so that we had time to discuss more interesting and larger programming examples. Thus, I moved material that would not be covered in class to their own subsections (or subsubsubsections, or whatever), indicated as ``\skipinclass{Whatever (subsub)section title}''.
 
 
 \textbf{You probably do not want to skip this while studying}; I am skipping it in class (unless you have questions), for the sake of efficiency, but this is not optional material; it is just material that introduces some redundancy and can help you understand/remember the material better.
