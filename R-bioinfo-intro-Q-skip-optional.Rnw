@@ -18,7 +18,8 @@
 \usepackage[T1]{fontenc}
 
 \usepackage[small]{caption}
-\usepackage{hyperref}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue]{hyperref}
+\usepackage{footnotebackref}
 
 \usepackage[dvipsnames]{xcolor}
 \newcommand{\Gray}[1]{{\textcolor {Gray} {#1}}}
