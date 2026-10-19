@@ -549,7 +549,7 @@ might not be able to help you.
 \item To learn more about Emacs itself:
   \begin{itemize}
 
- \item The short intro course ``Getting started with Emacs'', by Marie-Hélène Burle, available from \url{https://mint.westdri.ca/emacs/top_intro}.
+  \item The short intro course ``Getting started with Emacs'', by Marie-H\'el\`ene Burle, available from \url{https://mint.westdri.ca/emacs/top_intro}.
 
  \item The book ``Use GNU Emacs. The Plain Text Computing Environment'', by Keith Waclena: \url{https://www2.lib.uchicago.edu/keith/emacs/}. Freely available as HTML, PDF, Epub ---yeah, there are unfinished chapters, but it is very complete as it is now.
 
@@ -995,7 +995,7 @@ apply(rd2, 1, function(z) f1x(z, theclass = class))
 
 apply(rd2, 1, f1x, theclass = class)
 
-## And this?
+## And this? But this could be confusing
 f2x <- function(clase, w) t.test(w ~ clase)$p.value
 
 apply(rd2, 1, f2x, clase = class)
@@ -1079,7 +1079,7 @@ Finally, you could do
 <<>>=
 v1 <- 1 + 2; v1
 @
-thus separating the two commands with a \code{;}, though that is rarely
+thus separating the two commands with a ``\code{;}'', though that is rarely
 a good idea except for very special cases.
 
 
@@ -1126,7 +1126,7 @@ v2, plus several functions that start with ``v'').
 
 \subsection{Naming variables}
 We created \code{v1} and \code{v2} above. Names of variables in \R\ must
-begin with a letter (also a period, though this will make them
+begin with a letter (they can also begin with a period, though this will make them
 hidden). Then you can mix letters, numbers, \code{.} and
 \code{\_}. Variable names are case sensitive, so \code{v1} and \code{V1}
 are different things.
@@ -1230,7 +1230,7 @@ help you search functions, etc, in packages that you do not have
 installed, ranks search results, etc. It is well documented (see
 \Burl{http://cran.r-project.org/web/packages/sos/vignettes/sos.pdf}). The
 only problem I see is that only some of the BioConductor packages are
-among those searched (and you need an internet connection).
+among those searched (and you need an internet connection). And it hasn't been updated in two years. Maybe nowadays you'd just google around and use an LLM.
 
 Patrick Burns has a interesting blog entry about R navigation tools:
 \Burl{http://www.burns-stat.com/r-navigation-tools/}.
@@ -1252,14 +1252,13 @@ use RStudio.
 
 \subsection{Error messages}
 The best way to learn to use \R\  is to use it. As explained before,
-mistakes are harmless, so you should play and experiment. However, there
+mistakes are harmless, so you should play and experiment. And there
 are two key attitudes that will make your learning a lot faster: first,
 using the help system, and second \textbf{paying attention to the error
-  messages}. Yes, the error messages are written in English, not some
-weird, unintelligible language. Sometimes they are a little bit cryptic,
+  messages}. The error messages are written in English (not some
+weird, unintelligible language). Sometimes they are a little bit cryptic,
 but more often than not, if you read them carefully, you will see how to
-approach to problem to fix the mistake, or will realize that what you
-typed makes no sense.
+approach a problem to fix the mistake.
 
 Lets look at a few. These are not representative or common or anything
 like it. But you should read them, understand them, and think about how to
@@ -1316,7 +1315,7 @@ classics such as ``Modern applied statistics with S'' or ``S
 programming''(Venables and Ripley), or ``Software for data analysis''
 (Chambers), or \ldots. Programming environments (e.g., Emacs + ESS) will
 offer ways of tidying your code, and there are tools that can help you here
-(\Burl{https://lintr.r-lib.org/}); you might want to have your editor alert you to coding style problems with the help of lintr (RStudio might have it integrated already?). You can also take a look at \Burl{http://yihui.name/formatR}.
+(\Burl{https://lintr.r-lib.org/}); you might want to have your editor alert you to coding style problems with the help of lintr (RStudio might have it integrated already?); in some cases, the linters/checkers only work once you save the file. You can also take a look at \Burl{http://yihui.name/formatR}. And linters can alert you to problems that go beyond formatting (for example, they might tell you that your code apparently tries to use a variable for which there is no binding).
 
 
 \activities: show in class how lintr works (in my case with Emacs+ESS). Show, for instance:
@@ -1330,7 +1329,7 @@ offer ways of tidying your code, and there are tools that can help you here
   \end{itemize}
 
   \subsubsection{Commenting code}\label{sec:code-comments}
-And what about comments? My preferences: signature and purpose right before the function, comments inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose.
+And what about comments? My preferences: signature and purpose right before the function, comments of how the function works inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose. The basic idea is: the comments \textit{before} the function tell anyone who uses the code all they have to know for using it; the comments \textit{inside} the function itself explain implementation issues, internal logic, etc, but should not be required reading just for using the code correctly; and trivial things should not be commented.
 
 (For an awesome course, that uses Racket, by Gregor Kiczales, see: \Burl{https://www.edx.org/course/how-to-code-simple-data})
 %% Gregor Kiczales
@@ -1397,11 +1396,11 @@ of dealing with them:
   \begin{enumerate}
   \item Tell \R\ where the file is: specify the full path. Suppose your
     file, ``f1.txt'', is in ``C:/tmp''. Then, say \code{X <-
-      read.table(``C:/tmp/f1.txt'')}.
+      read.table("C:/tmp/f1.txt")}.
     \item Move \R's working directory to the place where your files
       live. Two ways:
       \begin{enumerate}
-      \item Use \code{setwd(``someplace'')}, where ``someplace'' is the
+      \item Use \code{setwd("someplace")}, where ``someplace'' is the
         place where your files live.
       \item Under RStudio, go to ``Session'', ``Set working directory''
         (which, in fact, is just a call to \code{setwd})
@@ -1471,8 +1470,7 @@ doing this:
 \item Substitute a value by nothing; in other words, just delete a value
   (but not the character for separating columns). (Beware that in this
   case you often will want to be explicit about the separator in
-  \code{read.table}.) Notice things will differ between character columns
-  and numeric columns.
+  \code{read.table}; see the entry for \texttt{sep} in the help of \texttt{read.table}: ``If ‘sep = ""’ (the           default for ‘read.table’) the separator is ‘white space’,  that is one or more spaces, tabs, newlines or carriage          returns.'') Notice results will differ between character columns and numeric columns.
 \end{itemize}
 
 You can specify the character that R should interpret as a missing value,
@@ -1483,6 +1481,14 @@ other special character string to identify them. \textbf{You will most
   likely want to use NA (or use some other character combination and be
   explicit), specially for character variables.} I also \textbf{specify the column separator} (argument \texttt{sep}) in most cases.
 
+\subsubsection{Reading/entering data: good practices}\label{enterdatagood}
+\begin{itemize}
+\item How are missing values coded?
+\item What is the separator between fields?
+\item Do you want to specify your own separator? Do you want to use R's rule of ``one or more ...''?
+\item Do you have metadata or other explanations that should be commented out when reading the data?
+\item \textbf{Always} look at the output from \texttt{summary}. Starting with R-4.6.1 the output given makes it much easier to spot problems.
+\end{itemize}
 
 \subsubsection{\activities}
 \label{sec:activities-4}
