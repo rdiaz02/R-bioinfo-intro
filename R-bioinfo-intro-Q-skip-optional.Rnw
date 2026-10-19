@@ -1470,7 +1470,8 @@ doing this:
 \item Substitute a value by nothing; in other words, just delete a value
   (but not the character for separating columns). (Beware that in this
   case you often will want to be explicit about the separator in
-  \code{read.table}; see the entry for \texttt{sep} in the help of \texttt{read.table}: ``If ‘sep = ""’ (the           default for ‘read.table’) the separator is ‘white space’,  that is one or more spaces, tabs, newlines or carriage          returns.'') Notice results will differ between character columns and numeric columns.
+  \code{read.table}% ; see the entry for \texttt{sep} in the help of \texttt{read.table}: ``If sep = "" (the  default for 'read.table') the separator is 'white space',  that is one or more spaces, tabs, newlines or carriage returns.''
+ ) Notice results will differ between character columns and numeric columns.
 \end{itemize}
 
 You can specify the character that R should interpret as a missing value,
@@ -1510,7 +1511,7 @@ other special character string to identify them. \textbf{You will most
   things make sense.
 
   You might need to specify the separator between columns in some cases
-  above. Notice that if you do not specify it, two or more spaces, for example, will be interpreted as a single column separator. From the help of \texttt{read.table}: ``If 'sep = ""' (the
+  above. Notice that if you do not specify it, two or more spaces (or two or more tabs), will be interpreted as a single column separator. From the help of \texttt{read.table}: ``If 'sep = ""' (the
           default for 'read.table') the separator is 'white space',
           that is one or more spaces, tabs, newlines or carriage
           returns.''
@@ -1519,7 +1520,7 @@ other special character string to identify them. \textbf{You will most
 \item In ``AnotherDataSet.txt'' substitute the second entry for Sex by
   ``NA'' (without the quotes), save it (say ``ana1.txt'') and read the
   file (as, say, ``ana1''). Now, do a \texttt{summary} of that file. Is it obvious there is an
-  ``NA'' (nope, it is not).  However, the NAs are properly taken into
+  ``NA''?  Regardless, the NAs are properly taken into
   account as NAs. For example, if you do: \verb@ table(ana1$Sex,useNA="ifany") @.%
   If you ask for the object itself, you will see``<NA>''.
   And you can also check it by doing: \verb@which(is.na(ana1$Sex))@.%
@@ -1534,7 +1535,7 @@ other special character string to identify them. \textbf{You will most
 \item If things are confusing, look at this from the help of
   \texttt{read.table}: `` Blank fields are also considered to be
   missing values in logical, integer, numeric and complex
-  fields.'' And notice also the following from the help:
+  fields.''
 
 \item Now, in the same row, for Age and Sex, replace the values by a space
   (not a ``nothing'', a space), while keeping columns separated by a
