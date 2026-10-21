@@ -1313,10 +1313,12 @@ respect of the above rules). This is not my particular silly snobbery:
 look at the code in the base R distribution, or look at the code in
 classics such as ``Modern applied statistics with S'' or ``S
 programming''(Venables and Ripley), or ``Software for data analysis''
-(Chambers), or \ldots. Programming environments (e.g., Emacs + ESS) will
-offer ways of tidying your code, and there are tools that can help you here
-(\Burl{https://lintr.r-lib.org/}); you might want to have your editor alert you to coding style problems with the help of lintr (RStudio might have it integrated already?); in some cases, the linters/checkers only work once you save the file. You can also take a look at \Burl{http://yihui.name/formatR}. And linters can alert you to problems that go beyond formatting (for example, they might tell you that your code apparently tries to use a variable for which there is no binding).
+(Chambers), or \ldots.
 
+
+Programming environments (e.g., Emacs + ESS) will
+offer ways of tidying your code, and there are tools that can help you here
+(\Burl{https://lintr.r-lib.org/}); you might want to have your editor alert you to coding style problems with the help of lintr (RStudio provides static code analysis that does not depend on \texttt{lintr}: \Burl{https://docs.posit.co/ide/user/ide/guide/code/diagnostics.html}, but you can also use, in addition, \texttt{lintr} with RStudio). In some cases, the linters/checkers only work once you save the file (or have a ``buffer'' that is associated to a file). And linters can alert you to problems that go beyond formatting (for example, they might tell you that your code apparently tries to use a variable for which there is no binding). So \textbf{definitely enable and use code checkers}. You can also take a look at \Burl{https://github.com/yihui/formatR} to help format R code.
 
 \activities: show in class how lintr works (in my case with Emacs+ESS). Show, for instance:
 \begin{itemize}
@@ -1324,12 +1326,24 @@ offer ways of tidying your code, and there are tools that can help you here
 \item not using spaces around (infix) operators
 \item putting spaces after parenthesis
 \item unused and unbound variables
-\item cyclomatic complexity
+\item cyclomatic complexity (or maybe not)
 \item 80-column rule
   \end{itemize}
 
+  \activities: Make sure you enable code checking/linting on your editor. If using RStudio, see here: \Burl{https://docs.posit.co/ide/user/ide/guide/code/diagnostics.html}. Then do this:
+  \begin{enumerate}
+  \item Enable code analysis (and click on most/all of the options). Tools -> Global Options -> Code -> Diagnostics.
+  \item Create or load a file with questionable R usage patterns. Call it ``ugly.R''
+  \item Install package lintr.
+  \item Now do \texttt{lintr::lint(``ugly.R'')}. You will see a list of problems and the side markers pane will show the diagnostics too (mixed with those of RStudio). You might need to enable the side markers pane : Tools -> Global Options -> Code -> Diagnostics ->  Show diagnostics for R. If no list of markers: View -> Show other panes -> Show markers).
+  \item Double click on the warning, and it will take you to the offending line.
+  \end{enumerate}
+
+
   \subsubsection{Commenting code}\label{sec:code-comments}
-And what about comments? My preferences: signature and purpose right before the function, comments of how the function works inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose. The basic idea is: the comments \textit{before} the function tell anyone who uses the code all they have to know for using it; the comments \textit{inside} the function itself explain implementation issues, internal logic, etc, but should not be required reading just for using the code correctly; and trivial things should not be commented.
+  And what about comments? My preferences: signature and purpose right before the function, comments of how the function works inside the function. See details here: \Burl{https://docs.racket-lang.org/htdf/index.html\#\%28part._interface-definition\%29}: signature (input and output) and purpose.
+
+  The basic idea is: the comments \textit{before} the function tell anyone who uses the code all they have to know for using it; the comments \textit{inside} the function itself explain implementation issues, internal logic, etc, but should not be required reading just for using the code correctly; and trivial things should not be commented.
 
 (For an awesome course, that uses Racket, by Gregor Kiczales, see: \Burl{https://www.edx.org/course/how-to-code-simple-data})
 %% Gregor Kiczales
@@ -1521,8 +1535,9 @@ other special character string to identify them. \textbf{You will most
   ``NA'' (without the quotes), save it (say ``ana1.txt'') and read the
   file (as, say, ``ana1''). Now, do a \texttt{summary} of that file. Is it obvious there is an
   ``NA''?  Regardless, the NAs are properly taken into
-  account as NAs. For example, if you do: \verb@ table(ana1$Sex,useNA="ifany") @.%
-  If you ask for the object itself, you will see``<NA>''.
+  account as NAs. For example, if you do:
+  \verb@ table(ana1$Sex,useNA="ifany") @.%$
+If you ask for the object itself, you will see``<NA>''.
   And you can also check it by doing: \verb@which(is.na(ana1$Sex))@.%
 
 \item Repeat the above, but substitute not by NA without quotes but by NA
@@ -1574,6 +1589,7 @@ write.table(another.data.set,
 
 Open that file in an editor of your choice.
 
+I often prefer the following non-default options: \texttt{sep = ``\t'', quote = FALSE, row.names = FALSE}.
 
 You can also save part or all the output from a session. You can copy and
 paste, or you can use commands such as \code{sink}.
@@ -1583,7 +1599,7 @@ Of course, similar considerations apply here as in section
 \ref{wherefiles}: think where you want to save things.
 
 
-
+\activities : Make sure you try \texttt{write.table} and see its output with the defaults and using the settings I prefer. What would be easier if you wanted to enter that in LibreOffice Calc or Excel?
 
 
 \subsection{Saving an \R session: .RData}\label{saveRData}
@@ -1907,7 +1923,7 @@ exponentiation, division, remainder, etc? As we said, see
 We can create vectors by concatenating elements. We just saw that. But
 there are two very handy functions for creating vectors that have some
 structure: \code{seq} (from ``sequence'') and \code{rep} (from
-repeat). Examine these examples carefully:
+``repeat''). Examine these examples carefully:
 
 
 First \code{seq}, in four different invocations (yes, \code{:} counts as
@@ -2375,12 +2391,12 @@ the FAQ (question 7.31):
 \end{quote}
 
 
-This might be an even simpler example:
+% This might be an even simpler example:
 
-<<>>=
-0.1 + 0.2 == 0.3
-(0.1 + 0.2) - 0.3
-@
+% <<>>=
+% 0.1 + 0.2 == 0.3
+% (0.1 + 0.2) - 0.3
+% @
 
 
 The take home message: be extremely suspicious whenever you see an
