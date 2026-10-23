@@ -3841,7 +3841,15 @@ table(Y, useNA = "always")
 xtabs(data = data.frame(X), addNA = FALSE)
 xtabs(data = data.frame(X), addNA = TRUE)
 
+## Across two dimensions
+table(data.frame(X, Y))
+table(data.frame(X, Y), useNA = "ifany")
 
+xtabs(data = data.frame(X, Y))
+xtabs(data = data.frame(X, Y), addNA = TRUE)
+
+
+## Across two dimensions, more examples
 (x4 <-  data.frame(U = c("A","B","B","A","B","B",NA),
                    W = c("d","e","e","d","d","e","d")))
 table(x4)
