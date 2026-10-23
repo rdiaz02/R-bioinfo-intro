@@ -2788,10 +2788,16 @@ listB[[3]][3, 3]
 listB[["one.matrix"]][3, 3]
 listB$one.matrix[3, 3]
 
-
-## Two elements of the list
+## Two elements of the list. Can only do this with "[]"
 listB[c(1, 3)]
 @
+
+<<l98>>=
+## Beware, though: $ does partial matching whereas [[]] by default doesn't
+listB$one.v
+listB[["one.v"]]
+@
+
 
 Removing elements from a list? Assign null to it:
 <<listnull>>=
@@ -2879,6 +2885,13 @@ listB[c(3, 4)]
 
 My recommendation, at least initially: do not try to be too smart when dealing with lists. Access each type of element, and then subset that element as needed.
 
+\subsubsection{\skipinclass{:\ Concatenating lists?}}
+
+Sure:
+
+<<concatlist>>=
+c(listB, listA)
+@
 
 \subsection{Data frames}
 
