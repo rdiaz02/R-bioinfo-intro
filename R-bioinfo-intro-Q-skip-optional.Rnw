@@ -1335,7 +1335,7 @@ offer ways of tidying your code, and there are tools that can help you here
   \item Enable code analysis (and click on most/all of the options). Tools -> Global Options -> Code -> Diagnostics.
   \item Create or load a file with questionable R usage patterns. Call it ``ugly.R''
   \item Install package lintr.
-  \item Now do \texttt{lintr::lint(``ugly.R'')}. You will see a list of problems and the side markers pane will show the diagnostics too (mixed with those of RStudio). You might need to enable the side markers pane : Tools -> Global Options -> Code -> Diagnostics ->  Show diagnostics for R. If no list of markers: View -> Show other panes -> Show markers).
+  \item Now do \texttt{lintr::lint("ugly.R")}. You will see a list of problems and the side markers pane will show the diagnostics too (mixed with those of RStudio). You might need to enable the side markers pane : Tools -> Global Options -> Code -> Diagnostics ->  Show diagnostics for R. If no list of markers: View -> Show other panes -> Show markers).
   \item Double click on the warning, and it will take you to the offending line.
   \end{enumerate}
 
@@ -1602,7 +1602,7 @@ Of course, similar considerations apply here as in section
 \activities : Make sure you try \texttt{write.table} and see its output with the defaults and using the settings I prefer. What would be easier if you wanted to enter that in LibreOffice Calc or Excel?
 
 
-\subsection{Saving an \R session: .RData}\label{saveRData}
+\subsection{Saving an \R \ session: .RData}\label{saveRData}
 And how can you save all you have been doing? The simplest way is to use
 \code{save.image}. Please, look at the help for that command. We will use
 a simple example:
@@ -1951,6 +1951,7 @@ rep(1:3, 2:4)
 v1 <- 11:16
 v2 <- 1:6
 ## one on top of each other, so we can see what v1 + v2 does
+## (we explain rbind, and cbind, later)
 rbind(v1, v2)
 
 v1 + v2
@@ -3028,7 +3029,8 @@ library(latex2exp) ## For "TeX", to use LaTeX
 plot(x, y,
      main = TeX(r"(The title with some LaTeX: \frac{\bar{x}}{\gamma} = 3)"),
      ylab = "Label for the y axis",
-     xlab = expression(paste("The x lab with some math: ", alpha = sqrt(beta))),
+     xlab = expression(paste("The x lab with some math: ",
+                             alpha = sqrt(beta))),
      pch = c(19, 1:9),
      cex = seq(from = 0.6, to = 3, length.out = 10),
      col = rainbow(10))
