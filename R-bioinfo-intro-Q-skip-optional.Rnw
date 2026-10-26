@@ -3786,7 +3786,7 @@ as.data.frame(with(AB2, table(Sex, status)))
 Can we tabulate AB2 completely? (I am not showing the output, but please
 do it)
 <<results='hide'>>=
-table(AB)
+table(AB2)
 @
 \noindent here it does not make much sense, since some variables seem to
 be continuous. But lets create another data set:
@@ -3795,11 +3795,19 @@ AC <- AB2[, c("Sex", "status")]
 table(AC)
 @
 
-Of course, you could do
+Of course, you could just  do
 <<>>=
 table(AB2[, c("Sex", "status")])
 @
 
+
+So, three simplest basic ways:
+\begin{itemize}
+\item \texttt{with(dataframename, table(var1, var2, var3))}
+\item \texttt{table(dataframename[, c(var1, vars, var3)])}
+  \item \texttt{xtabs( \textasciitilde{} var1 + var2 + var3, data = dataframename)}
+  \item  (Of course, you can have \texttt{var4, var5} and however many you need. With formulas, if all variables, do \texttt{xtabs( \textasciitilde{} ., data = dataframename)}
+\end{itemize}
 
 \subsection{More than two dimensions and \texttt{ftable}}
 
@@ -3816,7 +3824,13 @@ But with more than two variables, sometimes we want ``flat tables'':
 <<ftable1>>=
 ftable(xtabs(~ a + b + c, data = x))
 ## same as ftable(table(x))
+## And this is equivalent (note the "."); general feature of formula
+
+ftable(xtabs(~ ., data = x))
 @
+
+
+
 
 Eh, wait, I want variable ``c'' in the left-most border! Change order of variables
 <<ftable2>>=
@@ -3904,7 +3918,7 @@ Unless we have a lot of time:
 \item This will not be in the exam.
 \end{itemize}
 
-(Specially the examples with NAs are tricky.)
+(Especially the examples with NAs are tricky.)
 
 
 Suppose we have a data frame with values of some arbitrary variable for (some of) the
@@ -4111,7 +4125,7 @@ lists, etc. Some available functions are: \code{apply, lapply, sapply,
   tapply, mapply}.  Please look at the help for these functions. Here we
 will show some examples, and you should understand what is happening. Some
 of these examples use functions (anonymous functions) that we define as we
-need them in the calls of apply or aggregate (we have used these before).
+need them in the calls of apply or aggregate (we have used anonymous functions before).
 
 
 \subsection{apply}
@@ -4356,6 +4370,39 @@ aggregate(one.dataframe[, c("age", "Y")],
           list(Sex = one.dataframe$sex,
                Country = one.dataframe$country),
           function(x) c(Mean = mean(x), SD = sd(x)))
+
+@
+
+
+However, beware of missing values:
+
+<<>>=
+one.dataframeNA <- one.dataframe
+(one.dataframeNA[1, "Y"] <- NA)
+
+aggregate(cbind(age, Y) ~ sex + country,
+          data = one.dataframeNA,
+          function(x) c(Mean = mean(x), SD = sd(x)))
+
+## To deal with NAs per variable (as per the help)
+aggregate(cbind(age, Y) ~ sex + country,
+          data = one.dataframeNA,
+          function(x) c(Mean = mean(x), SD = sd(x)),
+          na.action = na.pass)
+
+aggregate(cbind(age, Y) ~ sex + country,
+          data = one.dataframeNA,
+          function(x) c(
+                          Mean = mean(x, na.rm = TRUE),
+                          SD = sd(x, na.rm = TRUE)),
+          na.action = na.pass)
+
+## We need the na.action = na.pass
+aggregate(cbind(age, Y) ~ sex + country,
+          data = one.dataframeNA,
+          function(x) c(
+                          Mean = mean(x, na.rm = TRUE),
+                          SD = sd(x, na.rm = TRUE)))
 
 @
 
