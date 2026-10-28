@@ -5229,7 +5229,7 @@ analysis'', p.\ 119 and ff.\ and chapter 8 of Wickham's ``Advanced R''):
 
 
 \begin{description}
-\item[binding] In \code{y <- 9} y is bound to the value 9.
+\item[binding] In \code{y <- 9} ``y'' is bound to the value 9.
 \item[free variable] ``z'' is a free variable in function f1, above. It is
   not bound to anything (at least in that frame).
 \item[frame] A set of bindings (y to 9, maybe x to 77, etc).
@@ -5370,14 +5370,16 @@ Are you surprised? Regardless of it working, I would not do those things
 routinely just for the fun of it.
 
 
-(I have to confess, though, that I am surprised by \texttt{codetools} not saying anything about it)
+(\texttt{codetools}, by default, does not say anything about it, though it does with \texttt{all = TRUE} or \texttt{suppressParamUnused = FALSE}
 
 
 <<eval=FALSE>>=
 library(codetools)
 checkUsageEnv(env = .GlobalEnv)
+checkUsageEnv(env = .GlobalEnv, all = TRUE)
+checkUsageEnv(env = .GlobalEnv, suppressParamUnused = FALSE)
 @
-
+)
 
 (This is an awkward place to mention codetools. But we will use it again later. Moral for now: use \texttt{codetools} generously with your own code; in addition to things like \texttt{lintr} it will help you catch errors and bugs.)
 
@@ -5429,9 +5431,7 @@ cc
 \subsection{\textcolor {Green}{(Optional) \ Using return explicitly and invisible}}
 \label{sec:invisible_ret}
 
-Note: unless we have plenty of  time, we will skip this in class.
-
-Type the following code carefully (based upon \Burl{https://stackoverflow.com/a/38905341})
+Note: unless we have plenty of  time, we will skip this in class. You  might see \texttt{invisible} in some functions, specially those that are used to print stuff in particular ways. From the help of \texttt{invisible}: ``Sometimes  This function can be useful when it is desired to have functions return values which can be assigned, but which do not print when they are not assigned.'' But its behavior might not be immediately obvious. Type the following code carefully (based upon \Burl{https://stackoverflow.com/a/38905341})
 
 <<>>=
 f1x <- function(x){
